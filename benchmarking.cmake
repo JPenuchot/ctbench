@@ -7,6 +7,9 @@
 # This is mostly because Boost Preprocessor is widely used across benchmarks
 find_package(Boost REQUIRED)
 
+# graph-all dummy target
+add_custom_target(ctbench-graph-all)
+
 ## =============================================================================
 ## Internal use only.
 ##
@@ -40,11 +43,13 @@ function(_ctbench_internal_add_compile_benchmark target_name output source size)
 
   # Boost Preprocessor
   target_include_directories(${target_name} PUBLIC Boost_INCLUDE_DIRS)
+
 endfunction(_ctbench_internal_add_compile_benchmark)
 
 
 ## =============================================================================
 ## Add a benchmark for a given source, with a given size range.
+##
 ## - name: Name of benchmark range
 ## - source: Source file
 ## - begin: Size iteration begin
@@ -62,6 +67,7 @@ function(ctbench_add_benchmark name source begin end step)
   set(${target_name_out} ${range_target_name})
 
   foreach(size RANGE ${begin} ${end} ${step})
+
     set(range_subtarget_name "_${name}-${size}")
 
     _ctbench_internal_add_compile_benchmark(
@@ -71,14 +77,24 @@ function(ctbench_add_benchmark name source begin end step)
       "${size}")
 
     add_dependencies(${range_target_name} ${range_subtarget_name})
+
   endforeach()
 
 endfunction(ctbench_add_benchmark)
 
 ## =============================================================================
-## Adds a graph for a set of benchmarks
-## - output: Output folder
+## Adds a graph target for a set of benchmarks,
+## and adds the target to ctbench-graph-all.
+##
+## - graph_name: target name and output folder
 ## - benchmarks: List of benchmark names
-function(ctbench_add_graphs output)
-  add_custom_target(${output} COMMAND grapher ${output} ${ARGN} DEPENDS ${ARGN})
+
+function(ctbench_add_graphs graph_name)
+
+  add_custom_target(${graph_name}
+    COMMAND grapher ${graph_name} ${ARGN}
+    DEPENDS ${ARGN})
+
+  add_dependencies(ctbench-graph-all graph_name)
+
 endfunction(ctbench_add_graphs)
