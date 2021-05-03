@@ -11,10 +11,25 @@ Also, `ctbench` was made with the intents of **integration** and **reuse**.
 
 ## How-to
 
-Get the contents of the project as you wish:
-- [Git Submodule](
-  https://cliutils.gitlab.io/modern-cmake/chapters/projects/submodule.html),
-- [CMake FetchContent](
-  https://cmake.org/cmake/help/latest/module/FetchContent.html),
+Add the following to your `CMakeLists.txt` file:
 
-then `add_subdirectory(external/ctbench)` or whatever in your `CMakeLists.txt`.
+```cmake
+include(FetchContent)
+FetchContent_Declare(
+  ctbench
+  GIT_REPOSITORY https://github.com/jpenuchot/ctbench.git
+  GIT_TAG        origin/main)
+FetchContent_MakeAvailable(ctbench)
+```
+
+## Examples
+
+See my [Rule of Cheese](https://github.com/JPenuchot/rule-of-cheese) project.
+
+## Notes
+
+The project is more of a WIP.
+Some of these features will be added in the future:
+
+- Options for `grapher` to select which features to put in the graph
+- Multiple benchmark iterations
