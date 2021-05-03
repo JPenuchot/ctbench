@@ -28,8 +28,10 @@ function(_ctbench_internal_add_compile_benchmark target_name output source size)
   set_target_properties(${target_name}
     PROPERTIES
       CXX_COMPILER_LAUNCHER
-        "${CTBENCH_TIME_TRACE_WRAPPER_EXEC};${output}"
-    DEPENDS time-trace-wrapper)
+        "${CTBENCH_TIME_TRACE_WRAPPER_EXEC};${output}")
+
+  # Adding dependency because CMake won't
+  add_dependencies(${target_name} time-trace-wrapper)
 
   # Pass benchmark size
   set_target_properties(${target_name}
