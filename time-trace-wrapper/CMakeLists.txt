@@ -7,7 +7,9 @@ set(CMAKE_CXX_STANDARD 20)
 add_executable(time-trace-wrapper time-trace-wrapper.cpp)
 target_include_directories(time-trace-wrapper PUBLIC include/)
 
-set(CTBENCH_TIME_TRACE_WRAPPER_EXEC "${PROJECT_BINARY_DIR}/time-trace-wrapper")
+set(CTBENCH_TIME_TRACE_WRAPPER_EXEC
+  "${PROJECT_BINARY_DIR}/time-trace-wrapper"
+  PARENT_SCOPE)
 
 if(CTBENCH_ENABLE_TESTING)
   add_executable(time-trace-wrapper-test-exec tests/time-trace-wrapper.cpp)
