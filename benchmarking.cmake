@@ -28,7 +28,7 @@ function(_ctbench_internal_add_compile_benchmark target_name output source size)
   set_target_properties(${target_name}
     PROPERTIES
       CXX_COMPILER_LAUNCHER
-        "ctbench/time-trace-wrapper/time-trace-wrapper;${output}"
+        "${CTBENCH_TIME_TRACE_WRAPPER_EXEC};${output}"
     DEPENDS time-trace-wrapper)
 
   # Pass benchmark size

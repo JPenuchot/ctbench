@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 20)
 # time-trace-wrapper
 add_executable(time-trace-wrapper time-trace-wrapper.cpp)
 
+set(CTBENCH_TIME_TRACE_WRAPPER_EXEC "$<TARGET_FILE:tgt>")
+
 target_include_directories(time-trace-wrapper PUBLIC include/)
 
 if(CTBENCH_ENABLE_TESTING)
