@@ -42,31 +42,43 @@ endfunction(_ctbench_internal_add_compile_benchmark)
 
 
 ## =============================================================================
-## Add a benchmark range for a given source.
-## - prefix: Prefix for benchmark targets
+## Add a benchmark for a given source, with a given size range.
+## - name: Name of benchmark range
 ## - source: Source file
 ## - begin: Size iteration begin
 ## - end: Size iteration end
 ## - step: Size iteration step
 ## - target_name_out: Output variable for target name
 
-function(ctbench_add_benchmark_range prefix source begin end step target_name_out )
+function(ctbench_add_benchmark name source begin end step)
 
   set(range_spec "${begin}.${end}.${step}")
-  set(range_target_name "${prefix}-${range_spec}-all")
-  set(folder_name "${prefix}-${range_spec}")
+  set(range_target_name ${name})
+  set(folder_name ${name})
 
   add_custom_target(${range_target_name})
   set(${target_name_out} ${range_target_name})
 
   foreach(size RANGE ${begin} ${end} ${step})
-    set(range_subtarget_name "_${prefix}-${range_spec}-${size}")
+    set(range_subtarget_name "_${name}-${size}")
+
     _ctbench_internal_add_compile_benchmark(
       ${range_subtarget_name}
       "${folder_name}/${size}.json"
       "${source}"
       "${size}")
+
     add_dependencies(${range_target_name} ${range_subtarget_name})
   endforeach()
 
-endfunction(ctbench_add_benchmark_range)
+endfunction(ctbench_add_benchmark)
+
+## =============================================================================
+## Adds a graph for a set of benchmarks
+## - output: Output folder
+## - benchmarks: List of benchmark names
+function(ctbench_add_graphs output benchmarks)
+  add_custom_target(${output}
+    COMMAND grapher ${output} ${benchmarks}
+    DEPENDS ${benchmarks})
+endfunction(ctbench_add_graphs)
