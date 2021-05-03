@@ -8,15 +8,19 @@
 find_package(Boost REQUIRED)
 
 ## =============================================================================
+## Internal use only.
+##
 ## Creates a library target for a file
 ## and extracts the compilation time trace file.
+##
 ## - target_name: Name of the benchmark target
 ## - output: Time trace output path
 ## - file: Source file
 ## - size: Sets BENCHMARK_SIZE define (can be something else than a number)
 ##   See: https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_DEFINITIONS.html
 
-function(add_compile_benchmark target_name output source size)
+function(_ctbench_internal_add_compile_benchmark target_name output source size)
+
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
   target_include_directories(${target_name} PUBLIC "../include")
 
@@ -24,7 +28,8 @@ function(add_compile_benchmark target_name output source size)
   set_target_properties(${target_name}
     PROPERTIES
       CXX_COMPILER_LAUNCHER
-        "ctbench/time-trace-wrapper/time-trace-wrapper;${output}")
+        "ctbench/time-trace-wrapper/time-trace-wrapper;${output}"
+    DEPENDS time-trace-wrapper)
 
   # Pass benchmark size
   set_target_properties(${target_name}
@@ -33,53 +38,35 @@ function(add_compile_benchmark target_name output source size)
 
   # Boost Preprocessor
   target_include_directories(${target_name} PUBLIC Boost_INCLUDE_DIRS)
-endfunction(add_compile_benchmark)
+endfunction(_ctbench_internal_add_compile_benchmark)
 
 
 ## =============================================================================
 ## Add a benchmark range for a given source.
-## - name: Name of the benchmark
+## - prefix: Prefix for benchmark targets
 ## - source: Source file
 ## - begin: Size iteration begin
 ## - end: Size iteration end
 ## - step: Size iteration step
+## - target_name_out: Output variable for target name
 
-function(add_benchmark_range name source begin end step)
-  add_custom_target("${name}-all")
+function(ctbench_add_benchmark_range prefix source begin end step target_name_out )
+
+  set(range_spec "${begin}.${end}.${step}")
+  set(range_target_name "${prefix}-${range_spec}-all")
+  set(folder_name "${prefix}-${range_spec}")
+
+  add_custom_target(${range_target_name})
+  set(${target_name_out} ${range_target_name})
 
   foreach(size RANGE ${begin} ${end} ${step})
-    add_compile_benchmark(
-      "_${name}-${size}"
-      "${name}/${size}.json"
+    set(range_subtarget_name "_${name}-${range_spec}-${size}")
+    _ctbench_internal_add_compile_benchmark(
+      ${range_subtarget_name}
+      "${folder_name}/${size}.json"
       "${source}"
       "${size}")
-    add_dependencies("${name}-all" "_${name}-${size}")
+    add_dependencies(${range_target_name} ${range_subtarget_name})
   endforeach()
 
-  set(GRAPH_TARGETS "${GRAPH_TARGETS};${name}")
-endfunction(add_benchmark_range)
-
-
-## =============================================================================
-## Add a whole folder to benchmark targets
-## - source: Input path for sources
-## - dest: Output path for time trace reports
-
-function(add_benchmark_folder sources dest)
-  file(GLOB_RECURSE benchmark_sources "${sources}/*")
-  foreach(benchmark_source ${benchmark_sources})
-    # Generating benchmark target name and output filename
-
-    # TODO: Making stems actually readable
-    # https://cmake.org/cmake/help/latest/command/cmake_path.html
-    string(MD5 ${benchmark_source} stem)
-    string(REPLACE ".cpp" ".json" benchmark_output ${benchmark_source})
-
-    # Adding benchmark target
-    add_compile_benchmark(
-      "benchmark_${stem}"
-      ${benchmark_output}
-      ${benchmark_source}
-      0)
-  endforeach(benchmark_source)
-endfunction(add_benchmark_folder)
+endfunction(ctbench_add_benchmark_range)
