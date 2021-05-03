@@ -60,7 +60,7 @@ function(ctbench_add_benchmark_range prefix source begin end step target_name_ou
   set(${target_name_out} ${range_target_name})
 
   foreach(size RANGE ${begin} ${end} ${step})
-    set(range_subtarget_name "_${name}-${range_spec}-${size}")
+    set(range_subtarget_name "_${prefix}-${range_spec}-${size}")
     _ctbench_internal_add_compile_benchmark(
       ${range_subtarget_name}
       "${folder_name}/${size}.json"
