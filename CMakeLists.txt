@@ -8,6 +8,11 @@ if(CTBENCH_ENABLE_TESTING)
 endif(CTBENCH_ENABLE_TESTING)
 
 add_subdirectory(time-trace-wrapper)
+
+# Exporting time-trace-wrapper exec path
+set(CTBENCH_TIME_TRACE_WRAPPER_EXEC
+  ${CTBENCH_TIME_TRACE_WRAPPER_EXEC} PARENT_SCOPE)
+
 add_subdirectory(grapher)
 
 include(benchmarking.cmake)
