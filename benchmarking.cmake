@@ -79,8 +79,6 @@ endfunction(ctbench_add_benchmark)
 ## Adds a graph for a set of benchmarks
 ## - output: Output folder
 ## - benchmarks: List of benchmark names
-function(ctbench_add_graphs output benchmarks)
-  add_custom_target(${output}
-    COMMAND grapher ${output} ${benchmarks}
-    DEPENDS ${benchmarks})
+function(ctbench_add_graphs output)
+  add_custom_target(${output} COMMAND grapher ${output} ${ARGN} DEPENDS ${ARGN})
 endfunction(ctbench_add_graphs)
