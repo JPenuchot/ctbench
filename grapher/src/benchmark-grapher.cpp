@@ -22,7 +22,12 @@ int main(int argc, char const *argv[]) {
 
   grapher::category_t category;
   for (auto i = res_begin_id; i < res_end_id; i++) {
-    //category.push_back({argv[i], grapher::extract_category(argv[i])});
+    auto b_opt = grapher::extract_benchmark(argv[i]);
+    if (!b_opt) {
+      std::cerr << "[WARNING] Invalid category path: " << argv[i] << '\n';
+      continue;
+    }
+    category.push_back(std::move(*b_opt));
   }
 
   grapher::graph(category, argv[out_id]);

@@ -109,11 +109,6 @@ entry_t extract_entry(std::filesystem::path const &p) {
   return res;
 }
 
-/// Extracts a benchmark given a path.
-/// Internally, a benchmark is basically a matrix of M * N benchmark entries,
-/// where M is a number of different sizes, and N is a number of iterations.
-/// This implies that all benchmark sizes must have the same number of
-/// iterations. Otherwise the benchmark isn't valid.
 std::optional<benchmark_t>
 extract_benchmark(std::filesystem::path const &benchmark_directory) {
   namespace fs = std::filesystem;
