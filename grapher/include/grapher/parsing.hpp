@@ -11,12 +11,6 @@
 
 namespace grapher {
 
-/// Raw entry (before proper extraction in an entry_t type)
-using raw_entry_t = std::tuple<std::filesystem::path, nlohmann::json>;
-
-/// Raw category
-using raw_category_t = std::vector<entry_t>;
-
 /// Extracts a benchmark given a path.
 /// Internally, a benchmark is basically a matrix of M * N benchmark entries,
 /// where M is a number of different sizes, and N is a number of iterations.

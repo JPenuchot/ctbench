@@ -9,6 +9,12 @@
 
 namespace grapher {
 
+/// Raw entry (before proper extraction in an entry_t type)
+using raw_entry_t = std::tuple<std::filesystem::path, nlohmann::json>;
+
+/// Raw category
+using raw_category_t = std::vector<entry_t>;
+
 /// Reads benchmark size in filename
 int benchmark_size_from_path(std::filesystem::path const &p) {
   std::size_t size;
