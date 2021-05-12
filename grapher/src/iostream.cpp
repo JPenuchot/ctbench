@@ -14,7 +14,10 @@ std::ostream &to_csv(std::ostream &o, entry_t const &e) {
   return o;
 }
 
-std::ostream &to_csv(std::ostream &o, category_t const &cats) {
+std::ostream &to_csv(std::ostream &o, category_t const &cat) {
+  // TODO
+
+  /*
   o << "category,"
        "name,"
        "execute_compiler,"
@@ -34,11 +37,12 @@ std::ostream &to_csv(std::ostream &o, category_t const &cats) {
        "code_gen_passes,"
        "code_gen_function,"
        "per_function_passes\n";
-  for (auto const &[k_cat, v_cat] : cats) {
+  for (auto const &[k_cat, v_cat] : cat) {
     for (auto const &e : v_cat) {
       to_csv((o << k_cat), e) << '\n';
     }
   }
+  */
   return o;
 }
 

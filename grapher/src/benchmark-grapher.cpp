@@ -22,7 +22,7 @@ int main(int argc, char const *argv[]) {
 
   grapher::category_t category;
   for (auto i = res_begin_id; i < res_end_id; i++) {
-    category.push_back({argv[i], grapher::extract_category(argv[i])});
+    //category.push_back({argv[i], grapher::extract_category(argv[i])});
   }
 
   grapher::graph(category, argv[out_id]);

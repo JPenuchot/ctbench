@@ -31,8 +31,9 @@
 namespace grapher {
 
 /// Returns plot and max measurement for plot normalization across a category
-std::tuple<sciplot::Plot, measure_t> make_plot(benchmark_t const &cat) {
+std::tuple<sciplot::Plot, measure_t> graph(benchmark_t const &bench) {
   namespace sp = sciplot;
+
 
   // Select what to plot:
   auto const measures = {
@@ -55,7 +56,8 @@ std::tuple<sciplot::Plot, measure_t> make_plot(benchmark_t const &cat) {
       // per_function_passes_v,
   };
 
-  auto const &[name, entries] = cat;
+  /*
+  auto const &[name, entries] = bench;
   sp::Plot plot;
 
   // Adjust if graph doesn't fit or looks weird
@@ -77,7 +79,7 @@ std::tuple<sciplot::Plot, measure_t> make_plot(benchmark_t const &cat) {
 
   // No entries ? No plot
   if (x.empty()) {
-    std::cerr << "Empty plot for category " << name << ".\n";
+    std::cerr << "Empty plot for benchmark " << name << ".\n";
     std::exit(1);
   }
 
@@ -105,22 +107,28 @@ std::tuple<sciplot::Plot, measure_t> make_plot(benchmark_t const &cat) {
   }
 
   return {std::move(plot), y_max};
+  */
 }
 
 void graph(category_t const &cat, std::filesystem::path const &p) {
+  // TODO
+
   namespace sp = sciplot;
 
+  /*
   std::vector<std::tuple<sp::Plot, std::string>> plots;
   measure_t category_max = 0.;
 
+  // This will need a remake...
+
   for (benchmark_t const &bench : cat) {
-    auto const &[name, benchmark] = bench;
-    if (benchmark.empty()) {
+    auto const &[name, benchmarks] = bench;
+    if (benchmarks.empty()) {
       std::cout << "Warning: category " << name << " is empty.\n";
       continue;
     }
 
-    auto [plot, plot_max] = make_plot(bench);
+    auto [plot, plot_max] = graph(bench);
 
     category_max = std::max(category_max, plot_max);
 
@@ -132,6 +140,7 @@ void graph(category_t const &cat, std::filesystem::path const &p) {
     std::filesystem::create_directories(p);
     plot.save(p / (name + ".svg"));
   }
+  */
 }
 
 } // namespace grapher

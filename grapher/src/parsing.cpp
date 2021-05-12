@@ -1,34 +1,71 @@
+#include "grapher/core.hpp"
+
 #include <grapher/parsing.hpp>
 
+#include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <optional>
 
 namespace grapher {
 
-entry_t extract_entry(raw_entry_t const &re) {
+/// Reads benchmark size in filename
+int benchmark_size_from_path(std::filesystem::path const &p) {
+  std::size_t size;
+  std::istringstream stem(p.stem());
+  stem >> size;
+
+  if (!stem) {
+    std::cerr << "Invalid filename for " << p
+              << ": must have <size>.json format.\n";
+    return -1;
+  }
+
+  return size;
+}
+
+/// Extracts a benchmark entry given a path
+entry_t extract_entry(std::filesystem::path const &p) {
   entry_t res{
-      .size = -1,
-      .execute_compiler = -1,
-      .frontend = -1,
-      .source = -1,
-      .instantiate_function = -1,
-      .parse_class = -1,
-      .instantiate_class = -1,
-      .backend = -1,
-      .opt_module = -1,
-      .parse_template = -1,
-      .opt_function = -1,
-      .run_pass = -1,
-      .per_module_passes = -1,
-      .perform_pending_instantiations = -1,
-      .run_loop_pass = -1,
-      .code_gen_passes = -1,
-      .code_gen_function = -1,
-      .per_function_passes = -1,
+      .size = entry_t::nsize,
+      .execute_compiler = 0,
+      .frontend = 0,
+      .source = 0,
+      .instantiate_function = 0,
+      .parse_class = 0,
+      .instantiate_class = 0,
+      .backend = 0,
+      .opt_module = 0,
+      .parse_template = 0,
+      .opt_function = 0,
+      .run_pass = 0,
+      .per_module_passes = 0,
+      .perform_pending_instantiations = 0,
+      .run_loop_pass = 0,
+      .code_gen_passes = 0,
+      .code_gen_function = 0,
+      .per_function_passes = 0,
   };
 
-  auto const &[p, js] = re;
-  res.size = std::atoi(p.filename().replace_extension("").c_str());
+  // Reading JSON
+  nlohmann::json js;
+  {
+    std::ifstream file(p);
+    file >> js;
+    if (!(file >> js)) {
+      return res;
+    }
+  }
+
+  // Reading filename for size
+  {
+    res.size = benchmark_size_from_path(p);
+
+    if (res.size == entry_t::nsize) {
+      std::cerr << "Invalid filename for " << p << "\n";
+      return res;
+    }
+  }
 
   for (auto e : js["traceEvents"]) {
     auto const &e_name = e["name"];
@@ -72,31 +109,67 @@ entry_t extract_entry(raw_entry_t const &re) {
   return res;
 }
 
-std::vector<entry_t> extract_category(std::filesystem::path const &cat) {
-  std::cout << cat << '\n';
+/// Extracts a benchmark given a path.
+/// Internally, a benchmark is basically a matrix of M * N benchmark entries,
+/// where M is a number of different sizes, and N is a number of iterations.
+/// This implies that all benchmark sizes must have the same number of
+/// iterations. Otherwise the benchmark isn't valid.
+std::optional<benchmark_t>
+extract_benchmark(std::filesystem::path const &benchmark_directory) {
   namespace fs = std::filesystem;
 
-  std::vector<fs::path> file_list =
-      fs::is_directory(cat)
-          ? std::vector<fs::path>{begin(fs::directory_iterator(cat)),
-                                  end(fs::directory_iterator(cat))}
-          : std::vector<fs::path>{cat};
+  std::vector<fs::path> entry_file_list =
+      fs::is_directory(benchmark_directory)
+          ? std::vector<fs::path>{begin(fs::directory_iterator(
+                                      benchmark_directory)),
+                                  end(fs::directory_iterator(
+                                      benchmark_directory))}
+          : std::vector<fs::path>{benchmark_directory};
 
-  std::vector<entry_t> res;
+  std::vector<entry_t> entries;
 
-  for (auto const &p : file_list) {
+  for (auto const &p : entry_file_list) {
+    // Check for valid file extension
     if (p.extension() != ".json") {
+      std::cerr << "[WARNING] Invalid entry extension: " << p << '\n';
       continue;
     }
 
-    nlohmann::json js;
-    std::ifstream f(p);
-    f >> js;
-    res.push_back(extract_entry({p, std::move(js)}));
+    auto e = extract_entry(p);
+
+    // Check for entry validity
+    if (!e) {
+      std::cerr << "[WARNING] Invalid entry format: " << p << '\n';
+      continue;
+    }
+
+    entries.push_back(extract_entry(p));
   }
 
-  std::sort(res.begin(), res.end(),
+  if (entries.empty()) {
+    std::cerr << "Invalid benckmark " << benchmark_directory << ": No valid\n";
+    return std::nullopt;
+  }
+
+  std::sort(entries.begin(), entries.end(),
             [](auto const &a, auto const &b) { return a.size < b.size; });
+
+  auto const iterations = std::find_if(entries.begin(), entries.end(),
+                                       [s = entries[0].size](entry_t const &e) {
+                                         return e.size != s;
+                                       }) -
+                          entries.begin();
+
+  auto const size = entries.size() - iterations;
+
+  benchmark_t res(benchmark_directory.filename(), size, iterations,
+                  std::move(entries));
+
+  if (!res.is_valid()) {
+    std::cerr << "Invalid benchmark " << benchmark_directory << ": \n";
+    return std::nullopt;
+  }
+
   return res;
 }
 

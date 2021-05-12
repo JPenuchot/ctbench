@@ -1,24 +1,25 @@
 #pragma once
 
+/// \file
+/// Core data types for benchmark representation.
+
 // STL
-#include <filesystem>
+#include <algorithm>
 #include <string>
 #include <string_view>
 #include <vector>
 
 // External
-#include <nlohmann/json.hpp>
 
 namespace grapher {
-
-/// Raw entry (before proper extraction in an entry_t type)
-using raw_entry_t = std::tuple<std::filesystem::path, nlohmann::json>;
 
 /// Measure type
 using measure_t = long;
 
 /// Contains all the metrics for a given benchmark
 struct entry_t {
+  static constexpr int nsize = -1;
+
   int size;
 
   measure_t execute_compiler;
@@ -38,6 +39,9 @@ struct entry_t {
   measure_t code_gen_passes;
   measure_t code_gen_function;
   measure_t per_function_passes;
+
+  // Check entry validity
+  inline operator bool() const noexcept { return size != nsize; }
 };
 
 /// Represents a kind of measure
@@ -164,8 +168,76 @@ constexpr std::string_view get_measure_name(measure_kind_t m) {
   return "Invalid";
 }
 
-/// Benchmark category
-using benchmark_t = std::tuple<std::string, std::vector<entry_t>>;
+/// Represents a benchmark series, ie a series of benchmark iterations for
+class benchmark_t {
+private:
+  std::string _name;
+  std::size_t _size;
+  std::size_t _iterations;
+  std::vector<entry_t> _entries;
+
+public:
+  benchmark_t(std::string name, std::size_t size,
+              std::size_t iterations) noexcept
+      : _name(std::move(name)), _size(size), _iterations(iterations),
+        _entries() {}
+
+  benchmark_t(std::string name, std::size_t size, std::size_t iterations,
+              std::vector<entry_t> entries) noexcept
+      : _name(std::move(name)), _size(size), _iterations(iterations),
+        _entries(std::move(entries)) {}
+
+  inline std::string const &name() const noexcept { return _name; }
+  inline std::size_t size() const noexcept { return _size; }
+  inline std::size_t iterations() const noexcept { return _iterations; }
+
+  /// Returns constant begin iterator for all iterations of a given size index.
+  inline auto begin(std::size_t size_i) const noexcept {
+    return _entries.cbegin() + size_i * _iterations;
+  }
+
+  /// Returns constant end iterator for all iterations of a given size index.
+  inline auto end(std::size_t size_i) const noexcept {
+    return _entries.cbegin() + (size_i + 1) * _iterations;
+  }
+
+  /// Returns begin iterator for all iterations of a given size index.
+  inline auto begin(std::size_t size_i) noexcept {
+    return _entries.begin() + size_i * _iterations;
+  }
+
+  /// Returns end iterator for all iterations of a given size index.
+  inline auto end(std::size_t size_i) noexcept {
+    return _entries.begin() + (size_i + 1) * _iterations;
+  }
+
+  inline auto &operator()(std::size_t size_i, std::size_t iteration) noexcept {
+    return _entries[size_i * _iterations + iteration];
+  }
+
+  inline auto const &operator()(std::size_t size_i,
+                                std::size_t iteration) const noexcept {
+    return _entries[size_i * _iterations + iteration];
+  }
+
+  inline bool is_valid() const noexcept {
+    // Checking dimensions
+    if (_entries.size() == _iterations * _size) {
+      return false;
+    }
+
+    // Checking range equality for each size id
+    for (std::size_t size_id = 0; size_id < _size; size_id++) {
+      if (!std::all_of(this->begin(size_id), this->end(size_id),
+                       [s = this->begin(size_id)->size](
+                           entry_t const &e) -> bool { return e.size == s; })) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+};
 
 /// Benchmark categories
 using category_t = std::vector<benchmark_t>;
