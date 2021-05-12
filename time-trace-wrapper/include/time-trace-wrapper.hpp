@@ -2,8 +2,8 @@
 
 #include <filesystem>
 
-int get_timetrace_file(std::filesystem::path const out, std::string cmd,
-                       std::filesystem::path obj_path) {
+inline int get_timetrace_file(std::filesystem::path const out, std::string cmd,
+                              std::filesystem::path obj_path) {
   namespace fs = std::filesystem;
 
   // Run program
@@ -18,7 +18,7 @@ int get_timetrace_file(std::filesystem::path const out, std::string cmd,
   return 0;
 }
 
-auto parse_args(int argc, char const *argv[]) {
+inline auto parse_args(int argc, char const *argv[]) {
   namespace fs = std::filesystem;
 
   constexpr int exec_id = 0;

@@ -14,4 +14,5 @@ set(CTBENCH_TIME_TRACE_WRAPPER_EXEC
 if(CTBENCH_ENABLE_TESTING)
   add_executable(time-trace-wrapper-test-exec tests/time-trace-wrapper.cpp)
   add_test(NAME time-trace-wrapper-test COMMAND time-trace-wrapper-test-exec)
+  target_include_directories(time-trace-wrapper-test-exec PUBLIC include/)
 endif(CTBENCH_ENABLE_TESTING)
