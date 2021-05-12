@@ -23,7 +23,7 @@ int benchmark_size_from_path(std::filesystem::path const &p) {
 
   if (!stem) {
     std::cerr << "Invalid filename for " << p
-              << ": must have <size>.json format.\n";
+              << ": must have <size>.json format." << std::ends;
     return -1;
   }
 
@@ -68,7 +68,7 @@ entry_t extract_entry(std::filesystem::path const &p) {
     res.size = benchmark_size_from_path(p);
 
     if (res.size == entry_t::nsize) {
-      std::cerr << "Invalid filename for " << p << "\n";
+      std::cerr << "Invalid filename for " << p << std::ends;
       return res;
     }
   }
@@ -132,7 +132,7 @@ extract_benchmark(std::filesystem::path const &benchmark_directory) {
   for (auto const &p : entry_file_list) {
     // Check for valid file extension
     if (p.extension() != ".json") {
-      std::cerr << "[WARNING] Invalid entry extension: " << p << '\n';
+      std::cerr << "[WARNING] Invalid entry extension: " << p << std::ends;
       continue;
     }
 
@@ -140,7 +140,7 @@ extract_benchmark(std::filesystem::path const &benchmark_directory) {
 
     // Check for entry validity
     if (!e) {
-      std::cerr << "[WARNING] Invalid entry format: " << p << '\n';
+      std::cerr << "[WARNING] Invalid entry format: " << p << std::ends;
       continue;
     }
 
@@ -148,7 +148,8 @@ extract_benchmark(std::filesystem::path const &benchmark_directory) {
   }
 
   if (entries.empty()) {
-    std::cerr << "Invalid benckmark " << benchmark_directory << ": No valid\n";
+    std::cerr << "Invalid benckmark " << benchmark_directory << ": No entry"
+              << std::ends;
     return std::nullopt;
   }
 
@@ -163,12 +164,28 @@ extract_benchmark(std::filesystem::path const &benchmark_directory) {
 
   auto const size = entries.size() - iterations;
 
-  benchmark_t res(benchmark_directory.filename(), size, iterations,
-                  std::move(entries));
-
-  if (!res.is_valid()) {
-    std::cerr << "Invalid benchmark " << benchmark_directory << ": \n";
+  // Last check: entry size validity
+  if (entries.size() != size * iterations) {
+    std::cerr << "[ERROR] Invalid entry amount for benchnark "
+              << benchmark_directory << std::ends;
     return std::nullopt;
+  }
+
+  benchmark_t res(benchmark_directory.filename(), size, iterations);
+
+  for (std::size_t size_id; size_id < size; size_id++) {
+    auto const sz = entries[size_id * iterations].size;
+    for (std::size_t iteration; iteration < iterations; iteration++) {
+      if (auto const e = entries[size_id * iterations + iteration];
+          e.size != sz) {
+        std::cerr << "[ERROR] Invalid data for benchmark "
+                  << benchmark_directory << ": irregular benchmark sizes."
+                  << std::ends;
+        return std::nullopt;
+      } else {
+        res.store(e, size_id, iteration);
+      }
+    }
   }
 
   return res;

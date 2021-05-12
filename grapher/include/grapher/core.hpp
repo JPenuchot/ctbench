@@ -3,13 +3,10 @@
 /// \file
 /// Core data types for benchmark representation.
 
-// STL
 #include <algorithm>
 #include <string>
 #include <string_view>
 #include <vector>
-
-// External
 
 namespace grapher {
 
@@ -168,74 +165,338 @@ constexpr std::string_view get_measure_name(measure_kind_t m) {
   return "Invalid";
 }
 
-/// Represents a benchmark series, ie a series of benchmark iterations for
+/// Manages benchmark feature storage in separate vectors,
+/// and provides easy ways to access them.
+class entry_storage_t {
+  std::size_t _size;
+
+  std::vector<int> _size_v;
+  std::vector<measure_t> _execute_compiler_v;
+  std::vector<measure_t> _frontend_v;
+  std::vector<measure_t> _source_v;
+  std::vector<measure_t> _instantiate_function_v;
+  std::vector<measure_t> _parse_class_v;
+  std::vector<measure_t> _instantiate_class_v;
+  std::vector<measure_t> _backend_v;
+  std::vector<measure_t> _opt_module_v;
+  std::vector<measure_t> _parse_template_v;
+  std::vector<measure_t> _opt_function_v;
+  std::vector<measure_t> _run_pass_v;
+  std::vector<measure_t> _per_module_passes_v;
+  std::vector<measure_t> _perform_pending_instantiations_v;
+  std::vector<measure_t> _run_loop_pass_v;
+  std::vector<measure_t> _code_gen_passes_v;
+  std::vector<measure_t> _code_gen_function_v;
+  std::vector<measure_t> _per_function_passes_v;
+
+public:
+  entry_storage_t(std::size_t n)
+      : _size(n), _size_v(n), _execute_compiler_v(n), _frontend_v(n),
+        _source_v(n), _instantiate_function_v(n), _parse_class_v(n),
+        _instantiate_class_v(n), _backend_v(n), _opt_module_v(n),
+        _parse_template_v(n), _opt_function_v(n), _run_pass_v(n),
+        _per_module_passes_v(n), _perform_pending_instantiations_v(n),
+        _run_loop_pass_v(n), _code_gen_passes_v(n), _code_gen_function_v(n),
+        _per_function_passes_v(n) {}
+
+  entry_storage_t(std::vector<entry_t> const &v) : entry_storage_t(v.size()) {
+    for (std::size_t i = 0; i < _size; i++)
+      store(v[i], i);
+  }
+
+  std::size_t size() const noexcept { return _size; }
+
+  //============================================================================
+  // Load/Store
+
+  entry_t load(std::size_t i) const {
+    return entry_t{_size_v[i],
+                   _execute_compiler_v[i],
+                   _frontend_v[i],
+                   _source_v[i],
+                   _instantiate_function_v[i],
+                   _parse_class_v[i],
+                   _instantiate_class_v[i],
+                   _backend_v[i],
+                   _opt_module_v[i],
+                   _parse_template_v[i],
+                   _opt_function_v[i],
+                   _run_pass_v[i],
+                   _per_module_passes_v[i],
+                   _perform_pending_instantiations_v[i],
+                   _run_loop_pass_v[i],
+                   _code_gen_passes_v[i],
+                   _code_gen_function_v[i],
+                   _per_function_passes_v[i]};
+  }
+
+  entry_storage_t &store(entry_t const &e, std::size_t i) {
+    _size_v[i] = e.size;
+    _execute_compiler_v[i] = e.execute_compiler;
+    _frontend_v[i] = e.frontend;
+    _source_v[i] = e.source;
+    _instantiate_function_v[i] = e.instantiate_function;
+    _parse_class_v[i] = e.parse_class;
+    _instantiate_class_v[i] = e.instantiate_class;
+    _backend_v[i] = e.backend;
+    _opt_module_v[i] = e.opt_module;
+    _parse_template_v[i] = e.parse_template;
+    _opt_function_v[i] = e.opt_function;
+    _run_pass_v[i] = e.run_pass;
+    _per_module_passes_v[i] = e.per_module_passes;
+    _perform_pending_instantiations_v[i] = e.perform_pending_instantiations;
+    _run_loop_pass_v[i] = e.run_loop_pass;
+    _code_gen_passes_v[i] = e.code_gen_passes;
+    _code_gen_function_v[i] = e.code_gen_function;
+    _per_function_passes_v[i] = e.per_function_passes;
+    return *this;
+  }
+
+  //============================================================================
+  // Content access
+
+  // Compile-time
+
+  template <measure_kind_t M> auto &get_measure(std::size_t i) noexcept {
+    if constexpr (M == execute_compiler_v) {
+      return _execute_compiler_v[i];
+    }
+    if constexpr (M == frontend_v) {
+      return _frontend_v[i];
+    }
+    if constexpr (M == source_v) {
+      return _source_v[i];
+    }
+    if constexpr (M == instantiate_function_v) {
+      return _instantiate_function_v[i];
+    }
+    if constexpr (M == parse_class_v) {
+      return _parse_class_v[i];
+    }
+    if constexpr (M == instantiate_class_v) {
+      return _instantiate_class_v[i];
+    }
+    if constexpr (M == backend_v) {
+      return _backend_v[i];
+    }
+    if constexpr (M == opt_module_v) {
+      return _opt_module_v[i];
+    }
+    if constexpr (M == parse_template_v) {
+      return _parse_template_v[i];
+    }
+    if constexpr (M == opt_function_v) {
+      return _opt_function_v[i];
+    }
+    if constexpr (M == run_pass_v) {
+      return _run_pass_v[i];
+    }
+    if constexpr (M == per_module_passes_v) {
+      return _per_module_passes_v[i];
+    }
+    if constexpr (M == perform_pending_instantiations_v) {
+      return _perform_pending_instantiations_v[i];
+    }
+    if constexpr (M == run_loop_pass_v) {
+      return _run_loop_pass_v[i];
+    }
+    if constexpr (M == code_gen_passes_v) {
+      return _code_gen_passes_v[i];
+    }
+    if constexpr (M == code_gen_function_v) {
+      return _code_gen_function_v[i];
+    }
+    if constexpr (M == per_function_passes_v) {
+      return _per_function_passes_v[i];
+    }
+  }
+
+  template <measure_kind_t M> auto get_measure(std::size_t i) const noexcept {
+    if constexpr (M == execute_compiler_v) {
+      return _execute_compiler_v[i];
+    }
+    if constexpr (M == frontend_v) {
+      return _frontend_v[i];
+    }
+    if constexpr (M == source_v) {
+      return _source_v[i];
+    }
+    if constexpr (M == instantiate_function_v) {
+      return _instantiate_function_v[i];
+    }
+    if constexpr (M == parse_class_v) {
+      return _parse_class_v[i];
+    }
+    if constexpr (M == instantiate_class_v) {
+      return _instantiate_class_v[i];
+    }
+    if constexpr (M == backend_v) {
+      return _backend_v[i];
+    }
+    if constexpr (M == opt_module_v) {
+      return _opt_module_v[i];
+    }
+    if constexpr (M == parse_template_v) {
+      return _parse_template_v[i];
+    }
+    if constexpr (M == opt_function_v) {
+      return _opt_function_v[i];
+    }
+    if constexpr (M == run_pass_v) {
+      return _run_pass_v[i];
+    }
+    if constexpr (M == per_module_passes_v) {
+      return _per_module_passes_v[i];
+    }
+    if constexpr (M == perform_pending_instantiations_v) {
+      return _perform_pending_instantiations_v[i];
+    }
+    if constexpr (M == run_loop_pass_v) {
+      return _run_loop_pass_v[i];
+    }
+    if constexpr (M == code_gen_passes_v) {
+      return _code_gen_passes_v[i];
+    }
+    if constexpr (M == code_gen_function_v) {
+      return _code_gen_function_v[i];
+    }
+    if constexpr (M == per_function_passes_v) {
+      return _per_function_passes_v[i];
+    }
+  }
+
+  // Runtime
+
+  measure_t &get_measure(std::size_t i, measure_kind_t m) noexcept {
+    switch (m) {
+    case execute_compiler_v:
+      return _execute_compiler_v[i];
+    case frontend_v:
+      return _frontend_v[i];
+    case source_v:
+      return _source_v[i];
+    case instantiate_function_v:
+      return _instantiate_function_v[i];
+    case parse_class_v:
+      return _parse_class_v[i];
+    case instantiate_class_v:
+      return _instantiate_class_v[i];
+    case backend_v:
+      return _backend_v[i];
+    case opt_module_v:
+      return _opt_module_v[i];
+    case parse_template_v:
+      return _parse_template_v[i];
+    case opt_function_v:
+      return _opt_function_v[i];
+    case run_pass_v:
+      return _run_pass_v[i];
+    case per_module_passes_v:
+      return _per_module_passes_v[i];
+    case perform_pending_instantiations_v:
+      return _perform_pending_instantiations_v[i];
+    case run_loop_pass_v:
+      return _run_loop_pass_v[i];
+    case code_gen_passes_v:
+      return _code_gen_passes_v[i];
+    case code_gen_function_v:
+      return _code_gen_function_v[i];
+    case per_function_passes_v:
+      return _per_function_passes_v[i];
+    };
+  }
+
+  measure_t get_measure(std::size_t i, measure_kind_t m) const noexcept {
+    switch (m) {
+    case execute_compiler_v:
+      return _execute_compiler_v[i];
+    case frontend_v:
+      return _frontend_v[i];
+    case source_v:
+      return _source_v[i];
+    case instantiate_function_v:
+      return _instantiate_function_v[i];
+    case parse_class_v:
+      return _parse_class_v[i];
+    case instantiate_class_v:
+      return _instantiate_class_v[i];
+    case backend_v:
+      return _backend_v[i];
+    case opt_module_v:
+      return _opt_module_v[i];
+    case parse_template_v:
+      return _parse_template_v[i];
+    case opt_function_v:
+      return _opt_function_v[i];
+    case run_pass_v:
+      return _run_pass_v[i];
+    case per_module_passes_v:
+      return _per_module_passes_v[i];
+    case perform_pending_instantiations_v:
+      return _perform_pending_instantiations_v[i];
+    case run_loop_pass_v:
+      return _run_loop_pass_v[i];
+    case code_gen_passes_v:
+      return _code_gen_passes_v[i];
+    case code_gen_function_v:
+      return _code_gen_function_v[i];
+    case per_function_passes_v:
+      return _per_function_passes_v[i];
+    }
+  }
+};
+
 class benchmark_t {
 private:
   std::string _name;
   std::size_t _size;
   std::size_t _iterations;
-  std::vector<entry_t> _entries;
+  entry_storage_t _entries;
 
 public:
   benchmark_t(std::string name, std::size_t size,
               std::size_t iterations) noexcept
       : _name(std::move(name)), _size(size), _iterations(iterations),
-        _entries() {}
+        _entries(size * iterations) {}
 
-  benchmark_t(std::string name, std::size_t size, std::size_t iterations,
-              std::vector<entry_t> entries) noexcept
-      : _name(std::move(name)), _size(size), _iterations(iterations),
-        _entries(std::move(entries)) {}
+  //============================================================================
+  // Props
 
   inline std::string const &name() const noexcept { return _name; }
   inline std::size_t size() const noexcept { return _size; }
   inline std::size_t iterations() const noexcept { return _iterations; }
 
-  /// Returns constant begin iterator for all iterations of a given size index.
-  inline auto begin(std::size_t size_i) const noexcept {
-    return _entries.cbegin() + size_i * _iterations;
+  //============================================================================
+  // Content access
+
+  inline entry_t load(std::size_t size_id, std::size_t iteration) const {
+    return _entries.load(size_id * _iterations + iteration);
   }
 
-  /// Returns constant end iterator for all iterations of a given size index.
-  inline auto end(std::size_t size_i) const noexcept {
-    return _entries.cbegin() + (size_i + 1) * _iterations;
+  benchmark_t &store(entry_t const &e, std::size_t size_id,
+                     std::size_t iteration) {
+    _entries.store(e, size_id * _iterations + iteration);
+    return *this;
   }
 
-  /// Returns begin iterator for all iterations of a given size index.
-  inline auto begin(std::size_t size_i) noexcept {
-    return _entries.begin() + size_i * _iterations;
+  template <measure_kind_t M>
+  inline auto &get(std::size_t size_id, std::size_t iteration) noexcept {
+    return _entries.get_measure<M>(size_id * _iterations + iteration);
   }
 
-  /// Returns end iterator for all iterations of a given size index.
-  inline auto end(std::size_t size_i) noexcept {
-    return _entries.begin() + (size_i + 1) * _iterations;
+  template <measure_kind_t M>
+  inline auto get(std::size_t size_id, std::size_t iteration) const noexcept {
+    return _entries.get_measure<M>(size_id * _iterations + iteration);
   }
 
-  inline auto &operator()(std::size_t size_i, std::size_t iteration) noexcept {
-    return _entries[size_i * _iterations + iteration];
+  inline auto &get(std::size_t size_id, std::size_t iteration,
+                   measure_kind_t m) noexcept {
+    return _entries.get_measure(size_id * _iterations + iteration, m);
   }
 
-  inline auto const &operator()(std::size_t size_i,
-                                std::size_t iteration) const noexcept {
-    return _entries[size_i * _iterations + iteration];
-  }
-
-  inline bool is_valid() const noexcept {
-    // Checking dimensions
-    if (_entries.size() == _iterations * _size) {
-      return false;
-    }
-
-    // Checking range equality for each size id
-    for (std::size_t size_id = 0; size_id < _size; size_id++) {
-      if (!std::all_of(this->begin(size_id), this->end(size_id),
-                       [s = this->begin(size_id)->size](
-                           entry_t const &e) -> bool { return e.size == s; })) {
-        return false;
-      }
-    }
-
-    return true;
+  inline auto get(std::size_t size_id, std::size_t iteration,
+                  measure_kind_t m) const noexcept {
+    return _entries.get_measure(size_id * _iterations + iteration, m);
   }
 };
 

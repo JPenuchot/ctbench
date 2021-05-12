@@ -31,9 +31,8 @@
 namespace grapher {
 
 /// Returns plot and max measurement for plot normalization across a category
-std::tuple<sciplot::Plot, measure_t> graph(benchmark_t const &bench) {
+sciplot::Plot graph(benchmark_t const &bench) {
   namespace sp = sciplot;
-
 
   // Select what to plot:
   auto const measures = {
@@ -56,8 +55,6 @@ std::tuple<sciplot::Plot, measure_t> graph(benchmark_t const &bench) {
       // per_function_passes_v,
   };
 
-  /*
-  auto const &[name, entries] = bench;
   sp::Plot plot;
 
   // Adjust if graph doesn't fit or looks weird
@@ -69,50 +66,23 @@ std::tuple<sciplot::Plot, measure_t> graph(benchmark_t const &bench) {
   plot.xlabel("Benchmark Size Factor");
   plot.ylabel("Time (µs)");
 
-  using vec = std::vector<measure_t>;
+  // For each size
+  for (std::size_t size_i = 0, size_i_end = bench.size(); size_i < size_i_end;
+       size_i++) {
 
-  vec x;
-
-  for (auto const &e : entries) {
-    x.push_back(e.size);
+    // For each iteration
+    std::for_each(bench.begin(size_i), bench.end(size_i), [](entry_t const &e) {
+      // Iterating through iterations
+    });
   }
 
-  // No entries ? No plot
-  if (x.empty()) {
-    std::cerr << "Empty plot for benchmark " << name << ".\n";
-    std::exit(1);
-  }
+  //  plot.drawWithVecs("filledcurves", x, ylow, yhigh)
+  //      .label(std::string(get_measure_name(measure_kind)));
 
-  // Initializing vectors for incremental curve drawing
-  vec ylow(x.size());
-  vec yhigh(x.size(), 0.);
-  measure_t y_max = 0.;
-
-  for (measure_kind_t measure_kind : measures) {
-    // Previous high becomes new low
-    std::swap(ylow, yhigh);
-
-    // Summing up measurements
-    std::transform(entries.begin(), entries.end(), ylow.begin(), yhigh.begin(),
-                   [&](auto const &ehigh, auto const &mlow) {
-                     const measure_t val =
-                         mlow + get_measure(ehigh, measure_kind);
-                     y_max = std::max(y_max, val);
-                     return val;
-                   });
-
-    // Draw
-    plot.drawWithVecs("filledcurves", x, ylow, yhigh)
-        .label(std::string(get_measure_name(measure_kind)));
-  }
-
-  return {std::move(plot), y_max};
-  */
+  return plot;
 }
 
 void graph(category_t const &cat, std::filesystem::path const &p) {
-  // TODO
-
   namespace sp = sciplot;
 
   /*
