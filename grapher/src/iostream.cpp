@@ -1,5 +1,4 @@
 #include <grapher/iostream.hpp>
-#include <grapher/containers.hpp>
 
 namespace grapher {
 
