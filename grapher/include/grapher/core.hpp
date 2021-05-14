@@ -257,6 +257,7 @@ public:
 
   // Compile-time
 
+  /// Returns a reference to a given measure for the element of index i.
   template <measure_kind_t M> auto &get_measure(std::size_t i) noexcept {
     if constexpr (M == execute_compiler_v) {
       return _execute_compiler_v[i];
@@ -311,6 +312,7 @@ public:
     }
   }
 
+  /// Returns a given measure for the element of index i.
   template <measure_kind_t M> auto get_measure(std::size_t i) const noexcept {
     if constexpr (M == execute_compiler_v) {
       return _execute_compiler_v[i];
@@ -367,6 +369,7 @@ public:
 
   // Runtime
 
+  /// Returns a reference to a given measure for the element of index i.
   measure_t &get_measure(std::size_t i, measure_kind_t m) noexcept {
     switch (m) {
     case execute_compiler_v:
@@ -406,6 +409,7 @@ public:
     };
   }
 
+  /// Returns a given measure for the element of index i.
   measure_t get_measure(std::size_t i, measure_kind_t m) const noexcept {
     switch (m) {
     case execute_compiler_v:
@@ -462,17 +466,25 @@ public:
   //============================================================================
   // Props
 
+  /// Returns the name of the benchmark.
   inline std::string const &name() const noexcept { return _name; }
+
+  /// Returns the number of different sizes of the benchmark.
   inline std::size_t size() const noexcept { return _size; }
+
+  /// Returns the number of iterations per size of the benchmark.
   inline std::size_t iterations() const noexcept { return _iterations; }
 
   //============================================================================
   // Content access
 
+  /// Loads an entry_t value for a given size index, for a given iteration.
   inline entry_t load(std::size_t size_id, std::size_t iteration) const {
     return _entries.load(size_id * _iterations + iteration);
   }
 
+
+  /// Stores an entry_t value at a given size index, for a given iteration.
   benchmark_t &store(entry_t const &e, std::size_t size_id,
                      std::size_t iteration) {
     _entries.store(e, size_id * _iterations + iteration);
