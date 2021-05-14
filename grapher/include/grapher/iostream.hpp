@@ -1,8 +1,9 @@
 #pragma once
 
-#include <ostream>
-
 #include <grapher/core.hpp>
+#include <grapher/containers.hpp>
+
+#include <ostream>
 
 namespace grapher {
 

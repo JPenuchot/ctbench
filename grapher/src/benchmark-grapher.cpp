@@ -8,6 +8,7 @@
 #include <grapher/display.hpp>
 #include <grapher/iostream.hpp>
 #include <grapher/parsing.hpp>
+#include <grapher/containers.hpp>
 
 int main(int argc, char const *argv[]) {
   constexpr int exec_id = 0;

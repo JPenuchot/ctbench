@@ -3,6 +3,7 @@
 #include <filesystem>
 
 #include <grapher/core.hpp>
+#include <grapher/containers.hpp>
 
 namespace grapher {
 

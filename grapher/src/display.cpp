@@ -1,4 +1,5 @@
-#include "grapher/core.hpp"
+#include <grapher/core.hpp>
+#include <grapher/containers.hpp>
 
 #include <algorithm>
 #include <cmath>
@@ -67,13 +68,8 @@ sciplot::Plot graph(benchmark_t const &bench) {
   plot.ylabel("Time (µs)");
 
   // For each size
-  for (std::size_t size_i = 0, size_i_end = bench.size(); size_i < size_i_end;
-       size_i++) {
-
-    // For each iteration
-    std::for_each(bench.begin(size_i), bench.end(size_i), [](entry_t const &e) {
-      // Iterating through iterations
-    });
+  for (std::size_t s = 0, s_end = bench.size(); s < s_end; s++) {
+    // ...
   }
 
   //  plot.drawWithVecs("filledcurves", x, ylow, yhigh)

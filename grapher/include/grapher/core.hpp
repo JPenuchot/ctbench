@@ -4,10 +4,8 @@
 /// Core data types for benchmark representation.
 
 #include <algorithm>
-#include <bits/c++config.h>
 #include <string>
 #include <string_view>
-#include <vector>
 
 namespace grapher {
 

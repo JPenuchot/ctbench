@@ -8,6 +8,7 @@
 #include <nlohmann/json.hpp>
 
 #include <grapher/core.hpp>
+#include <grapher/containers.hpp>
 
 namespace grapher {
 

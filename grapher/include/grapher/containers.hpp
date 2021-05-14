@@ -2,6 +2,8 @@
 
 #include <grapher/core.hpp>
 
+#include <vector>
+
 namespace grapher {
 
 /// SoA storage for a fixed amount of benchmark entries.

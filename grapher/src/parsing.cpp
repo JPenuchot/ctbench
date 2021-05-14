@@ -1,5 +1,5 @@
-#include "grapher/core.hpp"
-
+#include <grapher/containers.hpp>
+#include <grapher/core.hpp>
 #include <grapher/parsing.hpp>
 
 #include <algorithm>
