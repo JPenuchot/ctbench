@@ -1,9 +1,11 @@
 #pragma once
 
+/// \file
+/// Display/draw graphs.
+
 #include <filesystem>
 
 #include <grapher/core.hpp>
-#include <grapher/containers.hpp>
 
 namespace grapher {
 

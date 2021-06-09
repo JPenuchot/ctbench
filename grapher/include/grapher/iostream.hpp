@@ -1,7 +1,9 @@
 #pragma once
 
+/// \file
+/// All things related to data output to various formats.
+
 #include <grapher/core.hpp>
-#include <grapher/containers.hpp>
 
 #include <ostream>
 

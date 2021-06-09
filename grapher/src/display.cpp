@@ -1,112 +1,98 @@
 #include <grapher/core.hpp>
-#include <grapher/containers.hpp>
+#include <grapher/display.hpp>
 
 #include <algorithm>
-#include <cmath>
-#include <cstdlib>
-#include <iostream>
-#include <string>
+#include <iterator>
+#include <string_view>
 
-#include <grapher/display.hpp>
+#include <nlohmann/json.hpp>
+
 #include <sciplot/sciplot.hpp>
 
-// Feature list:
-// - execute_compiler
-// - frontend
-// - source
-// - instantiate_function
-// - parse_class
-// - instantiate_class
-// - backend
-// - opt_module
-// - parse_template
-// - opt_function
-// - run_pass
-// - per_module_passes
-// - perform_pending_instantiations
-// - run_loop_pass
-// - code_gen_passes
-// - code_gen_function
-// - per_function_passes
-
 namespace grapher {
-
-/// Returns plot and max measurement for plot normalization across a category
-sciplot::Plot graph(benchmark_t const &bench) {
-  namespace sp = sciplot;
-
-  // Select what to plot:
-  auto const measures = {
-      execute_compiler_v,
-      // frontend_v,
-      // backend_v,
-      // run_pass_v,
-      // source_v,
-      // instantiate_function_v,
-      // parse_class_v,
-      // instantiate_class_v,
-      // opt_module_v,
-      // parse_template_v,
-      // opt_function_v,
-      // per_module_passes_v,
-      // perform_pending_instantiations_v,
-      // run_loop_pass_v,
-      // code_gen_passes_v,
-      // code_gen_function_v,
-      // per_function_passes_v,
-  };
-
-  sp::Plot plot;
-
-  // Adjust if graph doesn't fit or looks weird
-  constexpr std::size_t plot_w = 1000;
-  constexpr std::size_t plot_h = 500;
-
-  plot.legend().atOutsideRightTop().title("Time scopes:");
-  plot.size(plot_w, plot_h);
-  plot.xlabel("Benchmark Size Factor");
-  plot.ylabel("Time (µs)");
-
-  // For each size
-  for (std::size_t s = 0, s_end = bench.size(); s < s_end; s++) {
-    // ...
+nlohmann::json::const_iterator find_feature(nlohmann::json const &j,
+                                            std::string_view const &feature) {
+  if (auto tev_it = j.find("traceEvents"); tev_it != j.end()) {
+    for (auto const &e : *tev_it) {
+      if (auto ename_it = e.find("name");
+          ename_it != e.end() && e["name"] == feature) {
+        return tev_it;
+      }
+    }
   }
 
-  //  plot.drawWithVecs("filledcurves", x, ylow, yhigh)
-  //      .label(std::string(get_measure_name(measure_kind)));
-
-  return plot;
+  return j.end();
 }
 
-void graph(category_t const &cat, std::filesystem::path const &p) {
-  namespace sp = sciplot;
+void graph(category_t const &cat, std::filesystem::path const &p,
+           std::vector<std::string_view> const &feature_set) {
 
-  /*
-  std::vector<std::tuple<sp::Plot, std::string>> plots;
-  measure_t category_max = 0.;
+  std::vector<sciplot::Plot> plots;
 
-  // This will need a remake...
+  double max_val = 0.;
 
-  for (benchmark_t const &bench : cat) {
-    auto const &[name, benchmarks] = bench;
-    if (benchmarks.empty()) {
-      std::cout << "Warning: category " << name << " is empty.\n";
-      continue;
+  /// Draws a plot for a given benchmark
+  auto draw_plot = [&](benchmark_t const &bench) -> sciplot::Plot {
+    namespace sp = sciplot;
+    namespace nm = nlohmann;
+
+    sp::Plot plot;
+
+    auto const &[name, entries] = bench;
+
+    // Adjust if graph doesn't fit or looks weird
+    constexpr std::size_t plot_w = 1000;
+    constexpr std::size_t plot_h = 500;
+
+    plot.legend().atOutsideRightTop().title("Time scopes:");
+    plot.size(plot_w, plot_h);
+    plot.xlabel("Benchmark Size Factor");
+    plot.ylabel("Time (µs)");
+
+    std::vector<double> x;
+    std::transform(entries.begin(), entries.end(), std::back_inserter(x),
+                   [](entry_t const &e) -> double { return e.size; });
+
+    std::vector<double> y_low(x.size(), 0.);
+    std::vector<double> y_high(x.size());
+
+    for (auto const &feature : feature_set) {
+      // Storing previous value as we iterate
+      double prev = 0.;
+
+      for (std::size_t i = 0; i < entries.size(); i++) {
+        auto const &[size, data] = entries[i];
+        nm::json::const_iterator j_it = find_feature(data, feature);
+        double dur = prev;
+
+        // Ensuring the event exists and is valid
+        if (j_it != data.end() || j_it->find("duration") != j_it->end()) {
+          // Setting dur & updating previous value
+          dur = (*j_it)["duration"];
+          prev = dur;
+        }
+
+        // Doing the trace thing...
+        y_high[i] = y_low[i] + dur;
+      }
+
+      // Do the thing
+      plot.drawCurvesFilled(x, y_low, y_high).label(std::string(feature));
+
+      // Swapping
+      std::swap(y_low, y_high);
     }
 
-    auto [plot, plot_max] = graph(bench);
+    return plot;
+  };
 
-    category_max = std::max(category_max, plot_max);
+  std::transform(cat.begin(), cat.end(), std::back_inserter(plots), draw_plot);
 
-    plots.push_back({plot, name});
+  // Normalize & save
+  for (auto &p : plots) {
+    p.yrange(0., max_val);
+    // p.save(const std::string &filename);
   }
-
-  for (auto &[plot, name] : plots) {
-    plot.yrange(0., double(category_max));
-    std::filesystem::create_directories(p);
-    plot.save(p / (name + ".svg"));
-  }
-  */
 }
 
 } // namespace grapher
