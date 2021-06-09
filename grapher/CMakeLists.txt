@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 3.18)
+cmake_minimum_required(VERSION 3.20)
 project(grapher)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(CMAKE_CXX_STANDARD 20)
 
 file(GLOB_RECURSE GRAPHER_SOURCES "src/*.cpp")
 add_executable(grapher ${GRAPHER_SOURCES} ${IMPLOT_SOURCES})
