@@ -10,6 +10,7 @@
 #include <sciplot/sciplot.hpp>
 
 namespace grapher {
+
 nlohmann::json::const_iterator find_feature(nlohmann::json const &j,
                                             std::string_view const &feature) {
   if (auto tev_it = j.find("traceEvents"); tev_it != j.end()) {
@@ -24,14 +25,18 @@ nlohmann::json::const_iterator find_feature(nlohmann::json const &j,
   return j.end();
 }
 
-void graph(category_t const &cat, std::filesystem::path const &p,
-           std::vector<std::string_view> const &feature_set) {
+/// Given a category, draws all the features as a stacked filled curve graph
+/// for each benchmark at the given path
+void graph(category_t const &cat,
+           std::vector<std::string_view> const &feature_set,
+           std::filesystem::path const &dest) {
 
   std::vector<sciplot::Plot> plots;
 
+  // Saving max value
   double max_val = 0.;
 
-  /// Draws a plot for a given benchmark
+  /// Draws a stacked curve graph for a given benchmark
   auto draw_plot = [&](benchmark_t const &bench) -> sciplot::Plot {
     namespace sp = sciplot;
     namespace nm = nlohmann;
@@ -86,12 +91,13 @@ void graph(category_t const &cat, std::filesystem::path const &p,
     return plot;
   };
 
+  // Drwaing...
   std::transform(cat.begin(), cat.end(), std::back_inserter(plots), draw_plot);
 
   // Normalize & save
-  for (auto &p : plots) {
-    p.yrange(0., max_val);
-    // p.save(const std::string &filename);
+  for (std::size_t i = 0; i < cat.size(); i++) {
+    plots[i].yrange(0., max_val);
+    plots[i].save(dest / (cat[i].name + ".svg"));
   }
 }
 
