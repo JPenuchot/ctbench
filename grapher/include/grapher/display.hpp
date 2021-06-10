@@ -11,6 +11,8 @@ namespace grapher {
 
 /// Generates graphs for a collection of categories
 /// and outputs them the given directory.
-void graph(category_t const &, std::filesystem::path const &p);
+void graph(category_t const &cat,
+           std::vector<std::string_view> const &feature_set,
+           std::filesystem::path const &dest);
 
 } // namespace grapher
