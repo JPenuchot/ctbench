@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iterator>
+#include <nlohmann/detail/json_pointer.hpp>
 #include <string_view>
 
 #include <nlohmann/json.hpp>
@@ -79,7 +80,7 @@ void stacked_graph(category_t const &cat,
         // Ensuring the event exists and is valid
         if (j_it != data.end() || j_it->find("duration") != j_it->end()) {
           // Setting dur & updating previous value
-          dur = (*j_it)["duration"];
+          dur = (*j_it)["dur"];
           prev = dur;
         }
 
@@ -109,9 +110,53 @@ void stacked_graph(category_t const &cat,
 
 void comparative_graph(category_t const &cat,
                        std::vector<nlohmann::json> const &matcher_set,
+                       nlohmann::json::pointer const &feature_pointer,
                        std::filesystem::path const &dest) {
-  // TODO
-  return;
+  namespace sp = sciplot;
+  for (auto const &matcher : matcher_set) {
+    sp::Plot plot;
+
+    // Adjust if graph doesn't fit or looks weird
+    constexpr std::size_t plot_w = 1000;
+    constexpr std::size_t plot_h = 500;
+
+    plot.legend().atOutsideRightTop().title("Benchmark:");
+    plot.size(plot_w, plot_h);
+    plot.xlabel("Benchmark Size Factor");
+    plot.ylabel("Time (µs)");
+
+    for (auto const &bench : cat) {
+      std::vector<double> x;
+      std::vector<double> y;
+
+      for (auto const &[size, data] : bench.entries) {
+        auto const it = find_matching(data.begin(), data.end(), matcher);
+        // Data integrity checks
+
+        if (it == data.end()) {
+          // TODO: Add warning
+          continue;
+        }
+
+        if (!it->contains(feature_pointer)) {
+          // TODO: Add warning
+          continue;
+        }
+
+        if (!(*it)[feature_pointer].is_number()) {
+          // TODO: Add warning
+          continue;
+        }
+
+        x.push_back(size);
+        y.push_back((*it)[feature_pointer]);
+      }
+
+      plot.drawCurve(x, y).label(bench.name);
+    }
+
+    // Saveeee
+  }
 }
 
 } // namespace grapher
