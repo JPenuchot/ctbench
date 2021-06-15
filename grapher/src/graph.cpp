@@ -1,6 +1,3 @@
-#include <grapher/core.hpp>
-#include <grapher/display.hpp>
-
 #include <algorithm>
 #include <iterator>
 #include <string_view>
@@ -9,27 +6,35 @@
 
 #include <sciplot/sciplot.hpp>
 
+#include <grapher/core.hpp>
+#include <grapher/graph.hpp>
+
 namespace grapher {
 
-nlohmann::json::const_iterator find_feature(nlohmann::json const &j,
-                                            std::string_view const &feature) {
-  if (auto tev_it = j.find("traceEvents"); tev_it != j.end()) {
-    for (auto const &e : *tev_it) {
-      if (auto ename_it = e.find("name");
-          ename_it != e.end() && e["name"] == feature) {
-        return tev_it;
+nlohmann::json::const_iterator
+find_matching(nlohmann::json::const_iterator begin,
+              nlohmann::json::const_iterator end,
+              nlohmann::json const &matcher) {
+  auto const flat_matcher = matcher.flatten();
+
+  return std::find_if(begin, end, [&](nlohmann::json const &j) -> bool {
+    auto const flat_j = j.flatten();
+
+    for (auto const &i : flat_matcher.items()) {
+      if (auto it = flat_j.find(i.key());
+          it == flat_j.end() || *it != i.value()) {
+        return false;
       }
     }
-  }
-
-  return j.end();
+    return true;
+  });
 }
 
 /// Given a category, draws all the features as a stacked filled curve graph
 /// for each benchmark at the given path
-void graph(category_t const &cat,
-           std::vector<std::string_view> const &feature_set,
-           std::filesystem::path const &dest) {
+void stacked_graph(category_t const &cat,
+                   std::vector<nlohmann::json> const &matcher_set,
+                   std::filesystem::path const &dest) {
 
   std::vector<sciplot::Plot> plots;
 
@@ -61,13 +66,14 @@ void graph(category_t const &cat,
     std::vector<double> y_low(x.size(), 0.);
     std::vector<double> y_high(x.size());
 
-    for (auto const &feature : feature_set) {
+    for (auto const &matcher : matcher_set) {
       // Storing previous value as we iterate
       double prev = 0.;
 
       for (std::size_t i = 0; i < entries.size(); i++) {
         auto const &[size, data] = entries[i];
-        nm::json::const_iterator j_it = find_feature(data, feature);
+        nm::json::const_iterator j_it =
+            find_matching(data.begin(), data.end(), matcher);
         double dur = prev;
 
         // Ensuring the event exists and is valid
@@ -82,7 +88,7 @@ void graph(category_t const &cat,
       }
 
       // Do the thing
-      plot.drawCurvesFilled(x, y_low, y_high).label(std::string(feature));
+      plot.drawCurvesFilled(x, y_low, y_high).label(std::string(matcher));
 
       // Swapping
       std::swap(y_low, y_high);
@@ -99,6 +105,13 @@ void graph(category_t const &cat,
     plots[i].yrange(0., max_val);
     plots[i].save(dest / (cat[i].name + ".svg"));
   }
+}
+
+void comparative_graph(category_t const &cat,
+                       std::vector<nlohmann::json> const &matcher_set,
+                       std::filesystem::path const &dest) {
+  // TODO
+  return;
 }
 
 } // namespace grapher

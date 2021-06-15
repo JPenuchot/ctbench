@@ -1,15 +1,9 @@
-#include <cctype>
-#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <map>
-#include <sstream>
-#include <tuple>
 
 #include <grapher/core.hpp>
-#include <grapher/display.hpp>
-#include <grapher/iostream.hpp>
+#include <grapher/graph.hpp>
 
 int main(int argc, char const *argv[]) {
   namespace fs = std::filesystem;
@@ -67,7 +61,7 @@ int main(int argc, char const *argv[]) {
   }
 
   // Output
-  grapher::graph(category, { "Total ParseClass" }, argv[out_id]);
+  grapher::stacked_graph(category, {""_json}, argv[out_id]);
 
   return 0;
 }
