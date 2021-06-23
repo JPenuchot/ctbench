@@ -15,10 +15,10 @@ namespace grapher {
 using measure_t = unsigned;
 
 /// Represents a benchmark entry, which is caracterized by a size and the
-/// benchmark results stored in JSON format.
+/// benchmark results as JSON content.
 struct entry_t {
   unsigned size;
-  nlohmann::json data;
+  std::vector<nlohmann::json> data;
 };
 
 /// Represents a benchmark, which is a series of entries.
