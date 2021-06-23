@@ -4,7 +4,7 @@ project(ctbench)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 
-option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." ON)
+option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 
 if(CTBENCH_ENABLE_TESTING)
   enable_testing()
