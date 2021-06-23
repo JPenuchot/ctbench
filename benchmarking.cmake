@@ -29,11 +29,11 @@ function(ctbench_add_benchmark name source begin end step iterations)
   foreach(iteration RANGE ${iterations})
     foreach(size RANGE ${begin} ${end} ${step})
       # Subtargets aren't meant to be compiled by end-users
-      set(subtarget_name "_${name}-it_${iteration}-size_${size}")
+      set(subtarget_name "_${name}-size_${size}-it_${iteration}")
 
       _ctbench_internal_add_compile_benchmark(
         ${subtarget_name}
-        "${name}/${iteration}/${size}.json"
+        "${name}/${size}/${iteration}.json"
         "${source}"
         "${size}")
 
