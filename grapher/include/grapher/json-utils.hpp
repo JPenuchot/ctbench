@@ -14,7 +14,7 @@ find_matching(nlohmann::json::const_iterator begin,
               nlohmann::json const &matcher);
 
 /// Averages
-std::optional<double> get_avg(std::vector<nlohmann::json> const &data,
+std::optional<double> get_average(std::vector<nlohmann::json> const &data,
                               nlohmann::json const &matcher,
                               nlohmann::json::json_pointer value_jptr);
 
