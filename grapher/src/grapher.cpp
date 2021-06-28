@@ -10,18 +10,21 @@
 #include <grapher/graph.hpp>
 
 llvm::cl::opt<llvm::StringRef>
-    output_option(llvm::cl::Positional, llvm::cl::Required,
-                  llvm::cl::value_desc("Output folder."));
+    output_folder_option(llvm::cl::Positional, llvm::cl::Required,
+                         llvm::cl::desc("<Output folder>"));
 
 llvm::cl::list<llvm::StringRef>
-    benchmark_path_list(llvm::cl::Positional, llvm::cl::Required,
-                        llvm::cl::value_desc("Benchmark folder list."));
+    benchmark_path_list(llvm::cl::Positional, llvm::cl::OneOrMore,
+                        llvm::cl::desc("<Input folders>"));
+
+llvm::cl::opt<llvm::StringRef>
+    config("c", "config", llvm::cl::desc("JSON configuration file."));
 
 int main(int argc, char const *argv[]) {
   namespace fs = std::filesystem;
 
   // Thanks LLVM
-  llvm::cl::ParseCommandLineOptions(argc, argv);
+  llvm::cl::ParseCommandLineOptions(argc, argv, "Grapher - Stacked Curves\n");
 
   // Filling in category
   grapher::category_t category;
