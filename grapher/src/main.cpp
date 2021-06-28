@@ -7,7 +7,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 #include <grapher/core.hpp>
-#include <grapher/graph.hpp>
+#include <grapher/plotters/plotters.hpp>
 
 llvm::cl::opt<llvm::StringRef>
     output_folder_option(llvm::cl::Positional, llvm::cl::Required,
