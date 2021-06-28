@@ -12,6 +12,8 @@ find_package(LLVM REQUIRED CONFIG)
 llvm_map_components_to_libnames(llvm_libs support)
 include_directories(${LLVM_INCLUDE_DIRS})
 link_libraries(${llvm_libs})
+# LLVM libraries are compiled without RTTI
+add_compile_options(-fno-rtti)
 
 # External libraries
 include(cmake/external_libraries.cmake)

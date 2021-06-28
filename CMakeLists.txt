@@ -3,6 +3,7 @@ project(ctbench)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
+link_libraries(stdc++fs)
 
 option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 
