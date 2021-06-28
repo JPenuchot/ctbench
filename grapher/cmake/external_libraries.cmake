@@ -12,7 +12,8 @@ set(JSON_CI OFF)
 
 FetchContent_Declare(json_content
   GIT_REPOSITORY https://github.com/nlohmann/json.git
-  GIT_TAG v3.9.1)
+  GIT_TAG v3.9.1
+  GIT_SHALLOW TRUE)
 
 FetchContent_MakeAvailable(json_content)
 
@@ -23,7 +24,8 @@ link_libraries(nlohmann_json::nlohmann_json)
 
 FetchContent_Declare(sciplot_content
   GIT_REPOSITORY https://github.com/sciplot/sciplot.git
-  GIT_TAG master)
+  GIT_TAG master
+  GIT_SHALLOW TRUE)
 
 FetchContent_GetProperties(sciplot_content)
 if(NOT sciplot_content_POPULATED)
