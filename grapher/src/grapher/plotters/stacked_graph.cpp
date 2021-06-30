@@ -1,20 +1,27 @@
 #include <algorithm>
 
+#include <nlohmann/json_fwd.hpp>
 #include <sciplot/sciplot.hpp>
 
-#include <grapher/plot-utils.hpp>
 #include <grapher/json-utils.hpp>
+#include <grapher/plot-utils.hpp>
 
 #include <grapher/plotters/stacked_graph.hpp>
 
 namespace grapher {
 
-void stacked_graph_t::operator()(
-    category_t const &cat, std::filesystem::path const &dest,
-    std::vector<nlohmann::json> const &matcher_set,
-    nlohmann::json::json_pointer feature_value_jptr,
-    nlohmann::json::json_pointer feature_name_jptr,
-    graph_config_t const &config) {
+void stacked_graph_t::plot(category_t const &cat,
+                           std::filesystem::path const &dest,
+                           nlohmann::json const &config) {
+  // TODO: Error management
+  std::vector<nlohmann::json> matcher_set = config["matchers"];
+
+  nlohmann::json::json_pointer feature_value_jptr(
+      config.value("value_json_pointer", "/dur"));
+
+  nlohmann::json::json_pointer feature_name_jptr(
+      config.value("name_json_pointer", "/name"));
+
   std::vector<sciplot::Plot> plots;
 
   // Saving max value
@@ -72,5 +79,7 @@ void stacked_graph_t::operator()(
     plots[i].save(dest / (cat[i].name + ".svg"));
   }
 }
+
+std::string_view stacked_graph_t::help() const { return ""; }
 
 } // namespace grapher
