@@ -7,7 +7,7 @@
 
 /// Namespace for CLI-related functions. Call parse_cli_options before using any
 /// other function from this namespace.
-namespace grapher::cli {
+namespace grapher::main_cli {
 
 /// Call this once to parse options and make other functions in grapher::cli
 /// available.

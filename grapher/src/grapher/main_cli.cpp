@@ -4,11 +4,11 @@
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/raw_ostream.h>
 
-#include <grapher/cli.hpp>
+#include <grapher/main_cli.hpp>
 #include <grapher/core.hpp>
 #include <grapher/plotters/plotters.hpp>
 
-namespace grapher::cli {
+namespace grapher::main_cli {
 
 // llvm::cl docs: https://llvm.org/docs/CommandLine.html
 
