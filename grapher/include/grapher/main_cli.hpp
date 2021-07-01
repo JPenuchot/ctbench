@@ -4,6 +4,7 @@
 
 #include <grapher/core.hpp>
 #include <grapher/plotters/plotter_i.hpp>
+#include <string_view>
 
 /// Namespace for CLI-related functions. Call parse_cli_options before using any
 /// other function from this namespace.
@@ -25,4 +26,7 @@ nlohmann::json get_config();
 /// Requires parse_cli_options to be called before use.
 std::unique_ptr<grapher::plotter_i> select_plotter();
 
-} // namespace grapher::cli
+/// Returns the destination file for plotting.
+std::string_view get_destination();
+
+} // namespace grapher::main_cli

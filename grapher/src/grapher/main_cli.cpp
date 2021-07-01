@@ -4,8 +4,8 @@
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/raw_ostream.h>
 
-#include <grapher/main_cli.hpp>
 #include <grapher/core.hpp>
+#include <grapher/main_cli.hpp>
 #include <grapher/plotters/plotters.hpp>
 
 namespace grapher::main_cli {
@@ -105,7 +105,7 @@ category_t build_category() {
   return category;
 }
 
-std::unique_ptr<plotter_i> select_plotter() {
+plotter_t select_plotter() {
   if (command_opt.empty()) {
     return std::make_unique<stacked_graph_t>();
   }
@@ -138,4 +138,6 @@ nlohmann::json get_config() {
   return {};
 }
 
-} // namespace grapher::cli
+std::string_view get_destination() { return output_folder_opt.getValue(); }
+
+} // namespace grapher::main_cli
