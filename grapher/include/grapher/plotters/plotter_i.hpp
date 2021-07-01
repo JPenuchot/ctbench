@@ -1,6 +1,7 @@
 #pragma once
 
 #include <filesystem>
+#include <memory>
 #include <string_view>
 
 #include <grapher/core.hpp>
@@ -16,5 +17,7 @@ struct plotter_i {
 
   virtual ~plotter_i() = default;
 };
+
+using plotter_t = std::unique_ptr<plotter_i>;
 
 } // namespace grapher
