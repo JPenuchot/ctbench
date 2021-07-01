@@ -16,8 +16,6 @@ FetchContent_Declare(json_content
 
 FetchContent_MakeAvailable(json_content)
 
-link_libraries(nlohmann_json::nlohmann_json)
-
 # ==============================================================================
 # Sciplot
 
@@ -29,5 +27,3 @@ FetchContent_GetProperties(sciplot_content)
 if(NOT sciplot_content_POPULATED)
   FetchContent_Populate(sciplot_content)
 endif()
-
-include_directories(${sciplot_content_SOURCE_DIR})
