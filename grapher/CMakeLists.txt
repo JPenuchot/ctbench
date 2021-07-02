@@ -11,12 +11,15 @@ include(cmake/external_libraries.cmake)
 find_package(LLVM REQUIRED CONFIG)
 llvm_map_components_to_libnames(llvm_libs core support)
 
-# Executable declaration
-file(GLOB_RECURSE GRAPHER_SOURCES src/*.cpp)
-add_executable(grapher ${GRAPHER_SOURCES})
-
 # Linking
-target_include_directories(grapher PRIVATE "include/")
-target_link_libraries(grapher PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(grapher PRIVATE ${llvm_libs})
-target_include_directories(grapher PRIVATE ${sciplot_content_SOURCE_DIR})
+include_directories("include/")
+link_libraries(nlohmann_json::nlohmann_json)
+link_libraries(${llvm_libs})
+include_directories(${sciplot_content_SOURCE_DIR})
+
+# Executable declarations
+
+file(GLOB_RECURSE GRAPHER_SOURCES src/grapher/*.cpp)
+
+add_executable(grapher src/grapher.cpp ${GRAPHER_SOURCES})
+add_executable(grapher-utils src/grapher-utils.cpp ${GRAPHER_SOURCES})
