@@ -12,7 +12,7 @@ namespace grapher {
 
 void stacked_graph_t::plot(category_t const &cat,
                            std::filesystem::path const &dest,
-                           nlohmann::json const &config) {
+                           nlohmann::json const &config) const {
   // TODO: Error management
   std::vector<nlohmann::json> matcher_set = config["matchers"];
 
@@ -81,5 +81,9 @@ void stacked_graph_t::plot(category_t const &cat,
 }
 
 std::string_view stacked_graph_t::help() const { return ""; }
+
+nlohmann::json stacked_graph_t::get_default_config() const {
+  return grapher::get_default_config();
+}
 
 } // namespace grapher

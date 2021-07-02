@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <ios>
 #include <nlohmann/detail/json_pointer.hpp>
 #include <sciplot/sciplot.hpp>
 
@@ -12,7 +13,7 @@ namespace grapher {
 
 void comparative_graph_t::plot(category_t const &cat,
                                std::filesystem::path const &dest,
-                               nlohmann::json const &config) {
+                               nlohmann::json const &config) const {
 
   // TODO: Error management
   std::vector<nlohmann::json> matcher_set = config["matchers"];
@@ -63,5 +64,9 @@ void comparative_graph_t::plot(category_t const &cat,
 }
 
 std::string_view comparative_graph_t::help() const { return ""; }
+
+nlohmann::json comparative_graph_t::get_default_config() const {
+  return grapher::get_default_config();
+}
 
 } // namespace grapher
