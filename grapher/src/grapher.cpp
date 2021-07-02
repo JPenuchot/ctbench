@@ -1,3 +1,4 @@
+#include <llvm/Support/CommandLine.h>
 #include <string_view>
 
 #include <nlohmann/json.hpp>
