@@ -8,7 +8,7 @@
 #include <grapher/main_cli.hpp>
 #include <grapher/plotters/plotters.hpp>
 
-namespace grapher::main_cli {
+namespace cli {
 
 // llvm::cl docs: https://llvm.org/docs/CommandLine.html
 
@@ -17,8 +17,8 @@ namespace grapher::main_cli {
 
 namespace lc = llvm::cl;
 
-lc::opt<llvm::StringRef> command_opt(lc::Positional, lc::Required,
-                                     lc::desc("<Command>"));
+lc::opt<llvm::StringRef> plotter_opt(lc::Positional, lc::Required,
+                                     lc::desc("<Plotter>"));
 
 lc::opt<llvm::StringRef> filter_path_opt(lc::Positional, lc::Required,
                                          lc::desc("<JSON filter path>"));
@@ -42,11 +42,11 @@ bool parse_cli_options(int argc, char const *argv[]) {
   return lc::ParseCommandLineOptions(argc, argv, "Grapher\n");
 }
 
-category_t build_category() {
+grapher::category_t build_category() {
   namespace fs = std::filesystem;
 
   // Filling in category
-  category_t category;
+  grapher::category_t category;
   for (auto const &elmt : benchmark_path_list) {
     fs::path bench_path(elmt.data());
 
@@ -55,14 +55,14 @@ category_t build_category() {
       continue;
     }
 
-    benchmark_t bench;
+    grapher::benchmark_t bench;
 
     // Reading benchmark name from benchmark directory path
     bench.name = bench_path.filename();
 
     // Adding entries
     for (auto const &entry_dir : fs::directory_iterator(bench_path)) {
-      entry_t entry;
+      grapher::entry_t entry;
 
       // Entry directory name check and reading to entry size
       {
@@ -105,21 +105,21 @@ category_t build_category() {
   return category;
 }
 
-plotter_t select_plotter() {
-  if (command_opt.empty()) {
-    return std::make_unique<stacked_graph_t>();
+grapher::plotter_t select_plotter() {
+  if (plotter_opt.empty()) {
+    return std::make_unique<grapher::stacked_graph_t>();
   }
 
-  if (command_opt.getValue() == "stacked") {
-    return std::make_unique<stacked_graph_t>();
+  if (plotter_opt.getValue() == "stacked") {
+    return std::make_unique<grapher::stacked_graph_t>();
   }
 
-  if (command_opt.getValue() == "compare") {
-    return std::make_unique<comparative_graph_t>();
+  if (plotter_opt.getValue() == "compare") {
+    return std::make_unique<grapher::comparative_graph_t>();
   }
 
   // TODO: Add warning
-  return std::make_unique<comparative_graph_t>();
+  return std::make_unique<grapher::stacked_graph_t>();
 }
 
 nlohmann::json get_config() {
@@ -140,4 +140,4 @@ nlohmann::json get_config() {
 
 std::string_view get_destination() { return output_folder_opt.getValue(); }
 
-} // namespace grapher::main_cli
+} // namespace cli

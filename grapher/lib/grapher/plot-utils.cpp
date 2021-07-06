@@ -1,5 +1,7 @@
 #include <grapher/plot-utils.hpp>
 
+#include <grapher/plotters/plotter_i.hpp>
+
 namespace grapher {
 
 /// Default config file for plots

@@ -12,14 +12,19 @@ find_package(LLVM REQUIRED CONFIG)
 llvm_map_components_to_libnames(llvm_libs core support)
 
 # Linking
-include_directories("include/")
-link_libraries(nlohmann_json::nlohmann_json)
-link_libraries(${llvm_libs})
-include_directories(${sciplot_content_SOURCE_DIR})
 
 # Executable declarations
 
-file(GLOB_RECURSE GRAPHER_SOURCES src/grapher/*.cpp)
+file(GLOB_RECURSE GRAPHER_SOURCES lib/*.cpp)
 
-add_executable(grapher src/grapher.cpp ${GRAPHER_SOURCES})
-add_executable(grapher-utils src/grapher-utils.cpp ${GRAPHER_SOURCES})
+# Creating the grapher library
+add_library(grapher STATIC ${GRAPHER_SOURCES})
+
+target_include_directories(grapher PUBLIC include)
+target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(grapher PUBLIC ${llvm_libs})
+target_include_directories(grapher PUBLIC ${sciplot_content_SOURCE_DIR})
+
+# Adding executable subdirectories
+add_subdirectory(grapher-plot)
+add_subdirectory(grapher-utils)
