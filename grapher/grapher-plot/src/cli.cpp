@@ -5,7 +5,6 @@
 #include <llvm/Support/raw_ostream.h>
 
 #include <grapher/core.hpp>
-#include <grapher/main_cli.hpp>
 #include <grapher/plotters/plotters.hpp>
 
 namespace cli {
