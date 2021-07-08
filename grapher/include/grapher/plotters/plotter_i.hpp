@@ -12,7 +12,7 @@ namespace grapher {
 struct plotter_i {
   virtual void plot(category_t const &cat, std::filesystem::path const &dest,
                     nlohmann::json const &config) const = 0;
-  virtual std::string_view help() const = 0;
+  virtual std::string_view get_help() const = 0;
   virtual nlohmann::json get_default_config() const = 0;
 
   virtual ~plotter_i() = default;
