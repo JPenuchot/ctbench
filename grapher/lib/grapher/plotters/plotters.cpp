@@ -1,5 +1,4 @@
-#include "grapher/plotters/compare.hpp"
-#include "grapher/plotters/stacked_graph.hpp"
+#include <grapher/plotters/plotter_i.hpp>
 #include <grapher/plotters/plotters.hpp>
 
 namespace grapher {

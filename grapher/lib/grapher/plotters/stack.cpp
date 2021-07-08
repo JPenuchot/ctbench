@@ -6,7 +6,7 @@
 #include <grapher/json-utils.hpp>
 #include <grapher/plot-utils.hpp>
 
-#include <grapher/plotters/stacked_graph.hpp>
+#include <grapher/plotters/stack.hpp>
 
 namespace grapher {
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <grapher/plotters/compare.hpp>
-#include <grapher/plotters/stacked_graph.hpp>
+#include <grapher/plotters/stack.hpp>
 
 #include <llvm/ADT/StringMap.h>
 #include <llvm/ADT/StringRef.h>
