@@ -101,19 +101,19 @@ grapher::category_t build_category() {
 
 grapher::plotter_t select_plotter() {
   if (plotter_opt.empty()) {
-    return std::make_unique<grapher::stacked_graph_t>();
+    return std::make_unique<grapher::plotter_stack_t>();
   }
 
   if (plotter_opt.getValue() == "stacked") {
-    return std::make_unique<grapher::stacked_graph_t>();
+    return std::make_unique<grapher::plotter_stack_t>();
   }
 
   if (plotter_opt.getValue() == "compare") {
-    return std::make_unique<grapher::comparative_graph_t>();
+    return std::make_unique<grapher::plotter_compare_t>();
   }
 
   // TODO: Add warning
-  return std::make_unique<grapher::stacked_graph_t>();
+  return std::make_unique<grapher::plotter_stack_t>();
 }
 
 nlohmann::json get_config() {

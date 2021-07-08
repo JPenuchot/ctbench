@@ -10,7 +10,7 @@
 
 namespace grapher {
 
-void stacked_graph_t::plot(category_t const &cat,
+void plotter_stack_t::plot(category_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
   // TODO: Error management
@@ -80,9 +80,9 @@ void stacked_graph_t::plot(category_t const &cat,
   }
 }
 
-std::string_view stacked_graph_t::get_help() const { return ""; }
+std::string_view plotter_stack_t::get_help() const { return ""; }
 
-nlohmann::json stacked_graph_t::get_default_config() const {
+nlohmann::json plotter_stack_t::get_default_config() const {
   return grapher::get_default_config();
 }
 
