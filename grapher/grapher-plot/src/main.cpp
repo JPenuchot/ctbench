@@ -20,7 +20,7 @@ int main(int argc, char const *argv[]) {
   nlohmann::json config = cli::get_config();
 
   // Set destiny
-  std::string_view dest = cli::get_destination();
+  std::string dest = cli::get_destination();
 
   // ???
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <string_view>
+#include <string>
 
 #include <nlohmann/json.hpp>
 
@@ -11,7 +11,7 @@
 /// other function from this namespace.
 namespace cli {
 
-/// Call this once to parse options and make other functions in grapher::cli
+/// Call this once to parse options and make other functions in cli
 /// available.
 bool parse_cli_options(int argc, char const *argv[]);
 
@@ -28,6 +28,6 @@ nlohmann::json get_config();
 std::unique_ptr<grapher::plotter_i> select_plotter();
 
 /// Returns the destination file for plotting.
-std::string_view get_destination();
+std::string get_destination();
 
 } // namespace cli

@@ -1,5 +1,6 @@
 #include <filesystem>
 #include <fstream>
+#include <string>
 
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/raw_ostream.h>
@@ -16,23 +17,17 @@ namespace cli {
 
 namespace lc = llvm::cl;
 
-lc::opt<llvm::StringRef> plotter_opt(lc::Positional, lc::Required,
-                                     lc::desc("<Plotter>"));
+lc::opt<std::string> plotter_opt(lc::Positional, lc::Required,
+                                 lc::desc("<plotter>"));
 
-lc::opt<llvm::StringRef> filter_path_opt(lc::Positional, lc::Required,
-                                         lc::desc("<JSON filter path>"));
+lc::opt<std::string> output_folder_opt(lc::Positional, lc::Required,
+                                       lc::desc("<output folder>"));
 
-lc::opt<llvm::StringRef> json_pointer_opt(lc::Positional, lc::Required,
-                                          lc::desc("<JSON pointer>"));
+lc::list<std::string> benchmark_path_list(lc::Positional, lc::OneOrMore,
+                                          lc::desc("<input folders>"));
 
-lc::opt<llvm::StringRef> output_folder_opt(lc::Positional, lc::Required,
-                                           lc::desc("<Output folder>"));
-
-lc::list<llvm::StringRef> benchmark_path_list(lc::Positional, lc::OneOrMore,
-                                              lc::desc("<Input folders>"));
-
-lc::opt<llvm::StringRef> config_opt("c", "config",
-                                    lc::desc("JSON configuration file."));
+lc::opt<std::string> config_opt("c", "config",
+                                lc::desc("JSON configuration file."));
 
 //==============================================================================
 // DEFINITIONS
@@ -137,6 +132,6 @@ nlohmann::json get_config() {
   return {};
 }
 
-std::string_view get_destination() { return output_folder_opt.getValue(); }
+std::string get_destination() { return output_folder_opt.getValue(); }
 
 } // namespace cli
