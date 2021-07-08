@@ -17,15 +17,6 @@ plotter_type_t string_to_plotter_type(llvm::StringRef const &name) {
   return compare_v;
 }
 
-plotter_t plotter_type_to_plotter(plotter_type_t type) {
-  switch (type) {
-  case compare_v:
-    return std::make_unique<grapher::comparative_graph_t>();
-  case stack_v:
-    return std::make_unique<grapher::stacked_graph_t>();
-  }
-}
-
 plotter_t string_to_plotter(llvm::StringRef const &name) {
   return plotter_type_to_plotter(string_to_plotter_type(name));
 }
