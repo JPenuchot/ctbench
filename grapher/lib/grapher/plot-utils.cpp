@@ -1,6 +1,5 @@
-#include <grapher/plot-utils.hpp>
-
-#include <grapher/plotters/plotter_i.hpp>
+#include "grapher/plot-utils.hpp"
+#include "grapher/plotters/plotter_i.hpp"
 
 namespace grapher {
 

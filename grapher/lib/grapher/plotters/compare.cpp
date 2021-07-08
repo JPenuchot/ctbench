@@ -4,16 +4,15 @@
 #include <nlohmann/detail/json_pointer.hpp>
 #include <sciplot/sciplot.hpp>
 
-#include <grapher/json-utils.hpp>
-#include <grapher/plot-utils.hpp>
-
-#include <grapher/plotters/compare.hpp>
+#include "grapher/json-utils.hpp"
+#include "grapher/plot-utils.hpp"
+#include "grapher/plotters/compare.hpp"
 
 namespace grapher {
 
 void plotter_compare_t::plot(category_t const &cat,
-                               std::filesystem::path const &dest,
-                               nlohmann::json const &config) const {
+                             std::filesystem::path const &dest,
+                             nlohmann::json const &config) const {
 
   // TODO: Error management
   std::vector<nlohmann::json> matcher_set = config["matchers"];

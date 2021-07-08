@@ -15,8 +15,8 @@ find_matching(nlohmann::json::const_iterator begin,
 
 /// Averages
 std::optional<double> get_average(std::vector<nlohmann::json> const &data,
-                              nlohmann::json const &matcher,
-                              nlohmann::json::json_pointer value_jptr);
+                                  nlohmann::json const &matcher,
+                                  nlohmann::json::json_pointer value_jptr);
 
 /// Gets feature name from a vector of json, given a JSON pointer
 std::optional<std::string>

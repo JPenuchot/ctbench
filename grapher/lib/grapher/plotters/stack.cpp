@@ -3,10 +3,9 @@
 #include <nlohmann/json_fwd.hpp>
 #include <sciplot/sciplot.hpp>
 
-#include <grapher/json-utils.hpp>
-#include <grapher/plot-utils.hpp>
-
-#include <grapher/plotters/stack.hpp>
+#include "grapher/json-utils.hpp"
+#include "grapher/plot-utils.hpp"
+#include "grapher/plotters/stack.hpp"
 
 namespace grapher {
 

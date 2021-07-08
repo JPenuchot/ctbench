@@ -4,7 +4,7 @@
 #include <memory>
 #include <string_view>
 
-#include <grapher/core.hpp>
+#include "grapher/core.hpp"
 
 namespace grapher {
 

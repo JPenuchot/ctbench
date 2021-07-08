@@ -1,6 +1,6 @@
 #pragma once
 
-#include <grapher/plotters/plotter_i.hpp>
+#include "grapher/plotters/plotter_i.hpp"
 
 namespace grapher {
 

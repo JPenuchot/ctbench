@@ -3,9 +3,9 @@
 /// \file
 /// All things related to data output to various formats.
 
-#include <grapher/core.hpp>
-
 #include <ostream>
+
+#include "grapher/core.hpp"
 
 namespace grapher {
 

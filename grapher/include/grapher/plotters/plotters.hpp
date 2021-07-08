@@ -1,11 +1,11 @@
 #pragma once
 
-#include <grapher/plotters/compare.hpp>
-#include <grapher/plotters/stack.hpp>
-
 #include <llvm/ADT/StringMap.h>
 #include <llvm/ADT/StringRef.h>
 #include <llvm/Support/CommandLine.h>
+
+#include "grapher/plotters/compare.hpp"
+#include "grapher/plotters/stack.hpp"
 
 namespace grapher {
 
