@@ -9,8 +9,8 @@ plotter_type_t string_to_plotter_type(llvm::StringRef const &name) {
     return compare_v;
   }
 
-  if (auto const it = plotters_detail::plotter_name_map.find(name);
-      it != plotters_detail::plotter_name_map.end()) {
+  if (auto const it = plotter_name_map.find(name);
+      it != plotter_name_map.end()) {
     return it->getValue();
   }
 

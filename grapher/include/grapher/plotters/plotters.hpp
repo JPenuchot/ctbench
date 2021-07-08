@@ -3,9 +3,9 @@
 #include <grapher/plotters/compare.hpp>
 #include <grapher/plotters/stacked_graph.hpp>
 
-#include <llvm/ADT/SmallVector.h>
 #include <llvm/ADT/StringMap.h>
 #include <llvm/ADT/StringRef.h>
+#include <llvm/Support/CommandLine.h>
 
 namespace grapher {
 
@@ -18,14 +18,17 @@ enum plotter_type_t {
 
 // VARIABLES
 
-namespace plotters_detail {
-/// \internal
-/// String to plotter type map. Edit this if you're adding a plotter.
+/// String to plotter type map.
 inline const llvm::StringMap<plotter_type_t> plotter_name_map = {
     {"compare", compare_v},
     {"stack", stack_v},
 };
-} // namespace plotters_detail
+
+inline const llvm::cl::ValuesClass plotter_cl_values{
+    llvm::cl::OptionEnumValue{"compare", compare_v,
+                              "Compare benchmarks feature by feature."},
+    llvm::cl::OptionEnumValue{"stack", stack_v,
+                              "Stack features for each benchmark."}};
 
 // FUNCTIONS
 
