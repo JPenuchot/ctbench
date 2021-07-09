@@ -9,6 +9,19 @@
 
 namespace grapher {
 
+std::string_view plotter_stack_t::get_help() const { return ""; }
+
+nlohmann::json plotter_stack_t::get_default_config() const {
+  nlohmann::json res = grapher::get_default_config();
+
+  res["value_json_pointer"] = "/dur";
+  res["name_json_pointer"] = "/name";
+
+  res["matchers"].push_back({ {"name", "Total Source"} });
+
+  return res;
+}
+
 void plotter_stack_t::plot(category_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
@@ -77,12 +90,6 @@ void plotter_stack_t::plot(category_t const &cat,
     plots[i].yrange(0., max_val);
     plots[i].save(dest / (cat[i].name + ".svg"));
   }
-}
-
-std::string_view plotter_stack_t::get_help() const { return ""; }
-
-nlohmann::json plotter_stack_t::get_default_config() const {
-  return grapher::get_default_config();
 }
 
 } // namespace grapher
