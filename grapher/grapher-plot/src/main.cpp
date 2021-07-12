@@ -38,7 +38,16 @@ int main(int argc, char const *argv[]) {
   nlohmann::json config;
   {
     std::ifstream config_file(cli::config_opt.getValue());
-    config_file >> config;
+    if (!config_file) {
+      llvm::errs() << "Can't open config file: " << config_opt.getValue()
+                   << '\n';
+      return 1;
+    }
+
+    if (!config_file >> config) {
+      llvm::errs() << "Invalid JSON config file: " << config_opt.getValue()
+                   << '\n';
+    }
   }
 
   // Set destiny
