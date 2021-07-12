@@ -31,9 +31,10 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
   }
 
   for (nlohmann::json const &j : data) {
-    auto event_it = find_matching(j.begin(), j.end(), matcher);
+    auto event_it = find_matching(j["traceEvents"].begin(),
+                                  j["traceEvents"].end(), matcher);
 
-    if (event_it == j.end()) {
+    if (event_it == j["traceEvents"].end()) {
       // TODO: Add warning
       return std::nullopt;
     }
