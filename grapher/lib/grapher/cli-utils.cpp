@@ -13,8 +13,6 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
   // Filling in category
   grapher::category_t category;
   for (auto const &bench_path_str : benchmark_path_list) {
-    llvm::outs() << "bench_path_str = " << bench_path_str << '\n';
-
     fs::path bench_path(bench_path_str.data());
 
     if (!fs::is_directory(bench_path)) {
@@ -29,7 +27,6 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
 
     // Adding entries
     for (auto const &entry_dir : fs::directory_iterator(bench_path)) {
-      llvm::outs() << "entry_dir = " << entry_dir.path() << '\n';
       grapher::entry_t entry;
 
       // Entry directory name check and reading to entry size
@@ -45,8 +42,6 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       // Reading iterations
       for (auto const &iteration_path :
            fs::recursive_directory_iterator(entry_dir)) {
-        llvm::outs() << "iteration_path = " << iteration_path.path() << '\n';
-
         // Basic property check
         if (!std::filesystem::is_regular_file(iteration_path)) {
           llvm::errs()
