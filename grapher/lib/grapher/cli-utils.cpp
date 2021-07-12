@@ -67,8 +67,8 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
 
         entry.data.push_back(std::move(j));
       }
+      bench.entries.push_back(entry);
     }
-
     category.push_back(std::move(bench));
   }
   return category;
