@@ -13,7 +13,7 @@ namespace grapher {
 std::string_view plotter_stack_t::get_help() const { return ""; }
 
 nlohmann::json plotter_stack_t::get_default_config() const {
-  nlohmann::json res = grapher::get_default_config();
+  nlohmann::json res = grapher::base_default_config();
 
   // Basic values, probably no need to change them
   res["value_json_pointer"] = "/dur";
@@ -29,7 +29,7 @@ nlohmann::json plotter_stack_t::get_default_config() const {
 void plotter_stack_t::plot(category_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
-  auto const default_config = get_default_config();
+  auto const default_config = this->get_default_config();
 
   std::vector<nlohmann::json> matcher_set;
 

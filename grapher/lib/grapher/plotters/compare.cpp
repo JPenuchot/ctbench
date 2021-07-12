@@ -65,7 +65,7 @@ void plotter_compare_t::plot(category_t const &cat,
 std::string_view plotter_compare_t::get_help() const { return ""; }
 
 nlohmann::json plotter_compare_t::get_default_config() const {
-  return grapher::get_default_config();
+  return grapher::base_default_config();
 }
 
 } // namespace grapher

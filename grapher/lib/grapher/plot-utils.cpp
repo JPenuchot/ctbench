@@ -32,6 +32,6 @@ sciplot::Plot &apply_config(sciplot::Plot &plot, nlohmann::json config) {
   return plot;
 }
 
-nlohmann::json get_default_config() { return default_config; }
+nlohmann::json base_default_config() { return default_config; }
 
 } // namespace grapher
