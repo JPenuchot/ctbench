@@ -11,18 +11,17 @@
 namespace cli {
 namespace lc = llvm::cl;
 
-lc::opt<grapher::plotter_type_t> plotter_opt("p", "plotter", lc::Required,
+lc::opt<grapher::plotter_type_t> plotter_opt("plotter", lc::Required,
                                              lc::desc("Plotter:"),
                                              grapher::plotter_cl_values);
 
-lc::opt<std::string> output_folder_opt("o", "output", lc::Required,
+lc::opt<std::string> output_folder_opt("output", lc::Required,
                                        lc::desc("<output folder>"));
 
 lc::list<std::string> benchmark_path_list(lc::Positional, lc::OneOrMore,
                                           lc::desc("<input folders>"));
 
-lc::opt<std::string> config_opt("c", "config",
-                                lc::desc("JSON configuration file."));
+lc::opt<std::string> config_opt("config", lc::desc("JSON configuration file."));
 } // namespace cli
 
 int main(int argc, char const *argv[]) {
