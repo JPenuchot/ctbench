@@ -1,4 +1,5 @@
 #include "grapher/json-utils.hpp"
+#include <optional>
 
 namespace grapher {
 
@@ -6,10 +7,10 @@ nlohmann::json::const_iterator
 find_matching(nlohmann::json::const_iterator begin,
               nlohmann::json::const_iterator end,
               nlohmann::json const &matcher) {
-  auto const flat_matcher = matcher.flatten();
+  nlohmann::json const flat_matcher = matcher.flatten();
 
   return std::find_if(begin, end, [&](nlohmann::json const &j) -> bool {
-    auto const flat_j = j.flatten();
+    nlohmann::json const flat_j = j.flatten();
 
     for (auto const &i : flat_matcher.items()) {
       if (auto it = flat_j.find(i.key());
@@ -30,11 +31,18 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
     return std::nullopt;
   }
 
-  for (nlohmann::json const &j : data) {
-    auto event_it = find_matching(j["traceEvents"].begin(),
-                                  j["traceEvents"].end(), matcher);
+  for (nlohmann::json const &iteration : data) {
 
-    if (event_it == j["traceEvents"].end()) {
+    if (!iteration.contains("traceEvents") ||
+        !iteration["traceEvents"].is_array()) {
+      // TODO: Add warning
+      return std::nullopt;
+    }
+
+    auto event_it = find_matching(iteration["traceEvents"].begin(),
+                                  iteration["traceEvents"].end(), matcher);
+
+    if (event_it == iteration["traceEvents"].end()) {
       // TODO: Add warning
       return std::nullopt;
     }
