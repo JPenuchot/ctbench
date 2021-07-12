@@ -59,13 +59,17 @@ void plotter_stack_t::plot(category_t const &cat,
     sp::Plot plot;
     apply_config(plot, config);
 
-    auto const &[name, entries] = bench;
+    auto const &[bench_name, bench_entries] = bench;
 
+    // x axis
     std::vector<double> x;
-    std::transform(entries.begin(), entries.end(), std::back_inserter(x),
+    std::transform(bench_entries.begin(), bench_entries.end(),
+                   std::back_inserter(x),
                    [](entry_t const &e) -> double { return e.size; });
 
+    // Low y axis
     std::vector<double> y_low(x.size(), 0.);
+    // High y axis
     std::vector<double> y_high(x.size());
 
     for (auto const &matcher : matcher_set) {
@@ -73,16 +77,17 @@ void plotter_stack_t::plot(category_t const &cat,
       double value = 0.;
 
       std::string curve_name("UNKNOWN");
-      if (!entries.empty() && !entries.begin()->data.empty()) {
-        curve_name =
-            get_feature_name(*entries.begin()->data.begin(), feature_name_jptr)
-                .value_or(std::move(curve_name));
+      if (!bench_entries.empty() && !bench_entries.begin()->data.empty()) {
+        curve_name = get_feature_name(*bench_entries.begin()->data.begin(),
+                                      feature_name_jptr)
+                         .value_or(std::move(curve_name));
       }
 
-      for (std::size_t i = 0; i < entries.size(); i++) {
-        auto const &[size, data] = entries[i];
+      for (std::size_t i = 0; i < bench_entries.size(); i++) {
+        auto const &[entry_size, entry_iterations] = bench_entries[i];
         // TODO: Get better stats (standard deviation, etc...)
-        value = get_average(data, matcher, feature_value_jptr).value_or(value);
+        value = get_average(entry_iterations, matcher, feature_value_jptr)
+                    .value_or(value);
         y_high[i] = y_low[i] + value;
       }
 
