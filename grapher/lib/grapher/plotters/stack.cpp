@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <llvm/Support/raw_ostream.h>
 #include <nlohmann/json_fwd.hpp>
 #include <sciplot/sciplot.hpp>
 
@@ -14,10 +15,13 @@ std::string_view plotter_stack_t::get_help() const { return ""; }
 nlohmann::json plotter_stack_t::get_default_config() const {
   nlohmann::json res = grapher::get_default_config();
 
+  // Basic values, probably no need to change them
   res["value_json_pointer"] = "/dur";
   res["name_json_pointer"] = "/name";
 
-  res["matchers"].push_back({ {"name", "Total Source"} });
+  // Some matchers as an example...
+  res["matchers"].push_back({{"name", "Total Frontend"}});
+  res["matchers"].push_back({{"name", "Total Backend"}});
 
   return res;
 }
@@ -25,8 +29,17 @@ nlohmann::json plotter_stack_t::get_default_config() const {
 void plotter_stack_t::plot(category_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
-  // TODO: Error management
-  std::vector<nlohmann::json> matcher_set = config["matchers"];
+  auto const default_config = get_default_config();
+
+  std::vector<nlohmann::json> matcher_set;
+
+  if (config.contains("matcher") && config.is_array()) {
+    matcher_set = std::vector<nlohmann::json>(config["matcher"]);
+  } else {
+    llvm::errs() << "Warning: No matcher was specified in the configuration "
+                    "file. Falling back to default matchers.\n";
+    matcher_set = std::vector<nlohmann::json>(default_config["matcher"]);
+  }
 
   nlohmann::json::json_pointer feature_value_jptr(
       config.value("value_json_pointer", "/dur"));
