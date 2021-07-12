@@ -33,11 +33,10 @@ int main(int argc, char const *argv[]) {
   llvm::cl::extrahelp("\nRun special plotter commands.\n");
   llvm::cl::ParseCommandLineOptions(argc, argv);
 
-  cli::command_enum_t cmd = cli::command_opt.getValue();
   grapher::plotter_t plotter =
       grapher::plotter_type_to_plotter(cli::plotter_opt.getValue());
 
-  switch (cmd) {
+  switch (cli::command_opt.getValue()) {
   case cli::generate_config_v:
     std::cout << plotter->get_default_config().dump(2);
     break;
