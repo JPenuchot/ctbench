@@ -1,6 +1,7 @@
 #include <algorithm>
 
 #include <filesystem>
+#include <iostream>
 #include <llvm/Support/raw_ostream.h>
 #include <nlohmann/json_fwd.hpp>
 #include <sciplot/sciplot.hpp>
@@ -31,6 +32,8 @@ void plotter_stack_t::plot(category_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
   auto const default_config = this->get_default_config();
+
+  std::cout << config.dump(2);
 
   std::vector<nlohmann::json> matcher_set;
 
