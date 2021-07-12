@@ -1,5 +1,6 @@
 #include <algorithm>
 
+#include <filesystem>
 #include <llvm/Support/raw_ostream.h>
 #include <nlohmann/json_fwd.hpp>
 #include <sciplot/sciplot.hpp>
@@ -104,6 +105,7 @@ void plotter_stack_t::plot(category_t const &cat,
   std::transform(cat.begin(), cat.end(), std::back_inserter(plots), draw_plot);
 
   // Normalize & save
+  std::filesystem::create_directories(dest);
   for (std::size_t i = 0; i < cat.size(); i++) {
     plots[i].yrange(0., max_val);
     plots[i].save(dest / (cat[i].name + ".svg"));
