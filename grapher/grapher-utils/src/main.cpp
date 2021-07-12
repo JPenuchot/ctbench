@@ -10,7 +10,7 @@ namespace cli {
 
 namespace lc = llvm::cl;
 
-lc::opt<grapher::plotter_type_t> plotter_opt("p", lc::Required,
+lc::opt<grapher::plotter_type_t> plotter_opt("p", "plotter", lc::Required,
                                              lc::desc("Plotter:"),
                                              grapher::plotter_cl_values);
 
@@ -20,7 +20,7 @@ enum command_enum_t {
 };
 
 lc::opt<command_enum_t> command_opt(
-    "c", lc::Required, lc::desc("Command:"),
+    "c", "command", lc::Required, lc::desc("Command:"),
     lc::values(lc::OptionEnumValue{"get-help", command_enum_t::help_v,
                                    "Get plotter help."},
                lc::OptionEnumValue{"get-default-config",
