@@ -13,21 +13,23 @@ nlohmann::json const default_config = {
 };
 
 sciplot::Plot &apply_config(sciplot::Plot &plot, nlohmann::json config) {
-  // Merging defaults into config
-  for (auto const &[key, value] : default_config.flatten().items()) {
-    auto key_jptr = nlohmann::json::json_pointer(key);
-    if (!config.contains(key_jptr)) {
-      config[key_jptr] = value;
-    }
+  // Dimensions
+  if (config.contains("width") && config.contains("height")) {
+    plot.size(config["width"], config["height"]);
   }
 
-  // Dimensions
-  plot.size(config["width"], config["height"]);
-
   // Labels
-  plot.legend().atOutsideRightTop().title(config["legend_title"]);
-  plot.xlabel(config["xlabel"]);
-  plot.ylabel(config["ylabel"]);
+  if (config.contains("legend_title")) {
+    plot.legend().atOutsideRightTop().title(config["legend_title"]);
+  }
+
+  if (config.contains("xlabel")) {
+    plot.xlabel(config["xlabel"]);
+  }
+
+  if (config.contains("ylabel")) {
+    plot.ylabel(config["ylabel"]);
+  }
 
   return plot;
 }
