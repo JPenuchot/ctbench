@@ -39,7 +39,7 @@ int main(int argc, char const *argv[]) {
 
   switch (cmd) {
   case cli::generate_config_v:
-    std::cout << plotter->get_default_config();
+    std::cout << plotter->get_default_config().dump(2);
     break;
   case cli::help_v:
     std::cout << plotter->get_help();
