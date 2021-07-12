@@ -1,12 +1,14 @@
-#include "grapher/cli-utils.hpp"
 #include <fstream>
 #include <llvm/Support/CommandLine.h>
+#include <llvm/Support/raw_ostream.h>
+
 #include <string_view>
 
 #include <nlohmann/json.hpp>
 
-#include <grapher/core.hpp>
-#include <grapher/plotters/plotters.hpp>
+#include "grapher/cli-utils.hpp"
+#include "grapher/core.hpp"
+#include "grapher/plotters/plotters.hpp"
 
 namespace cli {
 namespace lc = llvm::cl;
@@ -39,13 +41,13 @@ int main(int argc, char const *argv[]) {
   {
     std::ifstream config_file(cli::config_opt.getValue());
     if (!config_file) {
-      llvm::errs() << "Can't open config file: " << config_opt.getValue()
+      llvm::errs() << "Can't open config file: " << cli::config_opt.getValue()
                    << '\n';
       return 1;
     }
 
-    if (!config_file >> config) {
-      llvm::errs() << "Invalid JSON config file: " << config_opt.getValue()
+    if (!(config_file >> config)) {
+      llvm::errs() << "Invalid JSON config file: " << cli::config_opt.getValue()
                    << '\n';
     }
   }
