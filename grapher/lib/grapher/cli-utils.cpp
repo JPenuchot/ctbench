@@ -35,7 +35,7 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       // Entry directory name check and reading to entry size
       {
         std::istringstream iss(entry_dir.path().filename().stem());
-        if (!iss >> entry.size) {
+        if (!(iss >> entry.size)) {
           llvm::errs() << "[WARNING] Entry directory name is not a size: "
                        << entry_dir.path() << '\n';
           continue;
