@@ -51,10 +51,10 @@ endfunction(ctbench_add_benchmark)
 ##   and the folder where the graphs will be saved.
 ## - benchmarks: List of benchmark names
 
-function(ctbench_graph_category plotter config category)
+function(ctbench_graph_category category plotter config)
   add_custom_target(${category}
     COMMAND grapher-plot
-      --plotter=${plotter} --config=${config} --output=${category}
+      --output=${category} --plotter=${plotter} --config=${config}
       ${ARGN}
     DEPENDS ${ARGN})
   add_dependencies(ctbench-graph-all ${category})
