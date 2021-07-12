@@ -11,11 +11,11 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
 
   // Filling in category
   grapher::category_t category;
-  for (auto const &elmt : benchmark_path_list) {
-    fs::path bench_path(elmt.data());
+  for (auto const &bench_path_str : benchmark_path_list) {
+    fs::path bench_path(bench_path_str.data());
 
     if (!fs::is_directory(bench_path)) {
-      llvm::outs() << "[WARNING] Not a directory: " << bench_path << '\n';
+      llvm::errs() << "[WARNING] Not a directory: " << bench_path << '\n';
       continue;
     }
 
@@ -32,7 +32,7 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       {
         std::istringstream iss(entry_dir.path());
         if (!iss >> entry.size) {
-          llvm::outs() << "[WARNING] Entry directory name is not a size: "
+          llvm::errs() << "[WARNING] Entry directory name is not a size: "
                        << entry_dir.path() << '\n';
           continue;
         }
@@ -44,7 +44,7 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
 
         // Basic property check
         if (!std::filesystem::is_regular_file(iteration_path)) {
-          llvm::outs()
+          llvm::errs()
               << "[WARNING] Invalid iteration file (not a regular file): "
               << iteration_path.path() << '\n';
           continue;
@@ -54,7 +54,7 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
         std::ifstream iteration_file(iteration_path.path());
         nlohmann::json j;
         if (!(iteration_file >> j)) {
-          llvm::outs()
+          llvm::errs()
               << "[WARNING] Invalid iteration file (invalid JSON content): "
               << iteration_path.path() << '\n';
           continue;
