@@ -14,7 +14,7 @@ nlohmann::json const default_config = {
 
 sciplot::Plot &apply_config(sciplot::Plot &plot, nlohmann::json config) {
   // Merging defaults into config
-  for (auto const &[key, value] : default_config.items()) {
+  for (auto const &[key, value] : default_config.flatten().items()) {
     auto key_jptr = nlohmann::json::json_pointer(key);
     if (!config.contains(key_jptr)) {
       config[key_jptr] = value;
