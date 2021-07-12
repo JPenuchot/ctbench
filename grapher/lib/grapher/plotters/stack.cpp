@@ -33,8 +33,6 @@ void plotter_stack_t::plot(category_t const &cat,
                            nlohmann::json const &config) const {
   auto const default_config = this->get_default_config();
 
-  std::cout << config.dump(2);
-
   std::vector<nlohmann::json> matcher_set;
 
   if (config.contains("matchers") && config["matchers"].is_array()) {
