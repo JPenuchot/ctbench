@@ -33,12 +33,12 @@ void plotter_stack_t::plot(category_t const &cat,
 
   std::vector<nlohmann::json> matcher_set;
 
-  if (config.contains("matcher") && config.is_array()) {
-    matcher_set = std::vector<nlohmann::json>(config["matcher"]);
+  if (config.contains("matchers") && config.is_array()) {
+    matcher_set = std::vector<nlohmann::json>(config["matchers"]);
   } else {
     llvm::errs() << "Warning: No matcher was specified in the configuration "
                     "file. Falling back to default matchers.\n";
-    matcher_set = std::vector<nlohmann::json>(default_config["matcher"]);
+    matcher_set = std::vector<nlohmann::json>(default_config["matchers"]);
   }
 
   nlohmann::json::json_pointer feature_value_jptr(
