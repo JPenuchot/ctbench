@@ -1,8 +1,10 @@
-#include <grapher/cli-utils.hpp>
-
+#include <algorithm>
 #include <filesystem>
 #include <fstream>
+
 #include <llvm/Support/raw_ostream.h>
+
+#include "grapher/cli-utils.hpp"
 
 namespace grapher {
 
@@ -64,6 +66,12 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       }
       bench.entries.push_back(entry);
     }
+
+    // Sorting by entry size
+    std::sort(
+        bench.entries.begin(), bench.entries.end(),
+        [](entry_t const &a, entry_t const &b) { return a.size < b.size; });
+
     category.push_back(std::move(bench));
   }
   return category;
