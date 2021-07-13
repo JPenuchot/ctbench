@@ -57,7 +57,7 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
       return std::nullopt;
     }
 
-    if (!event_it->is_number()) {
+    if (!(*event_it)[value_jptr].is_number()) {
       llvm::errs() << "[WARNING] Invalid iteration data: data at JSON pointer "
                       "isn't a number.\n";
       return std::nullopt;
