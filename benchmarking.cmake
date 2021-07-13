@@ -56,6 +56,6 @@ function(ctbench_graph_category category plotter config)
     COMMAND grapher-plot
       --output=${category} --plotter=${plotter} --config=${config}
       ${ARGN}
-    DEPENDS ${ARGN})
+    DEPENDS ${config} ${ARGN})
   add_dependencies(ctbench-graph-all ${category})
 endfunction(ctbench_graph_category)
