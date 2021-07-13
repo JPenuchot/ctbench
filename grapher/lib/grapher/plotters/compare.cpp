@@ -33,6 +33,12 @@ void plotter_compare_t::plot(category_t const &cat,
       std::vector<double> x;
       std::vector<double> y;
 
+      // Setting feature name if not already done
+      if (filename.empty()) {
+        filename = get_feature_name(bench, feature_name_jptr)
+                       .value_or(std::move(filename));
+      }
+
       for (auto const &[size, data] : bench.entries) {
         // TODO: Maybe get better stats (standard deviation, etc...) ?
         std::optional<double> const val =
@@ -41,12 +47,6 @@ void plotter_compare_t::plot(category_t const &cat,
         if (val) {
           x.push_back(size);
           y.push_back(*val);
-        }
-
-        // Setting feature name if not already done
-        if (filename.empty()) {
-          filename = get_feature_name(data, feature_name_jptr)
-                         .value_or(std::move(filename));
         }
       }
 
