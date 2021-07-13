@@ -78,12 +78,8 @@ void plotter_stack_t::plot(category_t const &cat,
       // Storing previous value as we iterate
       double value = 0.;
 
-      std::string curve_name("UNKNOWN");
-      if (!bench_entries.empty() && !bench_entries.begin()->data.empty()) {
-        curve_name = get_feature_name(*bench_entries.begin()->data.begin(),
-                                      feature_name_jptr)
-                         .value_or(std::move(curve_name));
-      }
+      std::string curve_name =
+          get_feature_name(bench, feature_name_jptr).value_or("UNKNOWN");
 
       for (std::size_t i = 0; i < bench_entries.size(); i++) {
         auto const &[entry_size, entry_iterations] = bench_entries[i];
