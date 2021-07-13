@@ -86,7 +86,11 @@ void plotter_stack_t::plot(category_t const &cat,
         // TODO: Get better stats (standard deviation, etc...)
         value = get_average(entry_iterations, matcher, feature_value_jptr)
                     .value_or(value);
-        y_high[i] = y_low[i] + value;
+        double const new_y = y_low[i] + value;
+        y_high[i] = new_y;
+
+        // Update max_val for y-azis normalization
+        max_val = std::max(max_val, new_y);
       }
 
       plot.drawCurvesFilled(x, y_low, y_high).label(std::move(curve_name));
