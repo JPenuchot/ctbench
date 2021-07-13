@@ -63,7 +63,7 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
       return std::nullopt;
     }
 
-    acc += event_it->get<double>();
+    acc += (*event_it)[value_jptr].get<double>();
   }
 
   return acc / data.size();
