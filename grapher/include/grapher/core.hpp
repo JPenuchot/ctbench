@@ -3,9 +3,7 @@
 /// \file
 /// Core data types for benchmark representation.
 
-#include <algorithm>
 #include <string>
-#include <string_view>
 #include <tuple>
 
 #include <nlohmann/json.hpp>

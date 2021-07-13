@@ -1,10 +1,10 @@
 #pragma once
 
-#include <grapher/core.hpp>
+#include <llvm/Support/CommandLine.h>
 
 #include <nlohmann/json.hpp>
 
-#include <llvm/Support/CommandLine.h>
+#include "grapher/core.hpp"
 
 namespace grapher {
 
