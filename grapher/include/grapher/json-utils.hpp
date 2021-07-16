@@ -22,7 +22,7 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
 
 /// Gets feature name from a vector of json, given a JSON pointer
 std::optional<std::string>
-get_feature_name(benchmark_t const &bench,
+get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
                  nlohmann::json::json_pointer const &name_jptr);
 
 } // namespace grapher
