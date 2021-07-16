@@ -44,13 +44,15 @@ function(ctbench_add_benchmark name source begin end step iterations)
 endfunction(ctbench_add_benchmark)
 
 ## =============================================================================
-## Add a benchmark for a given source, with a given size range.
+## Add a benchmark for a given source with a given size range
+## using a custom compile options generator.
 ##
 ## - name: Name of benchmark
 ## - source: Source file
 ## - begin, end, step: Iteration parameters
 ## - iterations: Number of benchmark iterations for a given size
-## - generator: Compile option generator
+## - generator: Compile option generator.
+##   Takes a size and an output variable name as parameters.
 
 function(ctbench_add_custom_benchmark
   name
