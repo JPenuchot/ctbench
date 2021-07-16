@@ -84,7 +84,9 @@ void plotter_compare_t::plot(category_t const &cat,
     }
 
     if (filename.empty()) {
-      // TODO: Add warning
+      llvm::errs() << "[WARNING] Couldn't find filename for benchmark with "
+                      "following matcher:\n"
+                   << matcher.dump(2) << '\n';
       continue;
     }
 
