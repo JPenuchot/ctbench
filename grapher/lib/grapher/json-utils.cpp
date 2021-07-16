@@ -81,7 +81,6 @@ get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
 
   entry_t const &first_entry = *entries.begin();
   if (first_entry.data.empty()) {
-    // TODO: Add warning
     llvm::errs() << "[WARNING] Couldn't find feature name for benchmark "
                  << name << ": no iteration in first entry of size "
                  << first_entry.size << ".\n";
@@ -90,7 +89,6 @@ get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
 
   nlohmann::json const &first_iteration = *first_entry.data.begin();
   if (!first_iteration.contains("traceEvents")) {
-    // TODO: Add warning
     llvm::errs() << "[WARNING] Couldn't find feature name for benchmark "
                  << name << ": no traceEvents field in first entry (size "
                  << first_entry.size << ").\n";
