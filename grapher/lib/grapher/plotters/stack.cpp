@@ -12,7 +12,11 @@
 
 namespace grapher {
 
-std::string_view plotter_stack_t::get_help() const { return ""; }
+std::string_view plotter_stack_t::get_help() const {
+  return "For each benchmark in the category, generates a stakcked curve graph "
+         "where each curve corresponds to a matcher in the \'matchers\' JSON "
+         "field.";
+}
 
 nlohmann::json plotter_stack_t::get_default_config() const {
   nlohmann::json res = grapher::base_default_config();
@@ -20,6 +24,7 @@ nlohmann::json plotter_stack_t::get_default_config() const {
   // Basic values, probably no need to change them
   res["value_json_pointer"] = "/dur";
   res["name_json_pointer"] = "/name";
+  res["plot_file_extension"] = ".svg";
 
   // Some matchers as an example...
   res["matchers"].push_back({{"name", "Total Frontend"}});
@@ -111,7 +116,8 @@ void plotter_stack_t::plot(category_t const &cat,
   std::filesystem::create_directories(dest);
   for (std::size_t i = 0; i < cat.size(); i++) {
     plots[i].yrange(0., max_val);
-    plots[i].save(dest / (cat[i].name + ".svg"));
+    plots[i].save(dest /
+                  (cat[i].name + config.value("plot_file_extension", ".svg")));
   }
 }
 
