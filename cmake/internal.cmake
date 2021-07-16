@@ -8,9 +8,11 @@
 ## - output: Time trace output path
 ## - file: Source file
 ## - size: Sets BENCHMARK_SIZE define (can be something else than a number)
-##   See: https://cmake.org/cmake/help/latest/prop_tgt/COMPILE_DEFINITIONS.html
+## - options: Options passed to the compiler
 
-function(_ctbench_internal_add_compile_benchmark target_name output source size)
+function(_ctbench_internal_add_compile_benchmark
+  target_name output source
+  options)
 
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
   target_include_directories(${target_name} PUBLIC "../include")
@@ -25,9 +27,7 @@ function(_ctbench_internal_add_compile_benchmark target_name output source size)
   add_dependencies(${target_name} time-trace-wrapper)
 
   # Pass benchmark size
-  set_target_properties(${target_name}
-    PROPERTIES
-      COMPILE_DEFINITIONS "BENCHMARK_SIZE=${size}")
+  target_compile_options(${target_name} PRIVATE ${options})
 
   # Boost Preprocessor
   target_include_directories(${target_name} PUBLIC Boost_INCLUDE_DIRS)
