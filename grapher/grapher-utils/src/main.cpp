@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/raw_ostream.h>
 
@@ -38,10 +36,10 @@ int main(int argc, char const *argv[]) {
 
   switch (cli::command_opt.getValue()) {
   case cli::generate_config_v:
-    std::cout << plotter->get_default_config().dump(2);
+    llvm::outs() << plotter->get_default_config().dump(2);
     break;
   case cli::help_v:
-    std::cout << plotter->get_help();
+    llvm::outs() << plotter->get_help();
     break;
   }
 
