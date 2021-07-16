@@ -100,6 +100,7 @@ void plotter_stack_t::plot(category_t const &cat,
       std::swap(y_low, y_high);
     }
 
+    plot.legend().displayStartFromLast();
     return plot;
   };
 
