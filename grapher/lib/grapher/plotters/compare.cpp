@@ -35,7 +35,7 @@ void plotter_compare_t::plot(category_t const &cat,
 
       // Setting feature name if not already done
       if (filename.empty()) {
-        filename = get_feature_name(bench, feature_name_jptr)
+        filename = get_feature_name(bench, matcher, feature_name_jptr)
                        .value_or(std::move(filename));
       }
 

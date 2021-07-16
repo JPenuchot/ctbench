@@ -69,7 +69,7 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
 }
 
 std::optional<std::string>
-get_feature_name(benchmark_t const &bench,
+get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
                  nlohmann::json::json_pointer const &name_jptr) {
   auto const &[name, entries] = bench;
 
@@ -89,26 +89,41 @@ get_feature_name(benchmark_t const &bench,
   }
 
   nlohmann::json const &first_iteration = *first_entry.data.begin();
-  if (!first_iteration.contains("/traceEvents/0"_json_pointer)) {
+  if (!first_iteration.contains("traceEvents")) {
     // TODO: Add warning
     llvm::errs() << "[WARNING] Couldn't find feature name for benchmark "
-                 << name << ": first iteration in first entry (size "
-                 << first_entry.size << ") has no time trace event.\n";
+                 << name << ": no traceEvents field in first entry (size "
+                 << first_entry.size << ").\n";
     return std::nullopt;
   }
 
-  nlohmann::json const &first_event =
-      first_iteration["/traceEvents/0"_json_pointer];
-  if (!first_event.contains(name_jptr) || !first_event[name_jptr].is_string()) {
-    // TODO: Add warning
+  nlohmann::json const &trace_events = first_iteration["traceEvents"];
+  if (!trace_events.is_array()) {
     llvm::errs() << "[WARNING] Couldn't find feature name for benchmark "
-                 << name << ": first time trace event of first entry (size "
-                 << first_entry.size << ") has no valid data at JSON pointer "
-                 << name_jptr.to_string() << ".\n";
+                 << name << ": traceEvents field in first entry (size "
+                 << first_entry.size << ") is not an array.\n";
     return std::nullopt;
   }
 
-  return first_event[name_jptr];
+  nlohmann::json::const_iterator event_it =
+      find_matching(trace_events.begin(), trace_events.end(), matcher);
+  if (event_it == trace_events.end()) {
+    llvm::errs() << "[WARNING] Couldn't find feature name for benchmark "
+                 << name << ": no matching even in first entry (size "
+                 << first_entry.size << ").\n";
+    return std::nullopt;
+  }
+
+  nlohmann::json const &event = *event_it;
+  if (!event.contains(name_jptr)) {
+    llvm::errs() << "[WARNING] Couldn't find feature name for benchmark "
+                 << name << ": matched event in first entry (size "
+                 << first_entry.size
+                 << ") has no data at given name JSON pointer.\n";
+    return std::nullopt;
+  }
+
+  return event[name_jptr];
 }
 
 } // namespace grapher
