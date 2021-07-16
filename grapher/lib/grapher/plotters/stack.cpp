@@ -1,9 +1,10 @@
 #include <algorithm>
-
 #include <filesystem>
-#include <iostream>
+
 #include <llvm/Support/raw_ostream.h>
-#include <nlohmann/json_fwd.hpp>
+
+#include <nlohmann/json.hpp>
+
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/json-utils.hpp"
