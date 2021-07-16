@@ -14,9 +14,8 @@ find_matching(nlohmann::json::const_iterator begin,
   return std::find_if(begin, end, [&](nlohmann::json const &j) -> bool {
     nlohmann::json const flat_j = j.flatten();
 
-    for (auto const &i : flat_matcher.items()) {
-      if (auto it = flat_j.find(i.key());
-          it == flat_j.end() || *it != i.value()) {
+    for (auto const &[key, value] : flat_matcher.items()) {
+      if (auto it = flat_j.find(key); it == flat_j.end() || *it != value) {
         return false;
       }
     }

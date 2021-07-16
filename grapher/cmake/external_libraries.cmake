@@ -27,3 +27,15 @@ FetchContent_GetProperties(sciplot_content)
 if(NOT sciplot_content_POPULATED)
   FetchContent_Populate(sciplot_content)
 endif()
+
+# ==============================================================================
+# TTS
+
+FetchContent_Declare(tts_content
+  GIT_REPOSITORY https://github.com/jfalcou/tts.git
+  GIT_TAG 1.0)
+
+FetchContent_GetProperties(tts_content)
+if(NOT tts_content_POPULATED)
+  FetchContent_Populate(tts_content)
+endif()

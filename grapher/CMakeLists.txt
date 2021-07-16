@@ -28,3 +28,7 @@ target_include_directories(grapher PUBLIC ${sciplot_content_SOURCE_DIR})
 # Adding executable subdirectories
 add_subdirectory(grapher-plot)
 add_subdirectory(grapher-utils)
+
+if(CTBENCH_ENABLE_TESTING)
+  add_subdirectory(tests)
+endif()

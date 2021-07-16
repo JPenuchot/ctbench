@@ -8,10 +8,6 @@ include(cmake/docs.cmake)
 
 option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 
-if(CTBENCH_ENABLE_TESTING)
-  enable_testing()
-endif(CTBENCH_ENABLE_TESTING)
-
 add_subdirectory(time-trace-wrapper)
 
 # Exporting time-trace-wrapper exec path to parent scope if needed
