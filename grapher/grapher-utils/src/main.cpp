@@ -36,10 +36,10 @@ int main(int argc, char const *argv[]) {
 
   switch (cli::command_opt.getValue()) {
   case cli::generate_config_v:
-    llvm::outs() << plotter->get_default_config().dump(2);
+    llvm::outs() << plotter->get_default_config().dump(2) << '\n';
     break;
   case cli::help_v:
-    llvm::outs() << plotter->get_help();
+    llvm::outs() << plotter->get_help() << '\n';
     break;
   }
 
