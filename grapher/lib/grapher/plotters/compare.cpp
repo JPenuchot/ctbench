@@ -1,7 +1,9 @@
 #include <algorithm>
 
-#include <ios>
+#include <llvm/Support/raw_ostream.h>
+
 #include <nlohmann/detail/json_pointer.hpp>
+
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/json-utils.hpp"
@@ -10,12 +12,40 @@
 
 namespace grapher {
 
+std::string_view plotter_compare_t::get_help() const {
+  return "For each matcher in the \'matchers\' JSON field, generates a graph "
+         "comparing all benchmarks in the category. Each graph will be named "
+         "after the feature they observe.";
+}
+
+nlohmann::json plotter_compare_t::get_default_config() const {
+  nlohmann::json res = grapher::base_default_config();
+
+  // Basic values, probably no need to change them
+  res["value_json_pointer"] = "/dur";
+  res["name_json_pointer"] = "/name";
+  res["plot_file_extension"] = ".svg";
+
+  // Some matchers as an example...
+  res["matchers"].push_back({{"name", "Total Frontend"}});
+  res["matchers"].push_back({{"name", "Total Backend"}});
+
+  return res;
+}
+
 void plotter_compare_t::plot(category_t const &cat,
                              std::filesystem::path const &dest,
                              nlohmann::json const &config) const {
+  std::vector<nlohmann::json> matcher_set;
 
-  // TODO: Error management
-  std::vector<nlohmann::json> matcher_set = config["matchers"];
+  if (config.contains("matchers") && config["matchers"].is_array()) {
+    matcher_set = std::vector<nlohmann::json>(config["matchers"]);
+  } else {
+    llvm::errs() << "Warning: No matcher was specified in the configuration "
+                    "file. Falling back to default matchers.\n";
+    matcher_set =
+        std::vector<nlohmann::json>(this->get_default_config()["matchers"]);
+  }
 
   nlohmann::json::json_pointer feature_value_jptr(
       config.value("value_json_pointer", "/dur"));
@@ -58,14 +88,9 @@ void plotter_compare_t::plot(category_t const &cat,
       continue;
     }
 
-    plot.save(dest / (std::move(filename) + ".svg"));
+    plot.save(dest / (std::move(filename) +
+                      config.value("plot_file_extension", ".svg")));
   }
-}
-
-std::string_view plotter_compare_t::get_help() const { return ""; }
-
-nlohmann::json plotter_compare_t::get_default_config() const {
-  return grapher::base_default_config();
 }
 
 } // namespace grapher
