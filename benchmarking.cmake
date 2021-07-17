@@ -81,7 +81,7 @@ function(ctbench_add_custom_benchmark
     endforeach()
   endforeach()
 
-endfunction(ctbench_add_benchmark)
+endfunction(ctbench_add_custom_benchmark)
 
 ## =============================================================================
 ## Adds a graph target for a set of benchmarks,
