@@ -11,10 +11,10 @@ option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 add_subdirectory(time-trace-wrapper)
 
 # Exporting time-trace-wrapper exec path to parent scope if needed
-#if(NOT ${PROJECT_IS_TOP_LEVEL})
+if(NOT ${PROJECT_IS_TOP_LEVEL})
   set(CTBENCH_TIME_TRACE_WRAPPER_EXEC
     ${CTBENCH_TIME_TRACE_WRAPPER_EXEC} PARENT_SCOPE)
-#endif()
+endif()
 
 add_subdirectory(grapher)
 
