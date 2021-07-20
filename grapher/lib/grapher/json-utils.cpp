@@ -27,6 +27,7 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
                                   nlohmann::json const &matcher,
                                   nlohmann::json::json_pointer value_jptr) {
   double acc = 0.;
+  int count = 0;
 
   if (data.size() == 0) {
     return std::nullopt;
@@ -36,8 +37,9 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
 
     if (!iteration.contains("traceEvents") ||
         !iteration["traceEvents"].is_array()) {
-      llvm::errs()
-          << "[WARNING] Invalid iteration data: no traceEvents array field.\n";
+      // llvm::errs()
+      //     << "[WARNING] Invalid iteration data: no traceEvents array
+      //     field.\n";
       return std::nullopt;
     }
 
@@ -45,14 +47,15 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
                                   iteration["traceEvents"].end(), matcher);
 
     if (event_it == iteration["traceEvents"].end()) {
-      llvm::errs()
-          << "[WARNING] Invalid iteration data: couldn't match any event.\n";
+      // llvm::errs()
+      //     << "[WARNING] Invalid iteration data: couldn't match any event.\n";
       return std::nullopt;
     }
 
     if (!event_it->contains(value_jptr)) {
-      llvm::errs() << "[WARNING] Invalid iteration data: no data available at "
-                      "given JSON pointer.\n";
+      // llvm::errs() << "[WARNING] Invalid iteration data: no data available at
+      // "
+      //                 "given JSON pointer.\n";
       return std::nullopt;
     }
 
@@ -63,9 +66,10 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
     }
 
     acc += (*event_it)[value_jptr].get<double>();
+    count++;
   }
 
-  return acc / data.size();
+  return acc / count;
 }
 
 std::optional<std::string>
