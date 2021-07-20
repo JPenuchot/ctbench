@@ -2,7 +2,7 @@
 #include <llvm/Support/raw_ostream.h>
 #include <string_view>
 
-namespace grapher {
+namespace grapher::plotters {
 
 std::string_view plotter_debug_t::get_help() const {
   return "Debug plotter. Outputs various statistics on benchmark categories to "
@@ -30,4 +30,4 @@ void plotter_debug_t::plot(const category_t &cat,
   }
 }
 
-} // namespace grapher
+} // namespace grapher::plotters

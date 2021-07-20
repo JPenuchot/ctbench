@@ -10,7 +10,7 @@
 #include "grapher/plot-utils.hpp"
 #include "grapher/plotters/compare.hpp"
 
-namespace grapher {
+namespace grapher::plotters {
 
 std::string_view plotter_compare_t::get_help() const {
   return "For each matcher in the \'matchers\' JSON field, generates a graph "
@@ -105,4 +105,4 @@ void plotter_compare_t::plot(category_t const &cat,
   }
 }
 
-} // namespace grapher
+} // namespace grapher::plotters

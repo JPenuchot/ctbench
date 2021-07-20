@@ -37,11 +37,11 @@ inline const llvm::cl::ValuesClass plotter_cl_values{
 inline plotter_t plotter_type_to_plotter(plotter_type_t type) {
   switch (type) {
   case compare_v:
-    return std::make_unique<grapher::plotter_compare_t>();
+    return std::make_unique<grapher::plotters::plotter_compare_t>();
   case debug_v:
-    return std::make_unique<grapher::plotter_debug_t>();
+    return std::make_unique<grapher::plotters::plotter_debug_t>();
   case stack_v:
-    return std::make_unique<grapher::plotter_stack_t>();
+    return std::make_unique<grapher::plotters::plotter_stack_t>();
   }
 }
 

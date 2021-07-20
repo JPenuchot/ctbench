@@ -2,7 +2,7 @@
 
 #include "grapher/plotters/plotter_i.hpp"
 
-namespace grapher {
+namespace grapher::plotters {
 
 struct plotter_stack_t : plotter_i {
   void plot(category_t const &cat, std::filesystem::path const &dest,
@@ -13,4 +13,4 @@ struct plotter_stack_t : plotter_i {
   nlohmann::json get_default_config() const override;
 };
 
-} // namespace grapher
+} // namespace grapher::plotters

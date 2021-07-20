@@ -11,7 +11,7 @@
 #include "grapher/plot-utils.hpp"
 #include "grapher/plotters/stack.hpp"
 
-namespace grapher {
+namespace grapher::plotters {
 
 std::string_view plotter_stack_t::get_help() const {
   return "For each benchmark in the category, generates a stakcked curve graph "
@@ -132,4 +132,4 @@ void plotter_stack_t::plot(category_t const &cat,
   }
 }
 
-} // namespace grapher
+} // namespace grapher::plotters

@@ -2,7 +2,7 @@
 
 #include "grapher/plotters/plotter_i.hpp"
 
-namespace grapher {
+namespace grapher::plotters {
 
 /// Debug plotter, outputs statistics on benchmark categories
 struct plotter_debug_t : public plotter_i {
@@ -14,4 +14,4 @@ struct plotter_debug_t : public plotter_i {
   nlohmann::json get_default_config() const override;
 };
 
-} // namespace grapher
+} // namespace grapher::plotters
