@@ -37,36 +37,38 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
 
     if (!iteration.contains("traceEvents") ||
         !iteration["traceEvents"].is_array()) {
-      // llvm::errs()
-      //     << "[WARNING] Invalid iteration data: no traceEvents array
-      //     field.\n";
-      return std::nullopt;
+      llvm::errs()
+          << "[WARNING] Invalid iteration data: no traceEvents array field.\n";
+      continue;
     }
 
     auto event_it = find_matching(iteration["traceEvents"].begin(),
                                   iteration["traceEvents"].end(), matcher);
 
     if (event_it == iteration["traceEvents"].end()) {
-      // llvm::errs()
-      //     << "[WARNING] Invalid iteration data: couldn't match any event.\n";
-      return std::nullopt;
+      llvm::errs()
+          << "[WARNING] Invalid iteration data: couldn't match any event.\n";
+      continue;
     }
 
     if (!event_it->contains(value_jptr)) {
-      // llvm::errs() << "[WARNING] Invalid iteration data: no data available at
-      // "
-      //                 "given JSON pointer.\n";
-      return std::nullopt;
+      llvm::errs() << "[WARNING] Invalid iteration data: no data available at"
+                      "given JSON pointer.\n";
+      continue;
     }
 
     if (!(*event_it)[value_jptr].is_number()) {
       llvm::errs() << "[WARNING] Invalid iteration data: data at JSON pointer "
                       "isn't a number.\n";
-      return std::nullopt;
+      continue;
     }
 
     acc += (*event_it)[value_jptr].get<double>();
     count++;
+  }
+
+  if (count == 0) {
+    return std::nullopt;
   }
 
   return acc / count;
