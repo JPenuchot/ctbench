@@ -9,8 +9,9 @@ add_custom_target(ctbench-graph-all)
 
 include(cmake/internal.cmake)
 
-
 ## =============================================================================
+#!
+#! ## `ctbench_add_benchmark`
 #!
 #! Add a benchmark for a given source, with a given size range.
 #!
@@ -19,6 +20,7 @@ include(cmake/internal.cmake)
 #! - `begin, end, step`: Iteration parameters
 #! - `iterations`: Number of benchmark iterations
 #!
+
 function(ctbench_add_benchmark name source begin end step iterations)
   # Setting names
   add_custom_target(${name})
@@ -40,8 +42,9 @@ function(ctbench_add_benchmark name source begin end step iterations)
 
 endfunction(ctbench_add_benchmark)
 
-
 ## =============================================================================
+#!
+#! ## `ctbench_add_custom_benchmark`
 #!
 #! Add a benchmark for a given source with a given size range
 #! using a custom compile options generator.
@@ -53,6 +56,7 @@ endfunction(ctbench_add_benchmark)
 #! - `generator`: Compile option generator. Takes a size and an output
 #!                variable name as parameters.
 #!
+
 function(ctbench_add_custom_benchmark
   name
   source
@@ -82,8 +86,9 @@ function(ctbench_add_custom_benchmark
 
 endfunction(ctbench_add_custom_benchmark)
 
-
 ## =============================================================================
+#!
+#! ## `ctbench_add_graph`
 #!
 #! Adds a graph target for a set of benchmarks,
 #! and adds the target to ctbench-graph-all.
@@ -92,6 +97,7 @@ endfunction(ctbench_add_custom_benchmark)
 #!               target, and the folder where the graphs will be saved.
 #! - `benchmarks`: List of benchmark names
 #!
+
 function(ctbench_add_graph category plotter config)
   add_custom_target(${category}
     COMMAND grapher-plot
