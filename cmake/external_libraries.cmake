@@ -53,4 +53,3 @@ FetchContent_GetProperties(dac_content)
 if(NOT dac_content_POPULATED)
   FetchContent_Populate(dac_content)
 endif()
-
