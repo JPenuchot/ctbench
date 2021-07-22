@@ -7,21 +7,30 @@ given ranges, run them, aggregate time-trace reports, and plot them.
 This allows you to get more comprehensive data than just compiler runtime
 or single-size flame graphs.
 
-Also, `ctbench` was made with the intents of **integration** and **reuse**.
+`ctbench` was made to fit the needs of **scientific data collection
+and analysis**, thus it is not a one-shot profiler, but a set of tools that
+allow you to get **reproductible data** from user-defined compile-time
+benchmarks.
 
-## Vocabulary
+It has two main components: a CMake boilerplate library and a C++ plotting toolset.
 
-A `benchmark` is a matrix of `entries` of dimensions M * N, where M is the
-number of different entry sizes (ie. the size parameter given for a benchmark
-case), and N is the number of iterations. All sizes have the same number of
-iterations.
+The CMake library contains all the boilerplate code to define benchmark targets
+compatible with the C++ plotting toolset called `grapher`.
 
-A `category` of benchmarks is a group of benchmarks.
-Benchmark plots for a given category are all at the same scale.
+## Term definitions
+
+Users can define **benchmarks** and aggregate them into **categories**.
+Every benchmark can be run at a given size.
+
+A single benchmark result is an **iteration**, **entries** store iterations of a
+*same benchmark* run at the *same size*.
+
+[`grapher/core.hpp`](grapher/include/grapher/core.hpp) is where data structures
+following these definitions are defined.
 
 ## How-to
 
-Add the following to your `CMakeLists.txt` file:
+You can integrate `ctbench` by adding this into your CMake listfiles:
 
 ```cmake
 include(FetchContent)
@@ -32,14 +41,6 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ctbench)
 ```
 
-## Examples
-
-See my [Rule of Cheese](https://github.com/JPenuchot/rule-of-cheese) project.
-
-## Notes
-
-The project is more of a WIP.
-Some of these features will be added in the future:
-
-- Options for `grapher` to select which features to put in the graph
-- Multiple benchmark iterations
+The [Rule of Cheese](https://github.com/JPenuchot/rule-of-cheese) project can be
+used as an example of how to use `ctbench`. It is the project that gave birth to
+this tool and is maintained as `ctbench` evolves.
