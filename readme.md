@@ -1,4 +1,4 @@
-# `ctbench`
+# ctbench
 
 Set of tools for comprehensive benchmarks based on clang's time-trace feature.
 
