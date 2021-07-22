@@ -9,21 +9,16 @@ add_custom_target(ctbench-graph-all)
 
 include(cmake/internal.cmake)
 
+
 ## =============================================================================
-#!
-#! ## `ctbench_add_benchmark(name source begin end step iterations)`
 #!
 #! Add a benchmark for a given source, with a given size range.
 #!
-#! - name: Name of benchmark
-#! - source: Source file
-#! - begin: Size iteration begin
-#! - end: Size iteration end
-#! - step: Size iteration step
-#! - iterations: Number of benchmark iterations
+#! - `name`: Name of benchmark
+#! - `source`: Source file
+#! - `begin, end, step`: Iteration parameters
+#! - `iterations`: Number of benchmark iterations
 #!
-## =============================================================================
-
 function(ctbench_add_benchmark name source begin end step iterations)
   # Setting names
   add_custom_target(${name})
@@ -45,9 +40,8 @@ function(ctbench_add_benchmark name source begin end step iterations)
 
 endfunction(ctbench_add_benchmark)
 
+
 ## =============================================================================
-#!
-#! ## `ctbench_add_custom_benchmark(name source begin end step iterations generator)`
 #!
 #! Add a benchmark for a given source with a given size range
 #! using a custom compile options generator.
@@ -59,8 +53,6 @@ endfunction(ctbench_add_benchmark)
 #! - `generator`: Compile option generator. Takes a size and an output
 #!                variable name as parameters.
 #!
-## =============================================================================
-
 function(ctbench_add_custom_benchmark
   name
   source
@@ -90,19 +82,16 @@ function(ctbench_add_custom_benchmark
 
 endfunction(ctbench_add_custom_benchmark)
 
+
 ## =============================================================================
-#!
-#! ## `ctbench_add_graph(category plotter config)`
 #!
 #! Adds a graph target for a set of benchmarks,
 #! and adds the target to ctbench-graph-all.
 #!
-#! - category: Name of the category. This is also the name of the graph target,
-#!   and the folder where the graphs will be saved.
-#! - benchmarks: List of benchmark names
+#! - `category`: Name of the category. This is also the name of the graph
+#!               target, and the folder where the graphs will be saved.
+#! - `benchmarks`: List of benchmark names
 #!
-## =============================================================================
-
 function(ctbench_add_graph category plotter config)
   add_custom_target(${category}
     COMMAND grapher-plot
