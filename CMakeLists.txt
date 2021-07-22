@@ -4,9 +4,10 @@ project(ctbench)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 
-include(cmake/docs.cmake)
-
 option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
+
+include(cmake/external_libraries.cmake)
+include(cmake/docs.cmake)
 
 add_subdirectory(time-trace-wrapper)
 

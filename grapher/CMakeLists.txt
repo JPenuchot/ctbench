@@ -1,6 +1,3 @@
-# External libraries
-include(cmake/external_libraries.cmake)
-
 # LLVM as a library
 find_package(LLVM REQUIRED CONFIG)
 llvm_map_components_to_libnames(llvm_libs core support)
