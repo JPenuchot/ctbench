@@ -10,8 +10,6 @@
 
 namespace grapher {
 
-using measure_t = unsigned;
-
 /// Represents a benchmark entry, which is caracterized by a size and the
 /// benchmark results as JSON content.
 struct entry_t {
