@@ -1,4 +1,5 @@
 # Doxygen target declaration
+if(${PROJECT_IS_TOP_LEVEL})
 
 find_package(Doxygen REQUIRED dot OPTIONAL_COMPONENTS mscgen dia)
 
@@ -17,3 +18,5 @@ set(DOXYGEN_HTML_COLORSTYLE_GAMMA 113)
 set(DOXYGEN_HTML_EXTRA_STYLESHEET ${dac_content_SOURCE_DIR}/doxygen-awesome.css)
 
 doxygen_add_docs(docs ALL)
+
+endif()
