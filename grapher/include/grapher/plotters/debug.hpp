@@ -4,6 +4,7 @@
 
 namespace grapher::plotters {
 
+/// \ingroup plotters
 /// Debug plotter, outputs statistics on benchmark categories
 struct plotter_debug_t : public plotter_i {
   void plot(category_t const &cat, std::filesystem::path const &dest,

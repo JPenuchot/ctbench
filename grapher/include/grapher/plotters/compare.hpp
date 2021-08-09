@@ -4,6 +4,8 @@
 
 namespace grapher::plotters {
 
+/// \ingroup plotters
+
 struct plotter_compare_t : plotter_i {
   void plot(category_t const &cat, std::filesystem::path const &dest,
             nlohmann::json const &config) const override;

@@ -4,6 +4,10 @@
 
 namespace grapher::plotters {
 
+/// \ingroup plotters
+
+/// Generates one plot per benchmark where all the targeted features are
+/// visualized as stacked curves.
 struct plotter_stack_t : plotter_i {
   void plot(category_t const &cat, std::filesystem::path const &dest,
             nlohmann::json const &config) const override;
