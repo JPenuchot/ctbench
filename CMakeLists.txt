@@ -7,7 +7,10 @@ set(CMAKE_CXX_STANDARD 20)
 option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 
 include(cmake/external_libraries.cmake)
-include(cmake/docs.cmake)
+
+if(${PROJECT_IS_TOP_LEVEL})
+  include(cmake/docs.cmake)
+endif()
 
 add_subdirectory(time-trace-wrapper)
 
