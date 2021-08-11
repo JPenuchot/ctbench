@@ -1,3 +1,18 @@
+include(FetchContent)
+
+# ==============================================================================
+# Doxygen Awesome CSS
+
+FetchContent_Declare(dac_content
+  GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css.git
+  GIT_TAG v1.5.0
+  GIT_SHALLOW)
+
+FetchContent_GetProperties(dac_content)
+if(NOT dac_content_POPULATED)
+  FetchContent_Populate(dac_content)
+endif()
+
 # Doxygen target declaration
 find_package(Doxygen REQUIRED dot OPTIONAL_COMPONENTS mscgen dia)
 
