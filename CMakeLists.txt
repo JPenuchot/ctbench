@@ -4,9 +4,11 @@ project(ctbench)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 
+# Project options
 option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 
-include(cmake/external_libraries.cmake)
+option(CTBENCH_FETCH_LIBRARIES
+  "Fetch libraries instead of using the ones installed locally." OFF)
 
 if(${PROJECT_IS_TOP_LEVEL})
   include(cmake/docs.cmake)
