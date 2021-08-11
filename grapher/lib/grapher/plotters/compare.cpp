@@ -100,6 +100,7 @@ void plotter_compare_t::plot(category_t const &cat,
       continue;
     }
 
+    std::filesystem::create_directories(dest);
     plot.save(dest / (std::move(filename) +
                       config.value("plot_file_extension", ".svg")));
   }
