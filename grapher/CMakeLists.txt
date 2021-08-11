@@ -1,8 +1,6 @@
 # Creating the grapher library
 file(GLOB_RECURSE GRAPHER_SOURCES lib/*.cpp)
 add_library(grapher STATIC ${GRAPHER_SOURCES})
-
-# Header libraries
 target_include_directories(grapher PUBLIC include)
 
 if(CTBENCH_FETCH_LIBRARIES)
