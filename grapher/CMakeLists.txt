@@ -4,8 +4,12 @@ add_library(grapher STATIC ${GRAPHER_SOURCES})
 
 # Header libraries
 target_include_directories(grapher PUBLIC include)
-target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json)
-target_include_directories(grapher PUBLIC ${sciplot_content_SOURCE_DIR})
+
+if(CTBENCH_FETCH_LIBRARIES)
+  include(cmake/libraries_fetch.cmake)
+else()
+  include(cmake/libraries_local.cmake)
+endif()
 
 # LLVM
 find_package(LLVM REQUIRED CONFIG)
