@@ -22,7 +22,7 @@ target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json)
 
 FetchContent_Declare(sciplot_content
   GIT_REPOSITORY https://github.com/sciplot/sciplot.git
-  GIT_TAG v0.2.2
+  GIT_TAG master
   GIT_SHALLOW)
 
 FetchContent_GetProperties(sciplot_content)
