@@ -21,7 +21,14 @@ include(cmake/internal.cmake)
 #! - `iterations`: Number of benchmark iterations
 #!
 
-function(ctbench_add_benchmark name source begin end step iterations)
+function(
+  ctbench_add_benchmark
+  name
+  source
+  begin
+  end
+  step
+  iterations)
   # Setting names
   add_custom_target(${name})
 
@@ -31,9 +38,7 @@ function(ctbench_add_benchmark name source begin end step iterations)
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
 
       _ctbench_internal_add_compile_benchmark(
-        ${subtarget_name}
-        "${name}/${size}/${iteration}.json"
-        "${source}"
+        ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
         "-DBENCHMARK_SIZE=${size}")
 
       add_dependencies(${name} ${subtarget_name})
@@ -57,10 +62,13 @@ endfunction(ctbench_add_benchmark)
 #!                variable name as parameters.
 #!
 
-function(ctbench_add_custom_benchmark
+function(
+  ctbench_add_custom_benchmark
   name
   source
-  begin end step
+  begin
+  end
+  step
   iterations
   generator)
 
@@ -75,9 +83,7 @@ function(ctbench_add_custom_benchmark
       cmake_language(CALL ${generator} ${size} ctbench_options_output)
 
       _ctbench_internal_add_compile_benchmark(
-        ${subtarget_name}
-        "${name}/${size}/${iteration}.json"
-        "${source}"
+        ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
         "${ctbench_options_output}")
 
       add_dependencies(${name} ${subtarget_name})
@@ -99,10 +105,10 @@ endfunction(ctbench_add_custom_benchmark)
 #!
 
 function(ctbench_add_graph category plotter config)
-  add_custom_target(${category}
-    COMMAND grapher-plot
-      --output=${category} --plotter=${plotter} --config=${config}
-      ${ARGN}
+  add_custom_target(
+    ${category}
+    COMMAND grapher-plot --output=${category} --plotter=${plotter}
+            --config=${config} ${ARGN}
     DEPENDS ${config} ${ARGN})
   add_dependencies(ctbench-graph-all ${category})
 endfunction(ctbench_add_graph)

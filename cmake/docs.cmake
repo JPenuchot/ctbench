@@ -13,7 +13,8 @@ set(DOXYGEN_EXAMPLE_PATH ${CMAKE_SOURCE_DIR})
 
 include(FetchContent)
 
-FetchContent_Declare(dac_content
+FetchContent_Declare(
+  dac_content
   GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css.git
   GIT_TAG v1.5.0
   GIT_SHALLOW)

@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD 20)
 option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 
 option(CTBENCH_FETCH_LIBRARIES
-  "Fetch libraries instead of using the ones installed locally." OFF)
+       "Fetch libraries instead of using the ones installed locally." OFF)
 
 if(${PROJECT_IS_TOP_LEVEL})
   include(cmake/docs.cmake)
@@ -19,7 +19,8 @@ add_subdirectory(time-trace-wrapper)
 # Exporting time-trace-wrapper exec path to parent scope if needed
 if(NOT ${PROJECT_IS_TOP_LEVEL})
   set(CTBENCH_TIME_TRACE_WRAPPER_EXEC
-    ${CTBENCH_TIME_TRACE_WRAPPER_EXEC} PARENT_SCOPE)
+      ${CTBENCH_TIME_TRACE_WRAPPER_EXEC}
+      PARENT_SCOPE)
 endif()
 
 add_subdirectory(grapher)
