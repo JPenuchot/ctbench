@@ -9,11 +9,14 @@ nlohmann::json::const_iterator
 find_matching(nlohmann::json::const_iterator begin,
               nlohmann::json::const_iterator end,
               nlohmann::json const &matcher) {
+  // Flattening matcher to get a set of (JSON pointer, element)
   nlohmann::json const flat_matcher = matcher.flatten();
 
   return std::find_if(begin, end, [&](nlohmann::json const &j) -> bool {
+    // Flattening current element to get a set of (JSON pointer, element)
     nlohmann::json const flat_j = j.flatten();
 
+    // Checking for flat_matcher's inclusion within flat_j
     for (auto const &[key, value] : flat_matcher.items()) {
       if (auto it = flat_j.find(key); it == flat_j.end() || *it != value) {
         return false;

@@ -9,7 +9,10 @@
 
 namespace grapher {
 
-/// Finds an element that includes a given JSON object.
+/// Finds a JSON element in a range, given a matcher.
+/// find_matching will look at every element between begin and end,
+/// and return a nlohmann::json::const_iterator pointing to an element
+/// that contains all the elements in the matcher.
 nlohmann::json::const_iterator
 find_matching(nlohmann::json::const_iterator begin,
               nlohmann::json::const_iterator end,
