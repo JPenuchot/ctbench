@@ -47,7 +47,7 @@ nlohmann::json plotter_stack_t::get_default_config() const {
 void plotter_stack_t::plot(category_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
-  auto const default_config = this->get_default_config();
+  nlohmann::json const default_config = this->get_default_config();
 
   std::vector<nlohmann::json> matcher_set;
 
