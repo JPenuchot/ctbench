@@ -82,6 +82,8 @@ get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
                  nlohmann::json::json_pointer const &name_jptr) {
   auto const &[name, entries] = bench;
 
+  // Series of data integrity check incoming...
+
   if (entries.empty()) {
     llvm::errs() << "[WARNING] Couldn't find feature name for benchmark "
                  << name << ": no entry found.\n";
