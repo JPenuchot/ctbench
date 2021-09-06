@@ -36,8 +36,8 @@ You can integrate `ctbench` by adding this into your CMake listfiles:
 include(FetchContent)
 FetchContent_Declare(
   ctbench
-  GIT_REPOSITORY https://github.com/jpenuchot/ctbench.git
-  GIT_TAG        origin/main)
+  GIT_REPOSITORY https://github.com/jpenuchot/ctbench.git main
+  GIT_SHALLOW)
 FetchContent_MakeAvailable(ctbench)
 ```
 

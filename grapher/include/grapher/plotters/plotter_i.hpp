@@ -8,30 +8,38 @@
 
 namespace grapher {
 
-/// \defgroup plotters Plotters
+/// \defgroup plotters Plot generators
+
+/// \addtogroup plotters
+///
 /// Plotters are objects that inherit the plotter_i virtual interface, and thus
 /// override the plotter_i::plot, plotter_i::get_help, and
 /// plotter_i::get_default_config methods.
 ///
-/// They're used to generate plots from a grapher::category_t object, and are
-/// configured by a nlohmann::json object.
+/// They're used to generate plots from a grapher::category_t object and a
+/// nlohmann::json object for configuration.
+///
+/// The plotter interface can also be used to implement other exportation modes
+/// such as CSV, plain text, debug, or even HTML export if you want.
 
 /// \ingroup plotters
-/// Common interface for plotters.
+
+/// Interface for plotters. Plotters should be able to:
+/// - Plot a ctbench::category_t with a nlohmann::json configuration object,
+/// - Output help as a std::string_view,
+/// - Output a default config as a nlohmann::json object.
 struct plotter_i {
   virtual ~plotter_i() = default;
 
-  /// Plots a given category at the given destination. It is parameterized by a
-  /// JSON config file.
+  /// Plots a given ctbench::category_t at the given destination.
+  /// It receives a nlohmann::json object as a config.
   virtual void plot(category_t const &cat, std::filesystem::path const &dest,
                     nlohmann::json const &config) const = 0;
 
-  /// Prints plotter-specific user help message. This is also the best place to
-  /// document plotter parameters.
+  /// Returns a help message for end-users.
   virtual std::string_view get_help() const = 0;
 
-  /// Returns plotter-specific default config. Make sure you cover all the
-  /// available parameters when overriding it.
+  /// Returns a default config for end-users.
   virtual nlohmann::json get_default_config() const = 0;
 };
 

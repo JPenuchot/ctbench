@@ -8,7 +8,8 @@ set(JSON_ImplicitConversions ON)
 set(JSON_Diagnostics ON)
 set(JSON_CI OFF)
 
-FetchContent_Declare(json_content
+FetchContent_Declare(
+  json_content
   GIT_REPOSITORY https://github.com/nlohmann/json.git
   GIT_TAG v3.9.1
   GIT_SHALLOW)
@@ -20,9 +21,10 @@ target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json)
 # ==============================================================================
 # Sciplot
 
-FetchContent_Declare(sciplot_content
+FetchContent_Declare(
+  sciplot_content
   GIT_REPOSITORY https://github.com/sciplot/sciplot.git
-  GIT_TAG v0.2.2
+  GIT_TAG master
   GIT_SHALLOW)
 
 FetchContent_GetProperties(sciplot_content)
@@ -36,7 +38,8 @@ target_include_directories(grapher PUBLIC ${sciplot_content_SOURCE_DIR})
 # TTS
 
 if(CTBENCH_ENABLE_TESTING)
-  FetchContent_Declare(tts_content
+  FetchContent_Declare(
+    tts_content
     GIT_REPOSITORY https://github.com/jfalcou/tts.git
     GIT_TAG 1.0
     GIT_SHALLOW)
@@ -46,6 +49,5 @@ if(CTBENCH_ENABLE_TESTING)
     FetchContent_Populate(tts_content)
   endif()
 
-  target_include_directories(grapher PUBLIC
-    ${tts_content_SOURCE_DIR}/include)
+  target_include_directories(grapher PUBLIC ${tts_content_SOURCE_DIR}/include)
 endif()
