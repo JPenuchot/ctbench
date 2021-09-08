@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nlohmann/detail/json_pointer.hpp>
 #include <optional>
 #include <string>
 
@@ -27,5 +28,9 @@ std::optional<double> get_average(std::vector<nlohmann::json> const &data,
 std::optional<std::string>
 get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
                  nlohmann::json::json_pointer const &name_jptr);
+
+/// Merges the contents of b into a, with items of a being overwritten if items
+/// present in b share the same key.
+nlohmann::json merge_into(nlohmann::json a, nlohmann::json const &b);
 
 } // namespace grapher

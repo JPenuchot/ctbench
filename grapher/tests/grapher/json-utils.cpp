@@ -116,3 +116,24 @@ TTS_CASE("find_matching - Imbricated JSON") {
               list.cbegin());
   }
 };
+
+TTS_CASE("merge_into - Basic")
+{
+  nlohmann::json a, b;
+
+  a["a"] = 0;
+  a["b"] = 0;
+
+  b["b"] = 1;
+  b["c"] = 1;
+
+  auto c = grapher::merge_into(a, b);
+
+  std::cout << c.dump(2) << std::ends;
+
+  TTS_EQUAL(c["a"], 0);
+  TTS_EQUAL(c["b"], 1);
+  TTS_EQUAL(c["c"], 1);
+};
+
+// TODO: merge_into with arrays and imbricated JSON objects
