@@ -1,5 +1,6 @@
 #include "grapher/json-utils.hpp"
 #include "nlohmann/json_fwd.hpp"
+#include <iostream>
 #include <llvm/Support/raw_ostream.h>
 #include <optional>
 
@@ -133,6 +134,14 @@ get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
   }
 
   return event[name_jptr];
+}
+
+nlohmann::json merge_into(nlohmann::json a, nlohmann::json const &b) {
+  for (nlohmann::json const b_flat = b.flatten();
+       auto const &[k_ptr, v] : b_flat.items()) {
+    a[nlohmann::json::json_pointer(k_ptr)] = v;
+  }
+  return a;
 }
 
 } // namespace grapher
