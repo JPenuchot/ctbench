@@ -117,8 +117,7 @@ TTS_CASE("find_matching - Imbricated JSON") {
   }
 };
 
-TTS_CASE("merge_into - Basic")
-{
+TTS_CASE("merge_into - Basic") {
   nlohmann::json a, b;
 
   a["a"] = 0;
