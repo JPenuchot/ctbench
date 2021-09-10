@@ -1,8 +1,9 @@
 #pragma once
 
-#include <nlohmann/detail/json_pointer.hpp>
 #include <optional>
 #include <string>
+
+#include <llvm/ADT/SmallVector.h>
 
 #include <nlohmann/json.hpp>
 
@@ -32,5 +33,7 @@ get_feature_name(benchmark_t const &bench, nlohmann::json const &matcher,
 /// Merges the contents of b into a, with items of a being overwritten if items
 /// present in b share the same key.
 nlohmann::json merge_into(nlohmann::json a, nlohmann::json const &b);
+
+llvm::SmallVector<nlohmann::json, 8> get_default_matchers();
 
 } // namespace grapher
