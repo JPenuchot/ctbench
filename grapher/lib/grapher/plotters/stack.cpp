@@ -28,18 +28,7 @@ nlohmann::json plotter_stack_t::get_default_config() const {
   res["plot_file_extension"] = ".svg";
 
   // Some matchers as an example...
-  res["matchers"].push_back({{"name", "Total ExecuteCompiler"}});
-  res["matchers"].push_back({{"name", "Total Frontend"}});
-  res["matchers"].push_back({{"name", "Total Source"}});
-  res["matchers"].push_back({{"name", "Total ParseClass"}});
-  res["matchers"].push_back({{"name", "Total InstantiateClass"}});
-  res["matchers"].push_back({{"name", "Total Backend"}});
-  res["matchers"].push_back({{"name", "Total ParseTemplate"}});
-  res["matchers"].push_back({{"name", "Total OptModule"}});
-  res["matchers"].push_back({{"name", "Total CodeGenPasses"}});
-  res["matchers"].push_back({{"name", "Total PerModulePasses"}});
-  res["matchers"].push_back({{"name", "Total PerFunctionPasses"}});
-  res["matchers"].push_back({{"name", "Total PerformPendingInstantiations"}});
+  res["matchers"] = get_default_matchers();
 
   return res;
 }
