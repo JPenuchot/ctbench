@@ -7,7 +7,7 @@ namespace grapher::plotters {
 /// \ingroup plotters
 /// Display bars
 struct plotter_grouped_histogram_t : public plotter_i {
-  void plot(category_t const &cat, std::filesystem::path const &dest,
+  void plot(benchmark_set_t const &cat, std::filesystem::path const &dest,
             nlohmann::json const &config) const override;
 
   std::string_view get_help() const override;

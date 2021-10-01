@@ -12,7 +12,7 @@ std::string_view plotter_debug_t::get_help() const {
 
 nlohmann::json plotter_debug_t::get_default_config() const { return {}; }
 
-void plotter_debug_t::plot(const category_t &cat,
+void plotter_debug_t::plot(const benchmark_set_t &cat,
                            const std::filesystem::path &dest,
                            const nlohmann::json &config) const {
   llvm::outs() << "Output path: " << dest << '\n';

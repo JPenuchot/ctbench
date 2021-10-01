@@ -1,16 +1,87 @@
 #include <filesystem>
 
+#include <llvm/ADT/SmallString.h>
 #include <llvm/Support/raw_ostream.h>
 
 #include <nlohmann/json.hpp>
 
 #include <sciplot/sciplot.hpp>
 
-#include "grapher/json-utils.hpp"
-#include "grapher/plot-utils.hpp"
 #include "grapher/plotters/compare.hpp"
+#include "grapher/utils/config.hpp"
+#include "grapher/utils/json.hpp"
+#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
+
+/// Config type for plotter_compare_t
+struct compare_config_t {
+  bool draw_average;
+  bool draw_points;
+
+  llvm::SmallString<16> value_json_pointer;
+  llvm::SmallString<16> name_json_pointer;
+  llvm::SmallString<16> plot_file_extension;
+
+  llvm::SmallVector<group_t, 8> groups;
+};
+
+compare_config_t get_default_compare_config() {
+  return compare_config_t{
+      .draw_average = true,
+      .draw_points = true,
+
+      .value_json_pointer{"/dur"},
+      .name_json_pointer{"/name"},
+      .plot_file_extension{".svg"},
+
+      .groups = {{{"name", "Total ExecuteCompiler"}},
+                 {{"name", "Total Frontend"}},
+                 {{"name", "Total Source"}},
+                 {{"name", "Total ParseClass"}},
+                 {{"name", "Total InstantiateClass"}},
+                 {{"name", "Total Backend"}},
+                 {{"name", "Total ParseTemplate"}},
+                 {{"name", "Total OptModule"}},
+                 {{"name", "Total CodeGenPasses"}},
+                 {{"name", "Total PerModulePasses"}},
+                 {{"name", "Total PerFunctionPasses"}},
+                 {{"name", "Total PerformPendingInstantiations"}}},
+  };
+}
+
+nlohmann::json compare_config_to_json(compare_config_t const &c) {
+  nlohmann::json res;
+
+  res["draw_average"] = c.draw_average;
+  res["draw_points"] = c.draw_points;
+  res["value_json_pointer"] = c.value_json_pointer;
+  res["name_json_pointer"] = c.name_json_pointer;
+  res["plot_file_extension"] = c.plot_file_extension;
+  // res["groups"] = c.groups;
+
+  return res;
+}
+
+compare_config_t json_to_compare_config(nlohmann::json const &j) {
+  if (j.empty()) {
+    return {};
+  }
+
+  compare_config_t d = get_default_compare_config();
+
+  return compare_config_t{
+      .draw_average = j.value("draw_average", d.draw_average),
+      .draw_points = j.value("draw_points", d.draw_points),
+
+      .value_json_pointer{j.value("value_json_pointer", d.value_json_pointer)},
+      .name_json_pointer{j.value("name_json_pointer", d.name_json_pointer)},
+      .plot_file_extension{
+          j.value("plot_file_extension", d.plot_file_extension)},
+
+      // .matchers = j.value("matchers", d.matchers),
+  };
+}
 
 std::string_view plotter_compare_t::get_help() const {
   return "For each matcher in the \'matchers\' JSON field, generates a graph "
@@ -21,29 +92,11 @@ std::string_view plotter_compare_t::get_help() const {
 nlohmann::json plotter_compare_t::get_default_config() const {
   nlohmann::json res = grapher::base_default_config();
 
-  // Basic values, probably no need to change them
-  res["value_json_pointer"] = "/dur";
-  res["name_json_pointer"] = "/name";
-  res["plot_file_extension"] = ".svg";
-
-  // Some matchers as an example...
-  res["matchers"].push_back({{"name", "Total ExecuteCompiler"}});
-  res["matchers"].push_back({{"name", "Total Frontend"}});
-  res["matchers"].push_back({{"name", "Total Source"}});
-  res["matchers"].push_back({{"name", "Total ParseClass"}});
-  res["matchers"].push_back({{"name", "Total InstantiateClass"}});
-  res["matchers"].push_back({{"name", "Total Backend"}});
-  res["matchers"].push_back({{"name", "Total ParseTemplate"}});
-  res["matchers"].push_back({{"name", "Total OptModule"}});
-  res["matchers"].push_back({{"name", "Total CodeGenPasses"}});
-  res["matchers"].push_back({{"name", "Total PerModulePasses"}});
-  res["matchers"].push_back({{"name", "Total PerFunctionPasses"}});
-  res["matchers"].push_back({{"name", "Total PerformPendingInstantiations"}});
-
-  return res;
+  return merge_into(grapher::base_default_config(),
+                    compare_config_to_json(get_default_compare_config()));
 }
 
-void plotter_compare_t::plot(category_t const &cat,
+void plotter_compare_t::plot(benchmark_set_t const &cat,
                              std::filesystem::path const &dest,
                              nlohmann::json const &config) const {
   std::vector<nlohmann::json> matcher_set;

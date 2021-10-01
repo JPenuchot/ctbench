@@ -7,9 +7,9 @@
 
 #include <sciplot/sciplot.hpp>
 
-#include "grapher/json-utils.hpp"
-#include "grapher/plot-utils.hpp"
 #include "grapher/plotters/stack.hpp"
+#include "grapher/utils/json.hpp"
+#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
 
@@ -33,7 +33,7 @@ nlohmann::json plotter_stack_t::get_default_config() const {
   return res;
 }
 
-void plotter_stack_t::plot(category_t const &cat,
+void plotter_stack_t::plot(benchmark_set_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
   nlohmann::json const default_config = this->get_default_config();

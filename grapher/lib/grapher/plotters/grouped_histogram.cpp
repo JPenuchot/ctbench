@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <iterator>
+#include <llvm/Support/raw_ostream.h>
 #include <nlohmann/json_fwd.hpp>
 #include <regex>
 #include <vector>
@@ -12,10 +13,10 @@
 
 #include <sciplot/sciplot.hpp>
 
-#include "grapher/json-utils.hpp"
-#include "grapher/plot-utils.hpp"
 #include "grapher/plotters/grouped_histogram.hpp"
 #include "grapher/plotters/plotters.hpp"
+#include "grapher/utils/json.hpp"
+#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
 
@@ -85,6 +86,9 @@ histo_group_t json_to_histo_group(nlohmann::json const &j) {
 struct grouped_histogram_config_t {
   llvm::SmallVector<nlohmann::json, 8> matchers;
   llvm::SmallVector<histo_group_t, 8> groups;
+
+  llvm::SmallString<8> feature_value_jptr;
+  llvm::SmallString<8> feature_name_jptr;
 };
 
 nlohmann::json
@@ -146,25 +150,27 @@ nlohmann::json plotter_grouped_histogram_t::get_default_config() const {
       grouped_histogram_config_to_json(get_grouped_histogram_default_config()));
 }
 
-void plotter_grouped_histogram_t::plot(const category_t &cat,
+void plotter_grouped_histogram_t::plot(const benchmark_set_t &cat,
                                        const std::filesystem::path &dest,
                                        const nlohmann::json &config) const {
-  nlohmann::json const default_config = this->get_default_config();
-  std::vector<nlohmann::json> matcher_set;
+  grouped_histogram_config_t histo_config =
+      json_to_grouped_config_histogram(config);
 
-  if (config.contains("matchers") && config["matchers"].is_array()) {
-    matcher_set = std::vector<nlohmann::json>(config["matchers"]);
-  } else {
-    llvm::errs() << "Warning: No matcher was specified in the configuration "
-                    "file. Falling back to default matchers.\n";
-    matcher_set = std::vector<nlohmann::json>(default_config["matchers"]);
+  for (histo_group_t const &g : histo_config.groups) {
+    for (auto const &[name, entries] : cat) {
+      for (auto const &[size, iterations] : entries) {
+        for (auto const &iteration : iterations) {
+          // ...
+          if (!iteration.contains("traceEvents") ||
+              !iteration["traceEvents"].is_array()) {
+            llvm::errs() << "[WARNING] Invalid iteration data: no traceEvents "
+                            "array field.\n";
+            continue;
+          }
+        }
+      }
+    }
   }
-
-  nlohmann::json::json_pointer feature_value_jptr(
-      config.value("value_json_pointer", "/dur"));
-
-  nlohmann::json::json_pointer feature_name_jptr(
-      config.value("name_json_pointer", "/name"));
 }
 
 } // namespace grapher::plotters

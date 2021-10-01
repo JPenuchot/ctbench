@@ -33,7 +33,7 @@ struct plotter_i {
 
   /// Plots a given ctbench::category_t at the given destination.
   /// It receives a nlohmann::json object as a config.
-  virtual void plot(category_t const &cat, std::filesystem::path const &dest,
+  virtual void plot(benchmark_set_t const &cat, std::filesystem::path const &dest,
                     nlohmann::json const &config) const = 0;
 
   /// Returns a help message for end-users.
