@@ -1,8 +1,11 @@
-#include "grapher/json-utils.hpp"
-#include "nlohmann/json_fwd.hpp"
+#include "grapher/utils/json.hpp"
+
 #include <iostream>
-#include <llvm/Support/raw_ostream.h>
 #include <optional>
+
+#include <llvm/Support/raw_ostream.h>
+
+#include <nlohmann/json.hpp>
 
 namespace grapher {
 

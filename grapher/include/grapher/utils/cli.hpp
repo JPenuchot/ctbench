@@ -10,7 +10,7 @@ namespace grapher {
 
 /// Builds a category from a list of string arguments that contains paths to
 /// benchmarks.
-grapher::category_t
+grapher::benchmark_set_t
 build_category(llvm::cl::list<std::string> const &benchmark_path_list);
 
 } // namespace grapher

@@ -1,4 +1,8 @@
-#include "grapher/plot-utils.hpp"
+#include "grapher/utils/plot.hpp"
+
+#include <nlohmann/json.hpp>
+#include <sciplot/sciplot.hpp>
+
 #include "grapher/plotters/plotter_i.hpp"
 
 namespace grapher {

@@ -4,16 +4,16 @@
 
 #include <llvm/Support/raw_ostream.h>
 
-#include "grapher/cli-utils.hpp"
+#include "grapher/utils/cli.hpp"
 
 namespace grapher {
 
-grapher::category_t
+grapher::benchmark_set_t
 build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
   namespace fs = std::filesystem;
 
   // Filling in category
-  grapher::category_t category;
+  grapher::benchmark_set_t category;
   for (auto const &bench_path_str : benchmark_path_list) {
     fs::path bench_path(bench_path_str.data());
 
