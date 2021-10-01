@@ -25,6 +25,6 @@ struct benchmark_t {
 
 /// Represents a category, which is just a series of benchmarks that must be
 /// plotted at the same scale.
-using category_t = std::vector<benchmark_t>;
+using benchmark_set_t = std::vector<benchmark_t>;
 
 } // namespace grapher
