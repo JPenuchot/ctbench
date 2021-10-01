@@ -6,9 +6,9 @@
 
 #include <nlohmann/json.hpp>
 
-#include "grapher/cli-utils.hpp"
 #include "grapher/core.hpp"
 #include "grapher/plotters/plotters.hpp"
+#include "grapher/utils/cli.hpp"
 
 namespace cli {
 namespace lc = llvm::cl;
@@ -34,7 +34,8 @@ int main(int argc, char const *argv[]) {
       grapher::plotter_type_to_plotter(cli::plotter_opt.getValue());
 
   // Build cats
-  grapher::category_t cat = grapher::build_category(cli::benchmark_path_list);
+  grapher::benchmark_set_t cat =
+      grapher::build_category(cli::benchmark_path_list);
 
   // Get configed
   nlohmann::json config;
