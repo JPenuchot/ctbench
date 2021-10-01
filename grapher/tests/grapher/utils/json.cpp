@@ -1,7 +1,7 @@
 #define TTS_MAIN
 #include <tts/tts.hpp>
 
-#include "grapher/json-utils.hpp"
+#include "grapher/utils/json.hpp"
 
 TTS_CASE("find_matching - Basic") {
   nlohmann::json json_a = {{"a", 42}};
@@ -127,8 +127,6 @@ TTS_CASE("merge_into - Basic") {
   b["c"] = 1;
 
   auto c = grapher::merge_into(a, b);
-
-  std::cout << c.dump(2) << std::ends;
 
   TTS_EQUAL(c["a"], 0);
   TTS_EQUAL(c["b"], 1);
