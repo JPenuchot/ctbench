@@ -7,6 +7,8 @@
 
 #include <nlohmann/json.hpp>
 
+#include "grapher/constraints.hpp"
+
 namespace grapher {
 
 nlohmann::json::const_iterator
@@ -145,21 +147,6 @@ nlohmann::json merge_into(nlohmann::json a, nlohmann::json const &b) {
     a[nlohmann::json::json_pointer(k_ptr)] = v;
   }
   return a;
-}
-
-llvm::SmallVector<nlohmann::json, 8> get_default_matchers() {
-  return {{"name", "Total ExecuteCompiler"},
-          {"name", "Total Frontend"},
-          {"name", "Total Source"},
-          {"name", "Total ParseClass"},
-          {"name", "Total InstantiateClass"},
-          {"name", "Total Backend"},
-          {"name", "Total ParseTemplate"},
-          {"name", "Total OptModule"},
-          {"name", "Total CodeGenPasses"},
-          {"name", "Total PerModulePasses"},
-          {"name", "Total PerFunctionPasses"},
-          {"name", "Total PerformPendingInstantiations"}};
 }
 
 } // namespace grapher
