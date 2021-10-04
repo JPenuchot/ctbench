@@ -1,6 +1,7 @@
 #include <filesystem>
+#include <string>
+#include <vector>
 
-#include <llvm/ADT/SmallString.h>
 #include <llvm/Support/raw_ostream.h>
 
 #include <nlohmann/json.hpp>
@@ -19,11 +20,11 @@ struct compare_config_t {
   bool draw_average;
   bool draw_points;
 
-  llvm::SmallString<16> value_json_pointer;
-  llvm::SmallString<16> name_json_pointer;
-  llvm::SmallString<16> plot_file_extension;
+  std::string value_json_pointer;
+  std::string name_json_pointer;
+  std::string plot_file_extension;
 
-  llvm::SmallVector<group_t, 8> groups;
+  std::vector<group_descriptor_t> groups;
 };
 
 compare_config_t get_default_compare_config() {
@@ -35,18 +36,7 @@ compare_config_t get_default_compare_config() {
       .name_json_pointer{"/name"},
       .plot_file_extension{".svg"},
 
-      .groups = {{{"name", "Total ExecuteCompiler"}},
-                 {{"name", "Total Frontend"}},
-                 {{"name", "Total Source"}},
-                 {{"name", "Total ParseClass"}},
-                 {{"name", "Total InstantiateClass"}},
-                 {{"name", "Total Backend"}},
-                 {{"name", "Total ParseTemplate"}},
-                 {{"name", "Total OptModule"}},
-                 {{"name", "Total CodeGenPasses"}},
-                 {{"name", "Total PerModulePasses"}},
-                 {{"name", "Total PerFunctionPasses"}},
-                 {{"name", "Total PerformPendingInstantiations"}}},
+      .groups = {}, // TODO
   };
 }
 
@@ -58,7 +48,7 @@ nlohmann::json compare_config_to_json(compare_config_t const &c) {
   res["value_json_pointer"] = c.value_json_pointer;
   res["name_json_pointer"] = c.name_json_pointer;
   res["plot_file_extension"] = c.plot_file_extension;
-  // res["groups"] = c.groups;
+  // res["group_descriptors"] = c.groups;
 
   return res;
 }
@@ -79,7 +69,7 @@ compare_config_t json_to_compare_config(nlohmann::json const &j) {
       .plot_file_extension{
           j.value("plot_file_extension", d.plot_file_extension)},
 
-      // .matchers = j.value("matchers", d.matchers),
+      // .matchers = j.value("group_descriptors", d.matchers),
   };
 }
 
@@ -99,43 +89,29 @@ nlohmann::json plotter_compare_t::get_default_config() const {
 void plotter_compare_t::plot(benchmark_set_t const &cat,
                              std::filesystem::path const &dest,
                              nlohmann::json const &config) const {
-  std::vector<nlohmann::json> matcher_set;
-
-  if (config.contains("matchers") && config["matchers"].is_array()) {
-    matcher_set = std::vector<nlohmann::json>(config["matchers"]);
-  } else {
-    llvm::errs() << "Warning: No matcher was specified in the configuration "
-                    "file. Falling back to default matchers.\n";
-    matcher_set =
-        std::vector<nlohmann::json>(this->get_default_config()["matchers"]);
-  }
+  std::vector<group_descriptor_t> group_descriptors = read_descriptors(
+      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
 
   nlohmann::json::json_pointer feature_value_jptr(
-      config.value("value_json_pointer", "/dur"));
+      json_value<std::string>(config, "value_json_pointer"));
 
   nlohmann::json::json_pointer feature_name_jptr(
-      config.value("name_json_pointer", "/name"));
+      json_value<std::string>(config, "name_json_pointer"));
 
-  for (auto const &matcher : matcher_set) {
+  for (group_descriptor_t const &descriptor : group_descriptors) {
     sciplot::Plot plot;
     apply_config(plot, config);
-
-    std::string filename;
 
     for (auto const &bench : cat) {
       std::vector<double> x;
       std::vector<double> y;
 
-      // Setting feature name if not already done
-      if (filename.empty()) {
-        filename = get_feature_name(bench, matcher, feature_name_jptr)
-                       .value_or(std::move(filename));
-      }
-
       for (auto const &[size, data] : bench.entries) {
-        // TODO: Maybe get better stats (standard deviation, etc...) ?
+        std::vector<nlohmann::basic_json<>> events =
+            extract_group(descriptor, data);
+
         std::optional<double> const val =
-            get_average(data, matcher, feature_value_jptr);
+            get_average(data, events, feature_value_jptr);
 
         if (val) {
           x.push_back(size);
@@ -146,15 +122,8 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
       plot.drawCurve(x, y).label(bench.name);
     }
 
-    if (filename.empty()) {
-      llvm::errs() << "[WARNING] Couldn't find filename for benchmark with "
-                      "following matcher:\n"
-                   << matcher.dump(2) << '\n';
-      continue;
-    }
-
     std::filesystem::create_directories(dest);
-    plot.save(dest / (std::move(filename) +
+    plot.save(dest / (std::move(descriptor.name) +
                       config.value("plot_file_extension", ".svg")));
   }
 }
