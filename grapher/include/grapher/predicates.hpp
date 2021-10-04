@@ -9,6 +9,6 @@ namespace grapher {
 using predicate_t = std::function<bool(nlohmann::json const &)>;
 
 /// Builds predicate and stores it in an std::function object.
-inline predicate_t get_predicate(nlohmann::json const &constraint);
+predicate_t get_predicate(nlohmann::json const &constraint);
 
 } // namespace grapher
