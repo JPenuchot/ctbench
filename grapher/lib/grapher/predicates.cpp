@@ -9,6 +9,10 @@
 
 namespace grapher::predicates {
 
+/// \defgroup predicates
+/// Predicates for group descriptors.
+
+/// \ingroup predicates
 /// Generates a regex predicate from constraint.
 inline auto regex(nlohmann::json const &constraint) {
   // Validating pointer parameter
@@ -38,6 +42,7 @@ inline auto regex(nlohmann::json const &constraint) {
   };
 }
 
+/// \ingroup predicates
 /// Generates a match predicate from constraint.
 inline auto match(nlohmann::json const &constraint) {
   // Validating pointer parameter
@@ -64,6 +69,7 @@ inline auto match(nlohmann::json const &constraint) {
   };
 }
 
+/// \ingroup predicates
 /// Generates a streq predicate from constraint.
 inline auto streq(nlohmann::json const &constraint) {
   // Validating pointer parameter
@@ -97,6 +103,7 @@ inline auto streq(nlohmann::json const &constraint) {
 
 namespace grapher {
 
+/// \ingroup predicates
 /// Builds predicate and stores it in an std::function object.
 predicate_t get_predicate(nlohmann::json const &constraint) {
   if (!constraint.contains("type") || !constraint["type"].is_string()) {
