@@ -1,4 +1,5 @@
 #include <filesystem>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -8,70 +9,13 @@
 
 #include <sciplot/sciplot.hpp>
 
+#include "grapher/core.hpp"
 #include "grapher/plotters/compare.hpp"
 #include "grapher/utils/config.hpp"
 #include "grapher/utils/json.hpp"
 #include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
-
-/// Config type for plotter_compare_t
-struct compare_config_t {
-  bool draw_average;
-  bool draw_points;
-
-  std::string value_json_pointer;
-  std::string name_json_pointer;
-  std::string plot_file_extension;
-
-  std::vector<group_descriptor_t> groups;
-};
-
-compare_config_t get_default_compare_config() {
-  return compare_config_t{
-      .draw_average = true,
-      .draw_points = true,
-
-      .value_json_pointer{"/dur"},
-      .name_json_pointer{"/name"},
-      .plot_file_extension{".svg"},
-
-      .groups = {}, // TODO
-  };
-}
-
-nlohmann::json compare_config_to_json(compare_config_t const &c) {
-  nlohmann::json res;
-
-  res["draw_average"] = c.draw_average;
-  res["draw_points"] = c.draw_points;
-  res["value_json_pointer"] = c.value_json_pointer;
-  res["name_json_pointer"] = c.name_json_pointer;
-  res["plot_file_extension"] = c.plot_file_extension;
-  // res["group_descriptors"] = c.groups;
-
-  return res;
-}
-
-compare_config_t json_to_compare_config(nlohmann::json const &j) {
-  if (j.empty()) {
-    return {};
-  }
-
-  compare_config_t d = get_default_compare_config();
-
-  return compare_config_t{
-      .draw_average = j.value("draw_average", d.draw_average),
-      .draw_points = j.value("draw_points", d.draw_points),
-
-      .value_json_pointer{j.value("value_json_pointer", d.value_json_pointer)},
-      .name_json_pointer{j.value("name_json_pointer", d.name_json_pointer)},
-      .plot_file_extension{
-          j.value("plot_file_extension", d.plot_file_extension)},
-
-      // .matchers = j.value("group_descriptors", d.matchers),
-  };
-}
 
 std::string_view plotter_compare_t::get_help() const {
   return "For each matcher in the \'matchers\' JSON field, generates a graph "
@@ -80,15 +24,16 @@ std::string_view plotter_compare_t::get_help() const {
 }
 
 nlohmann::json plotter_compare_t::get_default_config() const {
+  // TODO
   nlohmann::json res = grapher::base_default_config();
-
-  return merge_into(grapher::base_default_config(),
-                    compare_config_to_json(get_default_compare_config()));
+  return grapher::base_default_config();
 }
 
 void plotter_compare_t::plot(benchmark_set_t const &cat,
                              std::filesystem::path const &dest,
                              nlohmann::json const &config) const {
+  // Read config
+
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
       json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
 
@@ -98,28 +43,56 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
   nlohmann::json::json_pointer feature_name_jptr(
       json_value<std::string>(config, "name_json_pointer"));
 
+  bool draw_average = config.value("draw_average", true);
+  bool draw_points = config.value("draw_points", true);
+
+  // Draw
+
   for (group_descriptor_t const &descriptor : group_descriptors) {
     sciplot::Plot plot;
     apply_config(plot, config);
 
-    for (auto const &bench : cat) {
-      std::vector<double> x;
-      std::vector<double> y;
+    for (benchmark_t const &bench : cat) {
+      std::vector<double> x_points;
+      std::vector<double> y_points;
 
-      for (auto const &[size, data] : bench.entries) {
-        std::vector<nlohmann::basic_json<>> events =
-            extract_group(descriptor, data);
+      std::vector<double> x_average;
+      std::vector<double> y_average;
 
-        std::optional<double> const val =
-            get_average(data, events, feature_value_jptr);
+      for (entry_t const &entry : bench.entries) {
+        if (entry.data.empty()) {
+          llvm::errs() << "[WARNING] No event in benchmark " << bench.name
+                       << " at size " << entry.size << "\n";
+          continue;
+        }
 
-        if (val) {
-          x.push_back(size);
-          y.push_back(*val);
+        std::vector<double> const values =
+            get_values(entry, descriptor, feature_value_jptr);
+
+        if (values.empty()) {
+          llvm::errs() << "[WARNING] No event in benchmark " << bench.name
+                       << " at size " << entry.size
+                       << " matched by group descriptor " << descriptor.name
+                       << ".\n";
+          continue;
+        }
+
+        if (draw_points) {
+          for (double value : values) {
+            x_points.push_back(entry.size);
+            y_points.push_back(value);
+          }
+        }
+
+        if (draw_average) {
+          x_average.push_back(entry.size);
+          y_average.push_back(std::reduce(values.begin(), values.end()) /
+                              values.size());
         }
       }
 
-      plot.drawCurve(x, y).label(bench.name);
+      plot.drawCurve(x_average, y_average).label(bench.name);
+      plot.drawPoints(x_points, y_points);
     }
 
     std::filesystem::create_directories(dest);

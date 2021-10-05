@@ -5,9 +5,12 @@
 
 #include <nlohmann/json.hpp>
 
+#include <numeric>
 #include <sciplot/sciplot.hpp>
 
+#include "grapher/core.hpp"
 #include "grapher/plotters/stack.hpp"
+#include "grapher/utils/config.hpp"
 #include "grapher/utils/json.hpp"
 #include "grapher/utils/plot.hpp"
 
@@ -28,7 +31,7 @@ nlohmann::json plotter_stack_t::get_default_config() const {
   res["plot_file_extension"] = ".svg";
 
   // Some matchers as an example...
-  res["matchers"] = get_default_matchers();
+  res["group_descriptors"] = {};
 
   return res;
 }
@@ -40,13 +43,8 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
 
   std::vector<nlohmann::json> matcher_set;
 
-  if (config.contains("matchers") && config["matchers"].is_array()) {
-    matcher_set = std::vector<nlohmann::json>(config["matchers"]);
-  } else {
-    llvm::errs() << "Warning: No matcher was specified in the configuration "
-                    "file. Falling back to default matchers.\n";
-    matcher_set = std::vector<nlohmann::json>(default_config["matchers"]);
-  }
+  std::vector<group_descriptor_t> descriptors = read_descriptors(
+      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
 
   nlohmann::json::json_pointer feature_value_jptr(
       config.value("value_json_pointer", "/dur"));
@@ -66,11 +64,9 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
     sp::Plot plot;
     apply_config(plot, config);
 
-    auto const &[bench_name, bench_entries] = bench;
-
     // x axis
     std::vector<double> x;
-    std::transform(bench_entries.begin(), bench_entries.end(),
+    std::transform(bench.entries.begin(), bench.entries.end(),
                    std::back_inserter(x),
                    [](entry_t const &e) -> double { return e.size; });
 
@@ -79,19 +75,22 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
     // High y axis
     std::vector<double> y_high(x.size());
 
-    for (auto const &matcher : matcher_set) {
+    for (auto const &descriptor : descriptors) {
       // Storing previous value as we iterate
       double value = 0.;
 
-      std::string curve_name =
-          get_feature_name(bench, matcher, feature_name_jptr)
-              .value_or("UNKNOWN");
+      std::string curve_name = descriptor.name;
 
-      for (std::size_t i = 0; i < bench_entries.size(); i++) {
-        auto const &[entry_size, entry_iterations] = bench_entries[i];
+      for (std::size_t i = 0; i < bench.entries.size(); i++) {
+        entry_t const &entry = bench.entries[i];
         // TODO: Get better stats (standard deviation, etc...)
-        value = get_average(entry_iterations, matcher, feature_value_jptr)
-                    .value_or(value);
+        std::vector<double> const values =
+            get_values(entry, descriptor, feature_value_jptr);
+
+        if (!values.empty()) {
+          value = std::reduce(values.begin(), values.end()) / values.size();
+        }
+
         double const new_y = y_low[i] + value;
         y_high[i] = new_y;
 
