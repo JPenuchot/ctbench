@@ -1,4 +1,5 @@
 #include "grapher/predicates.hpp"
+#include "grapher/utils/json.hpp"
 
 #include <regex>
 
@@ -6,6 +7,7 @@
 
 #include <llvm/ADT/SmallString.h>
 #include <llvm/Support/raw_ostream.h>
+#include <string>
 
 namespace grapher::predicates {
 
@@ -16,49 +18,26 @@ namespace grapher::predicates {
 /// Generates a regex predicate from constraint.
 inline auto regex(nlohmann::json const &constraint) {
   // Validating pointer parameter
-  if (!constraint.contains("pointer") || !constraint["pointer"].is_string()) {
-    llvm::errs() << "[ERROR] Regex constraint has no pointer string value:\n"
-                 << constraint.dump(2) << '\n';
-    std::exit(1);
-  }
-
-  // Validating regex parameter
-  if (!constraint.contains("regex") || !constraint["regex"].is_string()) {
-    llvm::errs() << "[ERROR] Regex constraint has no regex string value:\n"
-                 << constraint.dump(2) << '\n';
-    std::exit(1);
-  }
-
-  return [pointer = nlohmann::json::json_pointer{constraint["pointer"]},
-          regex = llvm::SmallString<16>{constraint["regex"]}](
+  return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
+              constraint, "pointer")},
+          regex = json_value<std::string>(constraint, "regex")](
              nlohmann::json const &value) -> bool {
     if (!value.contains(pointer) || !value[pointer].is_string()) {
       return false;
     }
 
-    return std::regex_match(
-        value[pointer].get_ref<nlohmann::json::string_t const &>(),
-        std::regex(regex.data()));
+    return std::regex_match(json_value<std::string>(value, pointer),
+                            std::regex(regex.data()));
   };
 }
 
 /// \ingroup predicates
 /// Generates a match predicate from constraint.
 inline auto match(nlohmann::json const &constraint) {
-  // Validating pointer parameter
-  if (!constraint.contains("pointer") || !constraint["pointer"].is_string()) {
-    llvm::errs() << "[ERROR] Regex constraint has no pointer string value:\n"
-                 << constraint.dump(2) << '\n';
-  }
-
-  // Validating matcher parameter
-  if (!constraint.contains("matcher")) {
-    llvm::errs() << "[ERROR] Match constraint has no \"matcher\" value:\n"
-                 << constraint.dump(2) << '\n';
-  }
-
-  return [pointer = nlohmann::json::json_pointer(constraint["pointer"]),
-          matcher_flat = constraint["matcher"].flatten()](
+  return [pointer = nlohmann::json::json_pointer(
+              json_value<std::string>(constraint, "pointer")),
+          matcher_flat =
+              json_value<nlohmann::json>(constraint, "matcher").flatten()](
              nlohmann::json const &value) -> bool {
     for (auto const &[k, v] : matcher_flat.items()) {
       if (value[nlohmann::json::json_pointer(k)] != v) {
@@ -86,10 +65,9 @@ inline auto streq(nlohmann::json const &constraint) {
     std::exit(1);
   }
 
-  nlohmann::json::json_pointer pointer(constraint["pointer"]);
-
-  return [pointer = nlohmann::json::json_pointer{constraint["pointer"]},
-          str = llvm::SmallString<16>(constraint["string"])](
+  return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
+              constraint, "pointer")},
+          str = json_value<std::string>(constraint, "string")](
              nlohmann::json const &value) -> bool {
     if (!value.contains(pointer) || !value[pointer].is_string()) {
       return false;
