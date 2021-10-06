@@ -19,17 +19,24 @@ std::vector<double> get_values(entry_t const &entry,
   res.reserve(entry.data.size());
 
   for (nlohmann::json const &iteration : entry.data) {
-    double val = 0;
+    // Extract events
     std::vector<nlohmann::json> events =
         json_value<std::vector<nlohmann::json>>(iteration, "traceEvents");
 
+    // Filter events
     std::vector<nlohmann::json> matching_events =
         extract_group(descriptor, events);
 
+    // Check for data
+    if (matching_events.empty()) {
+      continue;
+    }
+
+    // Accumulate
+    double val = 0;
     for (auto const &event : matching_events) {
       val += json_value<double>(event, value_jptr);
     }
-
     res.push_back(val);
   }
 
