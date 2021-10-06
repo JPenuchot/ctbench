@@ -31,7 +31,8 @@ nlohmann::json plotter_stack_t::get_default_config() const {
   res["plot_file_extension"] = ".svg";
 
   // Some matchers as an example...
-  res["group_descriptors"] = {};
+  res["group_descriptors"] =
+      write_descriptors({get_default_group_descriptor()});
 
   return res;
 }
@@ -39,18 +40,20 @@ nlohmann::json plotter_stack_t::get_default_config() const {
 void plotter_stack_t::plot(benchmark_set_t const &cat,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
-  nlohmann::json const default_config = this->get_default_config();
-
-  std::vector<nlohmann::json> matcher_set;
-
-  std::vector<group_descriptor_t> descriptors = read_descriptors(
-      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
+  // Config
 
   nlohmann::json::json_pointer feature_value_jptr(
       config.value("value_json_pointer", "/dur"));
 
   nlohmann::json::json_pointer feature_name_jptr(
       config.value("name_json_pointer", "/name"));
+
+  std::string plot_file_extension = config.value("plot_file_extension", ".svg");
+
+  std::vector<group_descriptor_t> descriptors = read_descriptors(
+      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
+
+  // Drawing
 
   std::vector<sciplot::Plot> plots;
 
@@ -119,8 +122,7 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
   std::filesystem::create_directories(dest);
   for (std::size_t i = 0; i < cat.size(); i++) {
     plots[i].yrange(0., max_val);
-    plots[i].save(dest /
-                  (cat[i].name + config.value("plot_file_extension", ".svg")));
+    plots[i].save(dest / (cat[i].name + plot_file_extension));
   }
 }
 

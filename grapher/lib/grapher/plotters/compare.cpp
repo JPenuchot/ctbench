@@ -18,15 +18,23 @@
 namespace grapher::plotters {
 
 std::string_view plotter_compare_t::get_help() const {
-  return "For each matcher in the \'matchers\' JSON field, generates a graph "
-         "comparing all benchmarks in the category. Each graph will be named "
-         "after the feature they observe.";
+  return "For each group descriptor, generates a graph comparing all "
+         "benchmarks in the set.";
 }
 
 nlohmann::json plotter_compare_t::get_default_config() const {
-  // TODO
   nlohmann::json res = grapher::base_default_config();
-  return grapher::base_default_config();
+
+  res["value_json_pointer"] = "/dur";
+  res["draw_average"] = true;
+  res["draw_points"] = true;
+
+  res["plot_file_extension"] = ".svg";
+
+  res["group_descriptors"] =
+      write_descriptors({get_default_group_descriptor()});
+
+  return res;
 }
 
 void plotter_compare_t::plot(benchmark_set_t const &cat,
@@ -34,19 +42,16 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
                              nlohmann::json const &config) const {
   // Config
 
-  std::vector<group_descriptor_t> group_descriptors = read_descriptors(
-      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
-
-  nlohmann::json::json_pointer feature_value_jptr(
+  nlohmann::json::json_pointer value_json_pointer(
       json_value<std::string>(config, "value_json_pointer"));
-
-  nlohmann::json::json_pointer feature_name_jptr(
-      json_value<std::string>(config, "name_json_pointer"));
 
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
 
-  std::string file_extension = config.value("file_extension", ".svg");
+  std::string plot_file_extension = config.value("plot_file_extension", ".svg");
+
+  std::vector<group_descriptor_t> group_descriptors = read_descriptors(
+      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
 
   // Draw
 
@@ -70,7 +75,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
         }
 
         std::vector<double> const values =
-            get_values(entry, descriptor, feature_value_jptr);
+            get_values(entry, descriptor, value_json_pointer);
 
         if (values.empty()) {
           llvm::errs() << "[WARNING] No event in benchmark " << bench.name
@@ -101,7 +106,8 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
     }
 
     std::filesystem::create_directories(dest);
-    plot.save(dest / (std::move(descriptor.name) + std::move(file_extension)));
+    plot.save(dest /
+              (std::move(descriptor.name) + std::move(plot_file_extension)));
   }
 }
 
