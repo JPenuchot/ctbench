@@ -90,10 +90,14 @@ inline auto op_and(nlohmann::json const &constraint) {
       };
 }
 
+/// \ingroup predicates
+/// Predicate that is always true.
 inline auto val_true(nlohmann::json const &) {
   return [](nlohmann::json const &) -> bool { return true; };
 }
 
+/// \ingroup predicates
+/// Predicate that is always false.
 inline auto val_false(nlohmann::json const &) {
   return [](nlohmann::json const &) -> bool { return false; };
 }
