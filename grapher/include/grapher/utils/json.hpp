@@ -31,6 +31,18 @@ inline ValueType json_value(nlohmann::json const &object,
                             LocType const &field_location,
                             const std::experimental::source_location loc =
                                 std::experimental::source_location::current()) {
+  // nlohmann::json
+  if constexpr (std::is_same<nlohmann::json, ValueType>::value) {
+    if (!object.contains(field_location)) {
+      llvm::errs() << loc.function_name() << " - Empty field " << field_location
+                   << ":\n"
+                   << object.dump(2) << '\n';
+      std::exit(1);
+    } else {
+      return object[field_location];
+    }
+  }
+
   // std::string
   if constexpr (std::is_same<std::string, ValueType>::value) {
     if (!object.contains(field_location) ||
