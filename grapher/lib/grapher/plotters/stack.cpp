@@ -87,10 +87,10 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
             get_values(entry, descriptor, feature_value_jptr);
 
         if (values.empty()) {
-          llvm::errs() << "[WARNING] No event matching descriptor "
+          llvm::errs() << "[ERROR] No event matching descriptor "
                        << descriptor.name << " in benchmark " << bench.name
                        << " with size = " << entry.size << ".\n";
-          continue;
+          std::exit(1);
         }
 
         // TODO: Get better stats (standard deviation, etc...)
