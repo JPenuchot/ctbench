@@ -32,7 +32,7 @@ nlohmann::json plotter_compare_t::get_default_config() const {
 void plotter_compare_t::plot(benchmark_set_t const &cat,
                              std::filesystem::path const &dest,
                              nlohmann::json const &config) const {
-  // Read config
+  // Config
 
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
       json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
@@ -46,9 +46,12 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
 
+  std::string file_extension = config.value("file_extension", ".svg");
+
   // Draw
 
   for (group_descriptor_t const &descriptor : group_descriptors) {
+    // Plot init
     sciplot::Plot plot;
     apply_config(plot, config);
 
@@ -77,6 +80,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
           continue;
         }
 
+        // Drawing points
         if (draw_points) {
           for (double value : values) {
             x_points.push_back(entry.size);
@@ -84,6 +88,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
           }
         }
 
+        // Drawing average
         if (draw_average) {
           x_average.push_back(entry.size);
           y_average.push_back(std::reduce(values.begin(), values.end()) /
@@ -96,8 +101,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
     }
 
     std::filesystem::create_directories(dest);
-    plot.save(dest / (std::move(descriptor.name) +
-                      config.value("plot_file_extension", ".svg")));
+    plot.save(dest / (std::move(descriptor.name) + std::move(file_extension)));
   }
 }
 
