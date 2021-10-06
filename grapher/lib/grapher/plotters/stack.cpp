@@ -75,7 +75,7 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
     // High y axis
     std::vector<double> y_high(x.size());
 
-    for (auto const &descriptor : descriptors) {
+    for (group_descriptor_t const &descriptor : descriptors) {
       // Storing previous value as we iterate
       double value = 0.;
 
@@ -83,17 +83,17 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
 
       for (std::size_t i = 0; i < bench.entries.size(); i++) {
         entry_t const &entry = bench.entries[i];
-        // TODO: Get better stats (standard deviation, etc...)
         std::vector<double> const values =
             get_values(entry, descriptor, feature_value_jptr);
 
         if (values.empty()) {
           llvm::errs() << "[WARNING] No event matching descriptor "
                        << descriptor.name << " in benchmark " << bench.name
-                       << " (size=" << entry.size << ").\n";
+                       << " with size = " << entry.size << ".\n";
           continue;
         }
 
+        // TODO: Get better stats (standard deviation, etc...)
         value = std::reduce(values.begin(), values.end()) / values.size();
         double const new_y = y_low[i] + value;
         y_high[i] = new_y;
