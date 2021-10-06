@@ -87,10 +87,14 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
         std::vector<double> const values =
             get_values(entry, descriptor, feature_value_jptr);
 
-        if (!values.empty()) {
-          value = std::reduce(values.begin(), values.end()) / values.size();
+        if (values.empty()) {
+          llvm::errs() << "[WARNING] No event matching descriptor "
+                       << descriptor.name << " in benchmark " << bench.name
+                       << " (size=" << entry.size << ").\n";
+          continue;
         }
 
+        value = std::reduce(values.begin(), values.end()) / values.size();
         double const new_y = y_low[i] + value;
         y_high[i] = new_y;
 
