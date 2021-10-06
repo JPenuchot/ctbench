@@ -2,11 +2,11 @@
 #include "grapher/utils/json.hpp"
 
 #include <regex>
+#include <string>
 
 #include <nlohmann/json.hpp>
 
 #include <llvm/Support/raw_ostream.h>
-#include <string>
 
 namespace grapher::predicates {
 
