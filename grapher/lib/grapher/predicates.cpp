@@ -50,20 +50,6 @@ inline auto match(nlohmann::json const &constraint) {
 /// \ingroup predicates
 /// Generates a streq predicate from constraint.
 inline auto streq(nlohmann::json const &constraint) {
-  // Validating pointer parameter
-  if (!constraint.contains("pointer") || !constraint["pointer"].is_string()) {
-    llvm::errs() << "[ERROR] Regex constraint has no pointer string value:\n"
-                 << constraint.dump(2) << '\n';
-    std::exit(1);
-  }
-
-  // Validating string parameter
-  if (!constraint.contains("string") || !constraint["string"].is_string()) {
-    llvm::errs() << "[ERROR] Streq constraint has no valid \"string\" value:\n"
-                 << constraint.dump(2) << '\n';
-    std::exit(1);
-  }
-
   return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
               constraint, "pointer")},
           str = json_value<std::string>(constraint, "string")](
