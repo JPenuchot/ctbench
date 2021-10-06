@@ -5,7 +5,6 @@
 
 #include <nlohmann/json.hpp>
 
-#include <llvm/ADT/SmallString.h>
 #include <llvm/Support/raw_ostream.h>
 #include <string>
 
@@ -84,13 +83,7 @@ namespace grapher {
 /// \ingroup predicates
 /// Builds predicate and stores it in an std::function object.
 predicate_t get_predicate(nlohmann::json const &constraint) {
-  if (!constraint.contains("type") || !constraint["type"].is_string()) {
-    llvm::errs() << "[ERROR] Constraint has no type: \n"
-                 << constraint.dump(2) << '\n';
-    std::exit(1);
-  }
-
-  llvm::SmallString<8> constraint_type(constraint["type"]);
+  std::string constraint_type = json_value<std::string>(constraint, "type");
 
   if (constraint_type == "regex") {
     return predicates::regex(constraint);
