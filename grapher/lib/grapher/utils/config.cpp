@@ -13,7 +13,7 @@
 namespace grapher {
 
 group_descriptor_t get_default_group_descriptor() {
-  return {.name = "all",
+  return {.name = "All",
           .constraints = nlohmann::json::array({
               {"type", "regex"},
               {"pointer", "/name"},
