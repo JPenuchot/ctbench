@@ -16,7 +16,7 @@ std::vector<double> get_values(entry_t const &entry,
                                group_descriptor_t const &descriptor,
                                nlohmann::json::json_pointer value_jptr) {
   std::vector<double> res;
-  res.resize(entry.data.size());
+  res.reserve(entry.data.size());
 
   for (nlohmann::json const &iteration : entry.data) {
     double val = 0;
