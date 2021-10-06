@@ -90,6 +90,14 @@ inline auto op_and(nlohmann::json const &constraint) {
       };
 }
 
+inline auto val_true(nlohmann::json const &) {
+  return [](nlohmann::json const &) -> bool { return true; };
+}
+
+inline auto val_false(nlohmann::json const &) {
+  return [](nlohmann::json const &) -> bool { return false; };
+}
+
 } // namespace grapher::predicates
 
 namespace grapher {
@@ -99,21 +107,20 @@ namespace grapher {
 predicate_t get_predicate(nlohmann::json const &constraint) {
   std::string constraint_type = json_value<std::string>(constraint, "type");
 
-  if (constraint_type == "regex") {
-    return predicates::regex(constraint);
+#define REGISTER_PREDICATE(name)                                               \
+  if (constraint_type == #name) {                                              \
+    return predicates::name(constraint);                                       \
   }
-  if (constraint_type == "match") {
-    return predicates::match(constraint);
-  }
-  if (constraint_type == "streq") {
-    return predicates::streq(constraint);
-  }
-  if (constraint_type == "op_or") {
-    return predicates::op_or(constraint);
-  }
-  if (constraint_type == "op_and") {
-    return predicates::op_and(constraint);
-  }
+
+  REGISTER_PREDICATE(regex);
+  REGISTER_PREDICATE(match);
+  REGISTER_PREDICATE(streq);
+  REGISTER_PREDICATE(op_or);
+  REGISTER_PREDICATE(op_and);
+  REGISTER_PREDICATE(val_true);
+  REGISTER_PREDICATE(val_false);
+
+#undef REGISTER_PREDICATE
 
   llvm::errs() << "[ERROR] Predicate error, invalid type:\n"
                << constraint.dump(2) << '\n';
