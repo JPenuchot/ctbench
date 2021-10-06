@@ -1,12 +1,17 @@
 #include "grapher/predicates.hpp"
 #include "grapher/utils/json.hpp"
 
+#include <nlohmann/json_fwd.hpp>
 #include <regex>
 #include <string>
 
 #include <nlohmann/json.hpp>
 
 #include <llvm/Support/raw_ostream.h>
+
+namespace grapher {
+predicate_t get_predicate(nlohmann::json const &constraint);
+}
 
 namespace grapher::predicates {
 
@@ -62,6 +67,29 @@ inline auto streq(nlohmann::json const &constraint) {
   };
 }
 
+/// \ingroup predicates
+/// Satisfied if one of the predicates in the first or second field is
+/// satisfied.
+inline auto op_or(nlohmann::json const &constraint) {
+  return
+      [first = get_predicate(json_value<nlohmann::json>(constraint, "first")),
+       second = get_predicate(json_value<nlohmann::json>(
+           constraint, "second"))](nlohmann::json const &value) -> bool {
+        return first(value) || second(value);
+      };
+}
+
+/// \ingroup predicates
+/// Satisfied if both predicates in the first and second field are satisfied.
+inline auto op_and(nlohmann::json const &constraint) {
+  return
+      [first = get_predicate(json_value<nlohmann::json>(constraint, "first")),
+       second = get_predicate(json_value<nlohmann::json>(
+           constraint, "second"))](nlohmann::json const &value) -> bool {
+        return first(value) && second(value);
+      };
+}
+
 } // namespace grapher::predicates
 
 namespace grapher {
@@ -80,8 +108,14 @@ predicate_t get_predicate(nlohmann::json const &constraint) {
   if (constraint_type == "streq") {
     return predicates::streq(constraint);
   }
+  if (constraint_type == "op_or") {
+    return predicates::op_or(constraint);
+  }
+  if (constraint_type == "op_and") {
+    return predicates::op_and(constraint);
+  }
 
-  llvm::errs() << "[ERROR] Invalid constraint type:\n"
+  llvm::errs() << "[ERROR] Predicate error, invalid type:\n"
                << constraint.dump(2) << '\n';
   std::exit(1);
 }
