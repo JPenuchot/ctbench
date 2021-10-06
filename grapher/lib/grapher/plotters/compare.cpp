@@ -97,7 +97,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
       }
 
       plot.drawCurve(x_average, y_average).label(bench.name);
-      plot.drawPoints(x_points, y_points);
+      plot.drawPoints(x_points, y_points).label(bench.name);
     }
 
     std::filesystem::create_directories(dest);
