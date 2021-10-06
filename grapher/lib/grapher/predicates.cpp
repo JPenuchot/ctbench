@@ -17,6 +17,8 @@ namespace grapher::predicates {
 
 /// \defgroup predicates
 /// Predicates for group descriptors.
+///
+/// TODO: Add an example for each predicate.
 
 /// \ingroup predicates
 /// Generates a regex predicate from constraint.

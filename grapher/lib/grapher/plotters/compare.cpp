@@ -19,7 +19,7 @@ namespace grapher::plotters {
 
 std::string_view plotter_compare_t::get_help() const {
   return "For each group descriptor, generates a graph comparing all "
-         "benchmarks in the set.";
+         "benchmark cases in the set.";
 }
 
 nlohmann::json plotter_compare_t::get_default_config() const {
@@ -53,7 +53,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
       json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
 
-  // Draw
+  // Drawing
 
   for (group_descriptor_t const &descriptor : group_descriptors) {
     // Plot init
