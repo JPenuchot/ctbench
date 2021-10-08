@@ -1,7 +1,7 @@
 #pragma once
 
 /// \file
-/// Core data types for benchmark representation.
+/// Data types for benchmark results representation.
 
 #include <string>
 #include <tuple>
@@ -10,21 +10,26 @@
 
 namespace grapher {
 
-/// Represents a benchmark entry, which is caracterized by a size and the
-/// benchmark results as JSON content.
-struct entry_t {
+/// Set of results for a benchmark case instanciated at a given size.
+struct benchmark_instance_t {
+  /// Size of the benchmark instance
   unsigned size;
-  std::vector<nlohmann::json> data;
+
+  /// Data series
+  std::vector<nlohmann::json> iterations;
 };
 
-/// Represents a benchmark, which is a series of entries.
-struct benchmark_t {
+/// Represents results for a benchmark case as a series of benchmark instances.
+struct benchmark_case_t {
+  /// Name of the benchmark case
   std::string name;
-  std::vector<entry_t> entries;
+
+  /// Instances of various sizes of the benchmark case
+  //std::vector<benchmark_instance_t> instances;
+  std::vector<benchmark_instance_t> instances;
 };
 
-/// Represents a category, which is just a series of benchmarks that must be
-/// plotted at the same scale.
-using benchmark_set_t = std::vector<benchmark_t>;
+/// Represents a set of benchmark cases for comparison
+using benchmark_set_t = std::vector<benchmark_case_t>;
 
 } // namespace grapher

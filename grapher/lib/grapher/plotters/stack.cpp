@@ -61,7 +61,7 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
   double max_val = 0.;
 
   /// Draws a stacked curve graph for a given benchmark
-  auto draw_plot = [&](benchmark_t const &bench) -> sciplot::Plot {
+  auto draw_plot = [&](benchmark_case_t const &bench) -> sciplot::Plot {
     namespace sp = sciplot;
 
     sp::Plot plot;
@@ -69,9 +69,9 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
 
     // x axis
     std::vector<double> x;
-    std::transform(bench.entries.begin(), bench.entries.end(),
+    std::transform(bench.instances.begin(), bench.instances.end(),
                    std::back_inserter(x),
-                   [](entry_t const &e) -> double { return e.size; });
+                   [](benchmark_instance_t const &e) -> double { return e.size; });
 
     // Low y axis
     std::vector<double> y_low(x.size(), 0.);
@@ -84,8 +84,8 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
 
       std::string curve_name = descriptor.name;
 
-      for (std::size_t i = 0; i < bench.entries.size(); i++) {
-        entry_t const &entry = bench.entries[i];
+      for (std::size_t i = 0; i < bench.instances.size(); i++) {
+        benchmark_instance_t const &entry = bench.instances[i];
         std::vector<double> const values =
             get_values(entry, descriptor, feature_value_jptr);
 

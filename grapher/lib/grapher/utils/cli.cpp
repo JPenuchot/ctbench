@@ -22,14 +22,14 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       continue;
     }
 
-    grapher::benchmark_t bench;
+    grapher::benchmark_case_t bench;
 
     // Reading benchmark name from benchmark directory path
     bench.name = bench_path.filename();
 
     // Adding entries
     for (auto const &entry_dir : fs::directory_iterator(bench_path)) {
-      grapher::entry_t entry;
+      grapher::benchmark_instance_t entry;
 
       // Entry directory name check and reading to entry size
       {
@@ -62,15 +62,15 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
           continue;
         }
 
-        entry.data.push_back(std::move(j));
+        entry.iterations.push_back(std::move(j));
       }
-      bench.entries.push_back(entry);
+      bench.instances.push_back(entry);
     }
 
     // Sorting by entry size
     std::sort(
-        bench.entries.begin(), bench.entries.end(),
-        [](entry_t const &a, entry_t const &b) { return a.size < b.size; });
+        bench.instances.begin(), bench.instances.end(),
+        [](benchmark_instance_t const &a, benchmark_instance_t const &b) { return a.size < b.size; });
 
     category.push_back(std::move(bench));
   }

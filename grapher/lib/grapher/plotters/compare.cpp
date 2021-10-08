@@ -60,15 +60,15 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
     sciplot::Plot plot;
     apply_config(plot, config);
 
-    for (benchmark_t const &bench : cat) {
+    for (benchmark_case_t const &bench : cat) {
       std::vector<double> x_points;
       std::vector<double> y_points;
 
       std::vector<double> x_average;
       std::vector<double> y_average;
 
-      for (entry_t const &entry : bench.entries) {
-        if (entry.data.empty()) {
+      for (benchmark_instance_t const &entry : bench.instances) {
+        if (entry.iterations.empty()) {
           llvm::errs() << "[WARNING] No event in benchmark " << bench.name
                        << " at size " << entry.size << "\n";
           continue;
