@@ -6,8 +6,16 @@
 
 namespace grapher {
 
+/// \defgroup predicates
+/// Predicates for group descriptors.
+///
+/// TODO: Add an example for each predicate.
+
+/// \ingroup predicates
+/// Dynamic representation of a predicate.
 using predicate_t = std::function<bool(nlohmann::json const &)>;
 
+/// \ingroup predicates
 /// Builds predicate and stores it in an std::function object.
 predicate_t get_predicate(nlohmann::json const &constraint);
 

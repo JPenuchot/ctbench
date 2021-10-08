@@ -9,16 +9,7 @@
 
 #include <llvm/Support/raw_ostream.h>
 
-namespace grapher {
-predicate_t get_predicate(nlohmann::json const &constraint);
-}
-
 namespace grapher::predicates {
-
-/// \defgroup predicates
-/// Predicates for group descriptors.
-///
-/// TODO: Add an example for each predicate.
 
 /// \ingroup predicates
 /// Generates a regex predicate from constraint.
