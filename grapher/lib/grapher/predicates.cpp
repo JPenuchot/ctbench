@@ -13,6 +13,15 @@ namespace grapher::predicates {
 
 /// \ingroup predicates
 /// Generates a regex predicate from constraint.
+///
+/// Example:
+/// ```json
+/// {
+///   "type": "regex",
+///   "pointer": "/name",
+///   "regex": "Total*"
+/// }
+/// ```
 inline auto regex(nlohmann::json const &constraint) {
   // Validating pointer parameter
   return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
@@ -29,16 +38,71 @@ inline auto regex(nlohmann::json const &constraint) {
 }
 
 /// \ingroup predicates
-/// Generates a match predicate from constraint.
+/// Generates a match predicate from constraint. A match predicate returns true
+/// if all the fields contained in the matcher object exist in the observed
+/// value and hold the same values.
+///
+/// String values will be regex matched if "regex_match" option is set to true.
+///
+/// Examples:
+///
+/// Using regex match:
+/// ```json
+/// {
+///   "type": "match",
+///   "regex_match": true,
+///   "matcher":
+///   {
+///     "name": "Source",
+///     "args":
+///     {
+///       "details": "/usr/include/boost/*"
+///     }
+///   }
+/// }
+/// ```
+///
+/// Not using regex match:
+/// ```json
+/// {
+///   "type": "match",
+///   "regex_match": false,
+///   "matcher":
+///   {
+///     "name": "Source",
+///     "args":
+///     {
+///       "details": "/usr/include/boost/preprocessor/logical/bool.hpp"
+///     }
+///   }
+/// }
+/// ```
+
 inline auto match(nlohmann::json const &constraint) {
-  return [pointer = nlohmann::json::json_pointer(
-              json_value<std::string>(constraint, "pointer")),
-          matcher_flat =
-              json_value<nlohmann::json>(constraint, "matcher").flatten()](
+  return [matcher_flat =
+              json_value<nlohmann::json>(constraint, "matcher").flatten(),
+          regex_match_opt = constraint.value("regex", false)](
              nlohmann::json const &value) -> bool {
     for (auto const &[k, v] : matcher_flat.items()) {
-      if (value[nlohmann::json::json_pointer(k)] != v) {
-        return false;
+      nlohmann::json::json_pointer ptr(k);
+
+      // Regex match
+      if (regex_match_opt) {
+        if (v.is_string()) {
+          if (!value.contains(ptr) || !value.is_string() ||
+              !std::regex_match(
+                  value[ptr].get_ref<nlohmann::json::string_t const &>(),
+                  std::regex(v))) {
+            return false;
+          }
+        }
+      }
+
+      // Default match
+      else {
+        if (!value.contains(ptr) || value[ptr] != v) {
+          return false;
+        }
       }
     }
     return true;
@@ -47,6 +111,15 @@ inline auto match(nlohmann::json const &constraint) {
 
 /// \ingroup predicates
 /// Generates a streq predicate from constraint.
+///
+/// Example:
+/// ```json
+/// {
+///   "type": "streq",
+///   "pointer": "/name",
+///   "string": "Total Source"
+/// }
+/// ```
 inline auto streq(nlohmann::json const &constraint) {
   return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
               constraint, "pointer")},
@@ -63,6 +136,14 @@ inline auto streq(nlohmann::json const &constraint) {
 /// \ingroup predicates
 /// Satisfied if one of the predicates in the first or second field is
 /// satisfied.
+///
+/// Example:
+/// ```json
+/// {
+///   "type": "op_or",
+///   ...
+/// }
+/// ```
 inline auto op_or(nlohmann::json const &constraint) {
   return
       [first = get_predicate(json_value<nlohmann::json>(constraint, "first")),
@@ -74,6 +155,14 @@ inline auto op_or(nlohmann::json const &constraint) {
 
 /// \ingroup predicates
 /// Satisfied if both predicates in the first and second field are satisfied.
+///
+/// Example:
+/// ```json
+/// {
+///   "type": "op_and",
+///   ...
+/// }
+/// ```
 inline auto op_and(nlohmann::json const &constraint) {
   return
       [first = get_predicate(json_value<nlohmann::json>(constraint, "first")),
@@ -85,12 +174,26 @@ inline auto op_and(nlohmann::json const &constraint) {
 
 /// \ingroup predicates
 /// Predicate that is always true.
+///
+/// Example:
+/// ```json
+/// {
+///   "type": "val_true",
+/// }
+/// ```
 inline auto val_true(nlohmann::json const &) {
   return [](nlohmann::json const &) -> bool { return true; };
 }
 
 /// \ingroup predicates
 /// Predicate that is always false.
+///
+/// Example:
+/// ```json
+/// {
+///   "type": "val_false",
+/// }
+/// ```
 inline auto val_false(nlohmann::json const &) {
   return [](nlohmann::json const &) -> bool { return false; };
 }

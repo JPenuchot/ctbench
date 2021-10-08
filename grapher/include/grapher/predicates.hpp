@@ -8,8 +8,6 @@ namespace grapher {
 
 /// \defgroup predicates
 /// Predicates for group descriptors.
-///
-/// TODO: Add an example for each predicate.
 
 /// \ingroup predicates
 /// Dynamic representation of a predicate.
