@@ -95,6 +95,10 @@ inline auto match(nlohmann::json const &constraint) {
                   std::regex(v))) {
             return false;
           }
+        } else {
+          if (!value.contains(ptr) || value[ptr] != v) {
+            return false;
+          }
         }
       }
 
