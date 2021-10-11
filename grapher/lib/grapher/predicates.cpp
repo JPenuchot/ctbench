@@ -145,7 +145,18 @@ inline auto streq(nlohmann::json const &constraint) {
 /// ```json
 /// {
 ///   "type": "op_or",
-///   ...
+///   "first":
+///   {
+///     "type": "regex",
+///     "pointer": "/name",
+///     "regex": "Total*"
+///   },
+///   "second":
+///   {
+///     "type": "streq",
+///     "pointer": "/name",
+///     "string": "Source"
+///   }
 /// }
 /// ```
 inline auto op_or(nlohmann::json const &constraint) {
@@ -164,7 +175,18 @@ inline auto op_or(nlohmann::json const &constraint) {
 /// ```json
 /// {
 ///   "type": "op_and",
-///   ...
+///   "first":
+///   {
+///     "type": "streq",
+///     "pointer": "/name",
+///     "string": "Total Source"
+///   },
+///   "second":
+///   {
+///     "type": "streq",
+///     "pointer": "/name",
+///     "string": "Total InstantiateClass"
+///   }
 /// }
 /// ```
 inline auto op_and(nlohmann::json const &constraint) {
