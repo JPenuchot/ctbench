@@ -12,21 +12,11 @@ and analysis**, thus it is not a one-shot profiler, but a set of tools that
 allow you to get **reproductible data** from user-defined compile-time
 benchmarks.
 
-It has two main components: a CMake boilerplate library and a C++ plotting toolset.
+It has two main components: a CMake boilerplate library and a C++ plotting
+toolset.
 
 The CMake library contains all the boilerplate code to define benchmark targets
 compatible with the C++ plotting toolset called `grapher`.
-
-## Term definitions
-
-Users can define **benchmarks** and aggregate them into **categories**.
-Every benchmark can be run at a given size.
-
-A single benchmark result is an **iteration**, **entries** store iterations of a
-*same benchmark* run at the *same size*.
-
-[`grapher/core.hpp`](grapher/include/grapher/core.hpp) is where data structures
-following these definitions are defined.
 
 ## How-to
 
