@@ -107,7 +107,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
 
     std::filesystem::create_directories(dest);
     plot.save(dest /
-              (std::move(descriptor.name) + std::move(plot_file_extension)));
+              (std::move(descriptor.name) + plot_file_extension));
   }
 }
 
