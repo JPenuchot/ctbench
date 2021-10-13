@@ -14,11 +14,11 @@ namespace grapher {
 
 group_descriptor_t get_default_group_descriptor() {
   return {.name = "All",
-          .constraints = nlohmann::json::array({
+          .constraints = nlohmann::json::array({nlohmann::json{
               {"type", "regex"},
               {"pointer", "/name"},
               {"regex", "*"},
-          })};
+          }})};
 }
 
 std::vector<nlohmann::json>
@@ -54,7 +54,7 @@ group_descriptor_t json_to_group_descriptor(nlohmann::json const &j) {
 nlohmann::json group_descriptor_json(group_descriptor_t const &descriptor) {
   return {
       {"name", descriptor.name},
-      {"constrinats", descriptor.constraints},
+      {"constraints", descriptor.constraints},
   };
 }
 
