@@ -26,14 +26,13 @@ inline auto regex(nlohmann::json const &constraint) {
   // Validating pointer parameter
   return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
               constraint, "pointer")},
-          regex = json_value<std::string>(constraint, "regex")](
+          regex = std::regex(json_value<std::string>(constraint, "regex"))](
              nlohmann::json const &value) -> bool {
     if (!value.contains(pointer) || !value[pointer].is_string()) {
       return false;
     }
 
-    return std::regex_match(json_value<std::string>(value, pointer),
-                            std::regex(regex.data()));
+    return std::regex_match(json_value<std::string>(value, pointer), regex);
   };
 }
 
