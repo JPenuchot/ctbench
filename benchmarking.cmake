@@ -29,6 +29,11 @@ function(
   end
   step
   iterations)
+
+  if(NOT CTBENCH_TIME_TRACE_GRANULARITY)
+    set(CTBENCH_TIME_TRACE_GRANULARITY 1)
+  endif()
+
   # Setting names
   add_custom_target(${name})
 
@@ -40,6 +45,9 @@ function(
       _ctbench_internal_add_compile_benchmark(
         ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
         "-DBENCHMARK_SIZE=${size}")
+
+      target_compile_options(${subtarget_name} PRIVATE
+        -ftime-trace-granularity=${CTBENCH_TIME_TRACE_GRANULARITY})
 
       add_dependencies(${name} ${subtarget_name})
     endforeach()
