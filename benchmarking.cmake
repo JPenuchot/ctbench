@@ -109,14 +109,14 @@ endfunction(ctbench_add_custom_benchmark)
 #!
 #! - `category`: Name of the category. This is also the name of the graph
 #!               target, and the folder where the graphs will be saved.
+#! - `config`: Config file for plotting
 #! - `benchmarks`: List of benchmark names
 #!
 
-function(ctbench_add_graph category plotter config)
+function(ctbench_add_graph category config)
   add_custom_target(
     ${category}
-    COMMAND grapher-plot --output=${category} --plotter=${plotter}
-            --config=${config} ${ARGN}
+    COMMAND grapher-plot --output=${category} --config=${config} ${ARGN}
     DEPENDS ${config} ${ARGN})
   add_dependencies(ctbench-graph-all ${category})
 endfunction(ctbench_add_graph)

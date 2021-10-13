@@ -25,6 +25,8 @@ std::string_view plotter_compare_t::get_help() const {
 nlohmann::json plotter_compare_t::get_default_config() const {
   nlohmann::json res = grapher::base_default_config();
 
+  res["plotter"] = "compare";
+
   res["value_json_pointer"] = "/dur";
   res["draw_average"] = true;
   res["draw_points"] = true;

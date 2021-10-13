@@ -20,7 +20,7 @@ enum plotter_type_t {
 };
 
 /// String to plotter type map.
-inline const llvm::StringMap<plotter_type_t> plotter_name_map = {
+inline const std::map<std::string, plotter_type_t> plotter_name_map = {
     {"compare", compare_v},
     {"debug", debug_v},
     {"grouped_histogram", grouped_histogram_v},
@@ -53,9 +53,9 @@ inline plotter_t plotter_type_to_plotter(plotter_type_t type) {
 }
 
 /// Converts a string to a plotter type.
-plotter_type_t string_to_plotter_type(llvm::StringRef const &name);
+plotter_type_t string_to_plotter_type(std::string const &name);
 
 /// String to parser
-plotter_t string_to_plotter(llvm::StringRef const &name);
+plotter_t string_to_plotter(std::string const &name);
 
 } // namespace grapher

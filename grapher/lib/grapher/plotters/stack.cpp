@@ -25,6 +25,8 @@ std::string_view plotter_stack_t::get_help() const {
 nlohmann::json plotter_stack_t::get_default_config() const {
   nlohmann::json res = grapher::base_default_config();
 
+  res["plotter"] = "stack";
+
   // Basic values, probably no need to change them
   res["value_json_pointer"] = "/dur";
   res["name_json_pointer"] = "/name";
