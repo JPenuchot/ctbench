@@ -22,7 +22,8 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   add_dependencies(${target_name} time-trace-wrapper)
 
   # Pass benchmark size
-  target_compile_options(${target_name} PRIVATE ${options})
+  target_compile_options(${target_name} PRIVATE -ftime-trace-granularity=1
+                                                ${options})
 
   # Boost Preprocessor
   target_include_directories(${target_name} PUBLIC Boost_INCLUDE_DIRS)
