@@ -46,8 +46,9 @@ function(
         ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
         "-DBENCHMARK_SIZE=${size}")
 
-      target_compile_options(${subtarget_name} PRIVATE
-        -ftime-trace-granularity=${CTBENCH_TIME_TRACE_GRANULARITY})
+      target_compile_options(
+        ${subtarget_name}
+        PRIVATE -ftime-trace-granularity=${CTBENCH_TIME_TRACE_GRANULARITY})
 
       add_dependencies(${name} ${subtarget_name})
     endforeach()
