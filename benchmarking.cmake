@@ -115,9 +115,10 @@ endfunction(ctbench_add_custom_benchmark)
 #!
 
 function(ctbench_add_graph category config)
+  set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
   add_custom_target(
     ${category}
-    COMMAND grapher-plot --output=${category} --config=${config} ${ARGN}
-    DEPENDS ${config} ${ARGN})
+    COMMAND grapher-plot --output=${category} --config=${config_path} ${ARGN}
+    DEPENDS ${config_path} ${ARGN})
   add_dependencies(ctbench-graph-all ${category})
 endfunction(ctbench_add_graph)
