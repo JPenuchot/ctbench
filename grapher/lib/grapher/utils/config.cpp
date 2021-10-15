@@ -14,7 +14,7 @@ namespace grapher {
 
 group_descriptor_t get_default_group_descriptor() {
   return {.name = "All",
-          .constraints = nlohmann::json::array({nlohmann::json{
+          .predicates = nlohmann::json::array({nlohmann::json{
               {"type", "regex"},
               {"pointer", "/name"},
               {"regex", "*"},
@@ -25,9 +25,9 @@ std::vector<nlohmann::json>
 extract_group(group_descriptor_t const &descriptor,
               std::vector<nlohmann::json> const &events) {
   std::vector<predicate_t> predicates;
-  predicates.reserve(descriptor.constraints.size());
+  predicates.reserve(descriptor.predicates.size());
 
-  std::transform(descriptor.constraints.begin(), descriptor.constraints.end(),
+  std::transform(descriptor.predicates.begin(), descriptor.predicates.end(),
                  std::back_inserter(predicates), &get_predicate);
 
   auto check_predicates = [&](nlohmann::json const &event) -> bool {
@@ -48,13 +48,13 @@ extract_group(group_descriptor_t const &descriptor,
 
 group_descriptor_t json_to_group_descriptor(nlohmann::json const &j) {
   return {.name = json_value<std::string>(j, "name"),
-          .constraints =
-              json_value<std::vector<nlohmann::json>>(j, "constraints")};
+          .predicates =
+              json_value<std::vector<nlohmann::json>>(j, "predicates")};
 }
 nlohmann::json group_descriptor_json(group_descriptor_t const &descriptor) {
   return {
       {"name", descriptor.name},
-      {"constraints", descriptor.constraints},
+      {"predicates", descriptor.predicates},
   };
 }
 

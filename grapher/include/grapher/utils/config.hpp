@@ -13,7 +13,7 @@ namespace grapher {
 /// Named set of constraint.
 struct group_descriptor_t {
   std::string name;
-  std::vector<nlohmann::json> constraints;
+  std::vector<nlohmann::json> predicates;
 };
 
 group_descriptor_t get_default_group_descriptor();
