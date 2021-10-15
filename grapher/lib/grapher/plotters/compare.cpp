@@ -103,8 +103,13 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
         }
       }
 
-      plot.drawCurve(x_average, y_average).label(bench.name);
-      plot.drawPoints(x_points, y_points).label(bench.name);
+      if (draw_points) {
+        plot.drawPoints(x_points, y_points).label(bench.name);
+      }
+
+      if (draw_average) {
+        plot.drawCurve(x_average, y_average).label(bench.name);
+      }
     }
 
     std::filesystem::create_directories(dest);
