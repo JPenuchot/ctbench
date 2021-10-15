@@ -40,7 +40,7 @@ The [Rule of Cheese](https://github.com/JPenuchot/rule-of-cheese) project can be
 used as an example of how to use `ctbench`. It is the project that gave birth to
 this tool and is maintained as `ctbench` evolves.
 
-### Declaring your first benchmark case target
+### Declaring a benchmark case target
 
 A benchmark case is represented by a C++ file. It will be "instanciated", ie.
 compiled with `BENCHMARK_SIZE` defined to values in a range that you provide.
@@ -87,25 +87,27 @@ ctbench_add_benchmark(function_selection.requires # Benchmark case name
   10)                                             # Iterations per size
 ```
 
-Once you have several benchmark cases, you can start writing a config.
+### Declaring a graph target
+
+Once you have several benchmark cases, you can start writing a graph config.
 Here's an example as a starting point:
 
 ```json
 {
-  "plotter":"stack",
+  "plotter": "compare",
   "group_descriptors": [
     {
-      "name": "Backend",
+      "name": "Total ExecuteCompiler",
       "predicates": [
         {
           "pointer": "/name",
-          "string": "Total Backend",
+          "string": "Total ExecuteCompiler",
           "type": "streq"
         }
       ]
     },
     {
-      "name": "Frontend",
+      "name": "Total Frontend",
       "predicates": [
         {
           "pointer": "/name",
@@ -113,16 +115,27 @@ Here's an example as a starting point:
           "type": "streq"
         }
       ]
+    },
+    {
+      "name": "Total Backend",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total Backend",
+          "type": "streq"
+        }
+      ]
     }
   ],
   "width": 1500,
   "height": 500,
-  "legend_title": "Timings",
+  "draw_average": true,
+  "draw_points": false,
   "plot_file_extension": ".svg",
+  "value_json_pointer": "/dur",
+  "legend_title": "Timings",
   "xlabel": "Benchmark size factor",
-  "ylabel": "Time (µs)",
-  "name_json_pointer": "/name",
-  "value_json_pointer": "/dur"
+  "ylabel": "Time (µs)"
 }
 ```
 
