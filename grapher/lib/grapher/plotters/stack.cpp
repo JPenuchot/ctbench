@@ -39,7 +39,7 @@ nlohmann::json plotter_stack_t::get_default_config() const {
   return res;
 }
 
-void plotter_stack_t::plot(benchmark_set_t const &cat,
+void plotter_stack_t::plot(benchmark_set_t const &bset,
                            std::filesystem::path const &dest,
                            nlohmann::json const &config) const {
   // Config
@@ -71,9 +71,9 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
 
     // x axis
     std::vector<double> x;
-    std::transform(bench.instances.begin(), bench.instances.end(),
-                   std::back_inserter(x),
-                   [](benchmark_instance_t const &e) -> double { return e.size; });
+    std::transform(
+        bench.iterations.begin(), bench.iterations.end(), std::back_inserter(x),
+        [](benchmark_iteration_t const &i) -> double { return i.size; });
 
     // Low y axis
     std::vector<double> y_low(x.size(), 0.);
@@ -86,15 +86,15 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
 
       std::string curve_name = descriptor.name;
 
-      for (std::size_t i = 0; i < bench.instances.size(); i++) {
-        benchmark_instance_t const &entry = bench.instances[i];
+      for (std::size_t i = 0; i < bench.iterations.size(); i++) {
+        benchmark_iteration_t const &iteration = bench.iterations[i];
         std::vector<double> const values =
-            get_values(entry, descriptor, feature_value_jptr);
+            get_values(iteration, descriptor, feature_value_jptr);
 
         if (values.empty()) {
           llvm::errs() << "[ERROR] No event matching descriptor "
                        << descriptor.name << " in benchmark " << bench.name
-                       << " with size = " << entry.size << ".\n";
+                       << " with size = " << iteration.size << ".\n";
           std::exit(1);
         }
 
@@ -118,13 +118,14 @@ void plotter_stack_t::plot(benchmark_set_t const &cat,
   };
 
   // Drwaing...
-  std::transform(cat.begin(), cat.end(), std::back_inserter(plots), draw_plot);
+  std::transform(bset.begin(), bset.end(), std::back_inserter(plots),
+                 draw_plot);
 
   // Normalize & save
   std::filesystem::create_directories(dest);
-  for (std::size_t i = 0; i < cat.size(); i++) {
+  for (std::size_t i = 0; i < bset.size(); i++) {
     plots[i].yrange(0., max_val);
-    plots[i].save(dest / (cat[i].name + plot_file_extension));
+    plots[i].save(dest / (bset[i].name + plot_file_extension));
   }
 }
 

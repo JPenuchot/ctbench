@@ -39,7 +39,7 @@ nlohmann::json plotter_compare_t::get_default_config() const {
   return res;
 }
 
-void plotter_compare_t::plot(benchmark_set_t const &cat,
+void plotter_compare_t::plot(benchmark_set_t const &bset,
                              std::filesystem::path const &dest,
                              nlohmann::json const &config) const {
   // Config
@@ -62,26 +62,26 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
     sciplot::Plot plot;
     apply_config(plot, config);
 
-    for (benchmark_case_t const &bench : cat) {
+    for (benchmark_case_t const &bench : bset) {
       std::vector<double> x_points;
       std::vector<double> y_points;
 
       std::vector<double> x_average;
       std::vector<double> y_average;
 
-      for (benchmark_instance_t const &entry : bench.instances) {
-        if (entry.iterations.empty()) {
+      for (benchmark_iteration_t const &iteration : bench.iterations) {
+        if (iteration.repetitions.empty()) {
           llvm::errs() << "[WARNING] No event in benchmark " << bench.name
-                       << " at size " << entry.size << "\n";
+                       << " at size " << iteration.size << "\n";
           continue;
         }
 
         std::vector<double> const values =
-            get_values(entry, descriptor, value_json_pointer);
+            get_values(iteration, descriptor, value_json_pointer);
 
         if (values.empty()) {
           llvm::errs() << "[WARNING] No event in benchmark " << bench.name
-                       << " at size " << entry.size
+                       << " at size " << iteration.size
                        << " matched by group descriptor " << descriptor.name
                        << ".\n";
           continue;
@@ -90,14 +90,14 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
         // Drawing points
         if (draw_points) {
           for (double value : values) {
-            x_points.push_back(entry.size);
+            x_points.push_back(iteration.size);
             y_points.push_back(value);
           }
         }
 
         // Drawing average
         if (draw_average) {
-          x_average.push_back(entry.size);
+          x_average.push_back(iteration.size);
           y_average.push_back(std::reduce(values.begin(), values.end()) /
                               values.size());
         }
@@ -108,8 +108,7 @@ void plotter_compare_t::plot(benchmark_set_t const &cat,
     }
 
     std::filesystem::create_directories(dest);
-    plot.save(dest /
-              (std::move(descriptor.name) + plot_file_extension));
+    plot.save(dest / (std::move(descriptor.name) + plot_file_extension));
   }
 }
 

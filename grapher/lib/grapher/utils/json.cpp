@@ -12,13 +12,13 @@
 
 namespace grapher {
 
-std::vector<double> get_values(benchmark_instance_t const &entry,
+std::vector<double> get_values(benchmark_iteration_t const &iteration,
                                group_descriptor_t const &descriptor,
                                nlohmann::json::json_pointer value_jptr) {
   std::vector<double> res;
-  res.reserve(entry.iterations.size());
+  res.reserve(iteration.repetitions.size());
 
-  for (nlohmann::json const &iteration : entry.iterations) {
+  for (nlohmann::json const &iteration : iteration.repetitions) {
     // Extract events
     std::vector<nlohmann::json> events =
         json_value<std::vector<nlohmann::json>>(iteration, "traceEvents");

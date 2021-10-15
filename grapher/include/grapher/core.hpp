@@ -10,23 +10,22 @@
 
 namespace grapher {
 
-/// Set of results for a benchmark case instanciated at a given size.
-struct benchmark_instance_t {
+/// Set of results for a benchmark case iteration of a given size.
+struct benchmark_iteration_t {
   /// Size of the benchmark instance
   unsigned size;
 
-  /// Data series
-  std::vector<nlohmann::json> iterations;
+  /// Data for each repetition of the benchmark iteration
+  std::vector<nlohmann::json> repetitions;
 };
 
-/// Represents results for a benchmark case as a series of benchmark instances.
+/// Represents results for a benchmark case as a series of benchmark iterations.
 struct benchmark_case_t {
   /// Name of the benchmark case
   std::string name;
 
   /// Instances of various sizes of the benchmark case
-  //std::vector<benchmark_instance_t> instances;
-  std::vector<benchmark_instance_t> instances;
+  std::vector<benchmark_iteration_t> iterations;
 };
 
 /// Represents a set of benchmark cases for comparison

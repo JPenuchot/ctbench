@@ -12,8 +12,8 @@ grapher::benchmark_set_t
 build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
   namespace fs = std::filesystem;
 
-  // Filling in category
-  grapher::benchmark_set_t category;
+  // Filling in benchmark set
+  grapher::benchmark_set_t bset;
   for (auto const &bench_path_str : benchmark_path_list) {
     fs::path bench_path(bench_path_str.data());
 
@@ -29,12 +29,12 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
 
     // Adding entries
     for (auto const &entry_dir : fs::directory_iterator(bench_path)) {
-      grapher::benchmark_instance_t entry;
+      grapher::benchmark_iteration_t iteration;
 
       // Entry directory name check and reading to entry size
       {
         std::istringstream iss(entry_dir.path().filename().stem());
-        if (!(iss >> entry.size)) {
+        if (!(iss >> iteration.size)) {
           llvm::errs() << "[WARNING] Entry directory name is not a size: "
                        << entry_dir.path() << '\n';
           continue;
@@ -62,19 +62,19 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
           continue;
         }
 
-        entry.iterations.push_back(std::move(j));
+        iteration.repetitions.push_back(std::move(j));
       }
-      bench.instances.push_back(entry);
+      bench.iterations.push_back(iteration);
     }
 
     // Sorting by entry size
-    std::sort(
-        bench.instances.begin(), bench.instances.end(),
-        [](benchmark_instance_t const &a, benchmark_instance_t const &b) { return a.size < b.size; });
+    std::sort(bench.iterations.begin(), bench.iterations.end(),
+              [](benchmark_iteration_t const &a,
+                 benchmark_iteration_t const &b) { return a.size < b.size; });
 
-    category.push_back(std::move(bench));
+    bset.push_back(std::move(bench));
   }
-  return category;
+  return bset;
 }
 
 } // namespace grapher

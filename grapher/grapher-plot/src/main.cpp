@@ -50,7 +50,7 @@ int main(int argc, char const *argv[]) {
           grapher::json_value<std::string>(config, "plotter")));
 
   // Build cats
-  grapher::benchmark_set_t cat =
+  grapher::benchmark_set_t bset =
       grapher::build_category(cli::benchmark_path_list);
 
   // Set destiny
@@ -59,7 +59,7 @@ int main(int argc, char const *argv[]) {
   // ???
 
   // Plotten
-  plotter->plot(cat, dest, config);
+  plotter->plot(bset, dest, config);
 
   return 0;
 }

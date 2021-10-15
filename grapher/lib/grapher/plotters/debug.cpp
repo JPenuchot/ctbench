@@ -16,19 +16,20 @@ nlohmann::json plotter_debug_t::get_default_config() const {
   return res;
 }
 
-void plotter_debug_t::plot(const benchmark_set_t &cat,
+void plotter_debug_t::plot(const benchmark_set_t &bset,
                            const std::filesystem::path &dest,
                            const nlohmann::json &config) const {
   llvm::outs() << "Output path: " << dest << '\n';
-  llvm::outs() << "Category size: " << cat.size() << '\n';
+  llvm::outs() << "Category size: " << bset.size() << '\n';
 
-  for (benchmark_case_t const &bench : cat) {
+  for (benchmark_case_t const &bench : bset) {
     llvm::outs() << "\tBenchmark name: " << bench.name << '\n';
-    llvm::outs() << "\tEntries: " << bench.instances.size() << '\n';
+    llvm::outs() << "\tEntries: " << bench.iterations.size() << '\n';
 
-    for (benchmark_instance_t const &entry : bench.instances) {
-      llvm::outs() << "\t\tEntry size: " << entry.size << '\n';
-      llvm::outs() << "\t\tIterations: " << entry.iterations.size() << '\n';
+    for (benchmark_iteration_t const &iteration : bench.iterations) {
+      llvm::outs() << "\t\tEntry size: " << iteration.size << '\n';
+      llvm::outs() << "\t\tIterations: " << iteration.repetitions.size()
+                   << '\n';
       llvm::outs() << '\n';
     }
     llvm::outs() << '\n';
