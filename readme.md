@@ -86,3 +86,66 @@ ctbench_add_benchmark(function_selection.requires # Benchmark case name
   1                                               # Range step
   10)                                             # Iterations per size
 ```
+
+Once you have several benchmark cases, you can start writing a config.
+Here's an example as a starting point:
+
+```json
+{
+  "plotter":"stack",
+  "group_descriptors": [
+    {
+      "name": "Backend",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total Backend",
+          "type": "streq"
+        }
+      ]
+    },
+    {
+      "name": "Frontend",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total Frontend",
+          "type": "streq"
+        }
+      ]
+    }
+  ],
+  "width": 1500,
+  "height": 500,
+  "legend_title": "Timings",
+  "plot_file_extension": ".svg",
+  "xlabel": "Benchmark size factor",
+  "ylabel": "Time (µs)",
+  "name_json_pointer": "/name",
+  "value_json_pointer": "/dur"
+}
+```
+
+This configuration uses the `compare` plotter. The `group_descriptors` field
+indicates which `time_trace` events to observe using a set of predicates, and
+assign a name to it. The `value_json_pointer` field is a JSON pointer targeting
+the field that the value you want to measure for each `time_trace` event.
+
+Back to CMake, you can now declare a graph target using this config to compare
+the time spent in the compiler execution, the frontend, and the backend between
+the benchmark cases you declared previously:
+
+```cmake
+ctbench_add_graph(function_selection-feature_comparison-graph # Target name
+  ${CONFIGS}/feature_comparison.json                          # Config
+  function_selection.enable_if                                # First case
+  function_selection.enable_if_t                              # Second case
+  function_selection.if_constexpr                             # ...
+  function_selection.control
+  function_selection.requires)
+```
+
+For each group descriptor, a graph will be generated with one curve
+per benchmark case. In this case, you would then get 2 graphs
+(Frontend and Backend) with 5 curves (enable_if, enable_if_t, if_constexpr,
+control, and requires).
