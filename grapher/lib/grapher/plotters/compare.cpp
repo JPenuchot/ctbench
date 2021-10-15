@@ -70,9 +70,9 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
       std::vector<double> y_average;
 
       for (benchmark_iteration_t const &iteration : bench.iterations) {
-        if (iteration.repetitions.empty()) {
-          llvm::errs() << "[WARNING] No event in benchmark " << bench.name
-                       << " at size " << iteration.size << "\n";
+        if (iteration.repetition_paths.empty()) {
+          llvm::errs() << "[WARNING] No data in benchmark " << bench.name
+                       << " for iteration size " << iteration.size << "\n";
           continue;
         }
 
@@ -112,6 +112,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
       }
     }
 
+    // Saving plot
     std::filesystem::create_directories(dest);
     plot.save(dest / (std::move(descriptor.name) + plot_file_extension));
   }

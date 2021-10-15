@@ -1,5 +1,6 @@
 #include "grapher/utils/json.hpp"
 
+#include <fstream>
 #include <iostream>
 #include <optional>
 
@@ -16,12 +17,19 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
                                group_descriptor_t const &descriptor,
                                nlohmann::json::json_pointer value_jptr) {
   std::vector<double> res;
-  res.reserve(iteration.repetitions.size());
+  res.reserve(iteration.repetition_paths.size());
 
-  for (nlohmann::json const &iteration : iteration.repetitions) {
+  for (std::filesystem::path const &repetition_path :
+       iteration.repetition_paths) {
     // Extract events
+    nlohmann::json j;
+    {
+      std::ifstream repetition_ifstream(repetition_path);
+      repetition_ifstream >> j;
+    }
+
     std::vector<nlohmann::json> events =
-        json_value<std::vector<nlohmann::json>>(iteration, "traceEvents");
+        json_value<std::vector<nlohmann::json>>(j, "traceEvents");
 
     // Filter events
     std::vector<nlohmann::json> matching_events =

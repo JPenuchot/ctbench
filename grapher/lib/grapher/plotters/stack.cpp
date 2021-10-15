@@ -59,8 +59,8 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
 
   std::vector<sciplot::Plot> plots;
 
-  // Saving max value
-  double max_val = 0.;
+  // Saving max y value for normalization
+  double max_y_val = 0.;
 
   /// Draws a stacked curve graph for a given benchmark
   auto draw_plot = [&](benchmark_case_t const &bench) -> sciplot::Plot {
@@ -82,8 +82,6 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
 
     for (group_descriptor_t const &descriptor : descriptors) {
       // Storing previous value as we iterate
-      double value = 0.;
-
       std::string curve_name = descriptor.name;
 
       for (std::size_t i = 0; i < bench.iterations.size(); i++) {
@@ -94,17 +92,19 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
         if (values.empty()) {
           llvm::errs() << "[ERROR] No event matching descriptor "
                        << descriptor.name << " in benchmark " << bench.name
-                       << " with size = " << iteration.size << ".\n";
+                       << " with iteration size " << iteration.size << ".\n";
           std::exit(1);
         }
 
         // TODO: Get better stats (standard deviation, etc...)
-        value = std::reduce(values.begin(), values.end()) / values.size();
-        double const new_y = y_low[i] + value;
-        y_high[i] = new_y;
+        double const y_val =
+            y_low[i] +
+            std::reduce(values.begin(), values.end()) / values.size();
+
+        y_high[i] = y_val;
 
         // Update max_val for y-azis normalization
-        max_val = std::max(max_val, new_y);
+        max_y_val = std::max(max_y_val, y_val);
       }
 
       plot.drawCurvesFilled(x, y_low, y_high).label(std::move(curve_name));
@@ -124,7 +124,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
   // Normalize & save
   std::filesystem::create_directories(dest);
   for (std::size_t i = 0; i < bset.size(); i++) {
-    plots[i].yrange(0., max_val);
+    plots[i].yrange(0., max_y_val);
     plots[i].save(dest / (bset[i].name + plot_file_extension));
   }
 }

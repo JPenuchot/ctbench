@@ -41,28 +41,20 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
         }
       }
 
-      // Reading iterations
-      for (auto const &iteration_path :
+      // Aggregating paths to repetition data files
+      for (fs::directory_entry const &repetition_path_entry :
            fs::recursive_directory_iterator(entry_dir)) {
+
         // Basic property check
-        if (!std::filesystem::is_regular_file(iteration_path)) {
+        if (!std::filesystem::is_regular_file(repetition_path_entry)) {
           llvm::errs()
-              << "[WARNING] Invalid iteration file (not a regular file): "
-              << iteration_path.path() << '\n';
+              << "[WARNING] Invalid repetition file (not a regular file): "
+              << repetition_path_entry.path() << '\n';
           continue;
         }
 
-        // File content check and reading
-        std::ifstream iteration_file(iteration_path.path());
-        nlohmann::json j;
-        if (!(iteration_file >> j)) {
-          llvm::errs()
-              << "[WARNING] Invalid iteration file (invalid JSON content): "
-              << iteration_path.path() << '\n';
-          continue;
-        }
-
-        iteration.repetitions.push_back(std::move(j));
+        // Adding path
+        iteration.repetition_paths.push_back(repetition_path_entry);
       }
       bench.iterations.push_back(iteration);
     }

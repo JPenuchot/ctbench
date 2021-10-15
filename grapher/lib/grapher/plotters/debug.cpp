@@ -23,14 +23,13 @@ void plotter_debug_t::plot(const benchmark_set_t &bset,
   llvm::outs() << "Category size: " << bset.size() << '\n';
 
   for (benchmark_case_t const &bench : bset) {
-    llvm::outs() << "\tBenchmark name: " << bench.name << '\n';
-    llvm::outs() << "\tEntries: " << bench.iterations.size() << '\n';
+    llvm::outs() << "\tBenchmark case name: " << bench.name << '\n'
+                 << "\tIterations: " << bench.iterations.size() << '\n';
 
     for (benchmark_iteration_t const &iteration : bench.iterations) {
-      llvm::outs() << "\t\tEntry size: " << iteration.size << '\n';
-      llvm::outs() << "\t\tIterations: " << iteration.repetitions.size()
-                   << '\n';
-      llvm::outs() << '\n';
+      llvm::outs() << "\t\tIteration size: " << iteration.size << '\n'
+                   << "\t\tRepetitions: " << iteration.repetition_paths.size()
+                   << "\n\n";
     }
     llvm::outs() << '\n';
   }
