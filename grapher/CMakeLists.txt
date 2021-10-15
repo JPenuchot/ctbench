@@ -12,11 +12,12 @@ endif()
 # LLVM
 find_package(LLVM REQUIRED CONFIG)
 llvm_map_components_to_libnames(llvm_libs core support)
-target_compile_options(grapher PUBLIC -fno-rtti)
+#target_compile_options(grapher PUBLIC -fno-rtti)
 target_link_libraries(grapher PUBLIC ${llvm_libs})
 
 # Old libstdc++ compatibility
 target_link_libraries(grapher PUBLIC stdc++fs)
+target_link_libraries(grapher PUBLIC tbb)
 
 # Adding executable subdirectories
 add_subdirectory(grapher-plot)

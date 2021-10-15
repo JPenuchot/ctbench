@@ -1,5 +1,7 @@
 #include "grapher/utils/json.hpp"
 
+#include <algorithm>
+#include <execution>
 #include <fstream>
 #include <iostream>
 #include <optional>
@@ -7,6 +9,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 #include <nlohmann/json.hpp>
+#include <pstl/glue_execution_defs.h>
 
 #include "grapher/predicates.hpp"
 #include "grapher/utils/config.hpp"
@@ -16,11 +19,9 @@ namespace grapher {
 std::vector<double> get_values(benchmark_iteration_t const &iteration,
                                group_descriptor_t const &descriptor,
                                nlohmann::json::json_pointer value_jptr) {
-  std::vector<double> res;
-  res.reserve(iteration.repetition_paths.size());
+  std::vector<double> res(iteration.repetition_paths.size());
 
-  for (std::filesystem::path const &repetition_path :
-       iteration.repetition_paths) {
+  auto get_val = [&](std::filesystem::path const &repetition_path) -> double {
     // Extract events
     nlohmann::json j;
     {
@@ -37,16 +38,19 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
 
     // Check for data
     if (matching_events.empty()) {
-      continue;
+      return 0.;
     }
 
     // Accumulate
-    double val = 0;
-    for (auto const &event : matching_events) {
+    double val = 0.;
+    for (nlohmann::json const &event : matching_events) {
       val += json_value<double>(event, value_jptr);
     }
-    res.push_back(val);
-  }
+    return val;
+  };
+
+  std::transform(std::execution::par_unseq, iteration.repetition_paths.begin(),
+                 iteration.repetition_paths.end(), res.begin(), get_val);
 
   return res;
 }
