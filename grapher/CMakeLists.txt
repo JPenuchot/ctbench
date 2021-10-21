@@ -15,6 +15,16 @@ llvm_map_components_to_libnames(llvm_libs core support)
 #target_compile_options(grapher PUBLIC -fno-rtti)
 target_link_libraries(grapher PUBLIC ${llvm_libs})
 
+target_compile_options(
+  grapher
+  PUBLIC -Wall
+         -Wextra
+         -Werror
+         -Wnull-dereference
+         -Wold-style-cast
+         -Wdouble-promotion
+         -Wshadow)
+
 # Old libstdc++ compatibility
 target_link_libraries(grapher PUBLIC stdc++fs)
 target_link_libraries(grapher PUBLIC tbb)
