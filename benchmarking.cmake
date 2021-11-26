@@ -17,9 +17,7 @@ add_custom_target(ctbench-graph-all)
 include(cmake/internal.cmake)
 
 # Granularity option
-if(NOT CTBENCH_TIME_TRACE_GRANULARITY)
-  set(CTBENCH_TIME_TRACE_GRANULARITY 1)
-endif()
+set(CTBENCH_TIME_TRACE_GRANULARITY 1)
 
 ## =============================================================================
 #! ## `ctbench_add_benchmark`
