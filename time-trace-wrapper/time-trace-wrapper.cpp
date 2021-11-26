@@ -1,5 +1,6 @@
 /// -ftime-trace wrapper for clang.
 
+#include <filesystem>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -46,6 +47,6 @@ int main(int argc, char const *argv[]) {
     cmd_builder << " -ftime-trace";
   }
 
-  return get_timetrace_file(argv[path_id], std::move(cmd_builder.str()),
+  return get_timetrace_file(argv[path_id], cmd_builder.str(),
                             std::move(obj_path));
 }

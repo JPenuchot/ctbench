@@ -21,16 +21,14 @@ inline int get_timetrace_file(std::filesystem::path const out, std::string cmd,
 inline auto parse_args(int argc, char const *argv[]) {
   namespace fs = std::filesystem;
 
-  constexpr int exec_id = 0;
-  constexpr int path_id = 1;
-  constexpr int cmd_beg_id = 2;
+  constexpr int args_begin = 2;
 
   std::ostringstream cmd_builder;
   fs::path obj_path;
   bool has_time_trace_flag = false;
 
-  cmd_builder << argv[cmd_beg_id];
-  for (auto beg = &argv[cmd_beg_id + 1], end = &argv[argc]; beg < end; beg++) {
+  cmd_builder << argv[args_begin];
+  for (auto beg = argv + args_begin + 1, end = argv + argc; beg < end; beg++) {
     // Object path finding
     if (*beg == std::string_view("-o") && (beg + 1) != end) {
       obj_path = *(beg + 1);
