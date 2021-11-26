@@ -2,7 +2,7 @@
 /// Preprocessor for CMake public API documentation extraction.
 /// In other words, it extracts comments that start with `#!`.
 
-#include <algorithm>
+#include <filesystem>
 #include <fstream>
 #include <string>
 
@@ -21,6 +21,10 @@ lc::opt<std::string> output_path_opt("output", lc::desc("<output file>"),
 
 int main(int argc, char const *argv[]) {
   llvm::cl::ParseCommandLineOptions(argc, argv);
+
+  namespace fs = std::filesystem;
+  fs::create_directories(
+      fs::path(cli::output_path_opt.getValue()).parent_path());
 
   std::ifstream input_file(cli::input_path_opt.getValue());
   std::ofstream output_file(cli::output_path_opt.getValue());
