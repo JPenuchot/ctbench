@@ -10,11 +10,22 @@ option(CTBENCH_ENABLE_TESTING "Enable testing for ctbench components." OFF)
 option(CTBENCH_FETCH_LIBRARIES
        "Fetch libraries instead of using the ones installed locally." OFF)
 
-if(${PROJECT_IS_TOP_LEVEL})
-  include(cmake/docs.cmake)
-endif()
+add_compile_options(
+  -Wall
+  -Wextra
+  -Werror
+  -Wnull-dereference
+  -Wold-style-cast
+  -Wdouble-promotion
+  -Wshadow)
 
 add_subdirectory(time-trace-wrapper)
+
+# Docs
+if(${PROJECT_IS_TOP_LEVEL})
+  add_subdirectory(cmake-doc-extractor)
+  include(cmake/docs.cmake)
+endif()
 
 # Exporting time-trace-wrapper exec path to parent scope if needed
 if(NOT ${PROJECT_IS_TOP_LEVEL})
