@@ -70,7 +70,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
       std::vector<double> y_average;
 
       for (benchmark_iteration_t const &iteration : bench.iterations) {
-        if (iteration.repetition_paths.empty()) {
+        if (iteration.samples.empty()) {
           llvm::errs() << "[WARNING] No data in benchmark " << bench.name
                        << " for iteration size " << iteration.size << "\n";
           continue;

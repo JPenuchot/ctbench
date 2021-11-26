@@ -19,7 +19,7 @@ namespace grapher {
 std::vector<double> get_values(benchmark_iteration_t const &iteration,
                                group_descriptor_t const &descriptor,
                                nlohmann::json::json_pointer value_jptr) {
-  std::vector<double> res(iteration.repetition_paths.size());
+  std::vector<double> res(iteration.samples.size());
 
   auto get_val = [&](std::filesystem::path const &repetition_path) -> double {
     // Extract events
@@ -49,8 +49,8 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
     return val;
   };
 
-  std::transform(std::execution::par_unseq, iteration.repetition_paths.begin(),
-                 iteration.repetition_paths.end(), res.begin(), get_val);
+  std::transform(std::execution::par_unseq, iteration.samples.begin(),
+                 iteration.samples.end(), res.begin(), get_val);
 
   return res;
 }

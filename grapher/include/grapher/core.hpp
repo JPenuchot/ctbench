@@ -17,7 +17,7 @@ struct benchmark_iteration_t {
   unsigned size;
 
   /// Data for each repetition of the benchmark iteration
-  std::vector<std::filesystem::path> repetition_paths;
+  std::vector<std::filesystem::path> samples;
 };
 
 /// Represents results for a benchmark case as a series of benchmark iterations.

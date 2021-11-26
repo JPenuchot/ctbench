@@ -42,19 +42,19 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       }
 
       // Aggregating paths to repetition data files
-      for (fs::directory_entry const &repetition_path_entry :
+      for (fs::directory_entry const &sample_path_entry :
            fs::recursive_directory_iterator(entry_dir)) {
 
         // Basic property check
-        if (!std::filesystem::is_regular_file(repetition_path_entry)) {
+        if (!std::filesystem::is_regular_file(sample_path_entry)) {
           llvm::errs()
               << "[WARNING] Invalid repetition file (not a regular file): "
-              << repetition_path_entry.path() << '\n';
+              << sample_path_entry.path() << '\n';
           continue;
         }
 
         // Adding path
-        iteration.repetition_paths.push_back(repetition_path_entry);
+        iteration.samples.push_back(sample_path_entry);
       }
       bench.iterations.push_back(iteration);
     }

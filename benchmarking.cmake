@@ -29,7 +29,7 @@ endif()
 #! - `name`: Name of benchmark
 #! - `source`: Source file
 #! - `begin, end, step`: Iteration parameters
-#! - `iterations`: Number of benchmark iterations
+#! - `samples`: Number of samples per iteration
 #!
 
 function(
@@ -39,11 +39,11 @@ function(
   begin
   end
   step
-  iterations)
+  samples)
   # Setting names
   add_custom_target(${name})
 
-  foreach(iteration RANGE ${iterations})
+  foreach(iteration RANGE ${samples})
     foreach(size RANGE ${begin} ${end} ${step})
       # Subtargets aren't meant to be compiled by end-users
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
