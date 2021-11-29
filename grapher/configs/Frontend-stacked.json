@@ -1,0 +1,83 @@
+{
+  "group_descriptors": [
+    {
+      "name": "Source",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total Source",
+          "type": "streq"
+        }
+      ]
+    },
+    {
+      "name": "ParseClass",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total ParseClass",
+          "type": "streq"
+        }
+      ]
+    },
+    {
+      "name": "ParseTemplate",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total ParseTemplate",
+          "type": "streq"
+        }
+      ]
+    },
+    {
+      "name": "InstantiateClass",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total InstantiateClass",
+          "type": "streq"
+        }
+      ]
+    },
+    {
+      "name": "InstantiateFunction",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total InstantiateFunction",
+          "type": "streq"
+        }
+      ]
+    },
+    {
+      "name": "CodeGen Function",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total CodeGen Function",
+          "type": "streq"
+        }
+      ]
+    },
+    {
+      "name": "PerformPendingInstantiations",
+      "predicates": [
+        {
+          "pointer": "/name",
+          "string": "Total PerformPendingInstantiations",
+          "type": "streq"
+        }
+      ]
+    }
+  ],
+  "height": 500,
+  "legend_title": "Timings",
+  "name_json_pointer": "/name",
+  "plot_file_extension": ".svg",
+  "plotter": "stack",
+  "value_json_pointer": "/dur",
+  "width": 1500,
+  "xlabel": "Benchmark size factor",
+  "ylabel": "Time (µs)"
+}
