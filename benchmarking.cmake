@@ -38,10 +38,6 @@ function(
   # Setting names
   add_custom_target(${name})
 
-  if(CTBENCH_TIME_TRACE_GRANULARITY)
-    set(granularity)
-  endif()
-
   foreach(iteration RANGE ${samples})
     foreach(size RANGE ${begin} ${end} ${step})
       # Subtargets aren't meant to be compiled by end-users
@@ -53,7 +49,7 @@ function(
 
       target_compile_options(
         ${subtarget_name}
-        PRIVATE -ftime-trace-granularity=${granularity})
+        PRIVATE -ftime-trace-granularity=1)
 
       add_dependencies(${name} ${subtarget_name})
     endforeach()
