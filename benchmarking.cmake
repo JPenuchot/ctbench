@@ -16,11 +16,6 @@ add_custom_target(ctbench-graph-all)
 
 include(cmake/internal.cmake)
 
-# Granularity option
-if(${PROJECT_IS_TOP_LEVEL})
-  set(CTBENCH_TIME_TRACE_GRANULARITY 1 PARENT_SCOPE)
-endif()
-
 ## =============================================================================
 #! ## `ctbench_add_benchmark`
 #!
@@ -43,6 +38,10 @@ function(
   # Setting names
   add_custom_target(${name})
 
+  if(CTBENCH_TIME_TRACE_GRANULARITY)
+    set(granularity)
+  endif()
+
   foreach(iteration RANGE ${samples})
     foreach(size RANGE ${begin} ${end} ${step})
       # Subtargets aren't meant to be compiled by end-users
@@ -54,7 +53,7 @@ function(
 
       target_compile_options(
         ${subtarget_name}
-        PRIVATE -ftime-trace-granularity=${CTBENCH_TIME_TRACE_GRANULARITY})
+        PRIVATE -ftime-trace-granularity=${granularity})
 
       add_dependencies(${name} ${subtarget_name})
     endforeach()
