@@ -2,26 +2,143 @@
   "plotter": "compare",
   "draw_average": true,
   "draw_points": false,
-  "group_descriptors": [
-    { "name": "ExecuteCompiler", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total ExecuteCompiler" }] },
-    { "name": "Frontend", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total Frontend" }] },
-    { "name": "Backend", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total Backend" }] },
-    { "name": "ModuleToFunctionPassAdaptor", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total ModuleToFunctionPassAdaptor" }] },
-    { "name": "ModuleInlinerWrapperPass", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total ModuleInlinerWrapperPass" }] },
-    { "name": "OptModule", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total OptModule" }] },
-    { "name": "Source", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total Source" }] },
-    { "name": "ParseClass", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total ParseClass" }] },
-    { "name": "ParseTemplate", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total ParseTemplate" }] },
-    { "name": "InstantiateClass", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total InstantiateClass" }] },
-    { "name": "InstantiateFunction", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total InstantiateFunction" }] },
-    { "name": "CodeGen Function", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total CodeGen Function" }] },
-    { "name": "PerformPendingInstantiations", "predicates": [{ "type": "streq", "pointer": "/name", "string": "Total PerformPendingInstantiations" }] }
-  ],
   "plot_file_extension": ".svg",
   "value_json_pointer": "/dur",
   "width": 1500,
   "height": 500,
   "legend_title": "Timings",
   "xlabel": "Benchmark size factor",
-  "ylabel": "Time (µs)"
+  "ylabel": "Time (µs)",
+  "group_descriptors": [
+    {
+      "name": "ExecuteCompiler",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total ExecuteCompiler"
+        }
+      ]
+    },
+    {
+      "name": "Frontend",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total Frontend"
+        }
+      ]
+    },
+    {
+      "name": "Backend",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total Backend"
+        }
+      ]
+    },
+    {
+      "name": "ModuleToFunctionPassAdaptor",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total ModuleToFunctionPassAdaptor"
+        }
+      ]
+    },
+    {
+      "name": "ModuleInlinerWrapperPass",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total ModuleInlinerWrapperPass"
+        }
+      ]
+    },
+    {
+      "name": "OptModule",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total OptModule"
+        }
+      ]
+    },
+    {
+      "name": "Source",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total Source"
+        }
+      ]
+    },
+    {
+      "name": "ParseClass",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total ParseClass"
+        }
+      ]
+    },
+    {
+      "name": "ParseTemplate",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total ParseTemplate"
+        }
+      ]
+    },
+    {
+      "name": "InstantiateClass",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total InstantiateClass"
+        }
+      ]
+    },
+    {
+      "name": "InstantiateFunction",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total InstantiateFunction"
+        }
+      ]
+    },
+    {
+      "name": "CodeGen Function",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total CodeGen Function"
+        }
+      ]
+    },
+    {
+      "name": "PerformPendingInstantiations",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total PerformPendingInstantiations"
+        }
+      ]
+    }
+  ]
 }
