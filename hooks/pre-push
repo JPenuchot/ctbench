@@ -22,21 +22,33 @@
 remote="$1"
 url="$2"
 
-docs_repo="git@github.com/jpenuchot/ctbench-docs.git"
+docs_repo="git@github.com:JPenuchot/ctbench-docs.git"
 docs_out_dir="/tmp/ctbench-docs"
 
 srcdir=$(pwd)
 
+echo "Updating docs..."
+
+rm -rf $docs_out_dir
 mkdir -p $docs_out_dir
 
 mkdir build-docs
 cd build-docs
+
+echo "- Building docs..."
+
 CXX=clang++ CC=clang cmake ../ -G Ninja \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DDOXYGEN_HTML_OUTPUT=$docs_out_dir
 ninja docs
 
+cd ../
+rm -rf build-docs
+
 cd $docs_out_dir
+
+echo "- ..."
+
 git init
 git add .
 git commit -m "docs"
