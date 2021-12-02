@@ -1,12 +1,12 @@
 ## =============================================================================
-#! # `benchmarking.cmake`
+#! # CMake API
 #!
 #! Functions for automated benchmark declarations.
 #!
 ## =============================================================================
 
 ## =============================================================================
-#! ## `ctbench-graph-all` target
+#! ## ctbench-graph-all target
 #!
 #! `ctbench-graph-all` is a ctbench-provided target to generate all graphs
 #! at once.
@@ -17,7 +17,7 @@ add_custom_target(ctbench-graph-all)
 include(cmake/internal.cmake)
 
 ## =============================================================================
-#! ## `ctbench_add_benchmark`
+#! ## ctbench_add_benchmark
 #!
 #! Add a benchmark for a given source, with a given size range.
 #!
@@ -58,7 +58,7 @@ function(
 endfunction(ctbench_add_benchmark)
 
 ## =============================================================================
-#! ## `ctbench_add_custom_benchmark`
+#! ## ctbench_add_custom_benchmark
 #!
 #! Add a benchmark for a given source with a given size range
 #! using a custom compile options generator.
@@ -102,7 +102,7 @@ function(
 endfunction(ctbench_add_custom_benchmark)
 
 ## =============================================================================
-#! ## `ctbench_add_graph`
+#! ## ctbench_add_graph
 #!
 #! Adds a graph target for a set of benchmarks,
 #! and adds the target to ctbench-graph-all.
