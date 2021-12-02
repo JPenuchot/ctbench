@@ -36,6 +36,6 @@ add_custom_target(
   cmake-doc-extractor
     --input ${CMAKE_SOURCE_DIR}/benchmarking.cmake
     --output ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md
-  DEPENDS ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md)
+  DEPENDS ${CMAKE_SOURCE_DIR}/benchmarking.cmake)
 
 add_dependencies(docs extract-api-doc)
