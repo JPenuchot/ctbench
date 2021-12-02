@@ -29,9 +29,13 @@ set(DOXYGEN_HTML_EXTRA_STYLESHEET ${dac_content_SOURCE_DIR}/doxygen-awesome.css)
 
 doxygen_add_docs(docs ALL)
 
+# Documentation generation for the CMake API
+
 add_custom_target(
   extract-api-doc
-  cmake-doc-extractor --input ${CMAKE_SOURCE_DIR}/benchmarking.cmake --output
-  ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md)
+  cmake-doc-extractor
+    --input ${CMAKE_SOURCE_DIR}/benchmarking.cmake
+    --output ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md
+  DEPENDS ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md)
 
 add_dependencies(docs extract-api-doc)
