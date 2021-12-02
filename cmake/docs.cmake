@@ -32,6 +32,6 @@ doxygen_add_docs(docs ALL)
 add_custom_target(
   extract-api-doc
   cmake-doc-extractor --input ${CMAKE_SOURCE_DIR}/benchmarking.cmake --output
-  cmake-docs/benchmarking.md)
+  ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md)
 
 add_dependencies(docs extract-api-doc)
