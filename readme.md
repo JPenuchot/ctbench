@@ -1,6 +1,7 @@
 # ctbench
 
-**Online documentation: https://jpenuchot.github.io/ctbench-docs/**
+- Github project: https://github.com/jpenuchot/ctbench
+- Online documentation: https://jpenuchot.github.io/ctbench-docs/
 
 Set of tools for comprehensive benchmarks based on clang's time-trace feature.
 
