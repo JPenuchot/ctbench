@@ -1,5 +1,7 @@
 # ctbench
 
+**Online documentation: https://jpenuchot.github.io/ctbench-doc/**
+
 Set of tools for comprehensive benchmarks based on clang's time-trace feature.
 
 `ctbench` allows you to declare and generate compile-time benchmark batches for
