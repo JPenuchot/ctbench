@@ -19,6 +19,8 @@ add_compile_options(
   -Wdouble-promotion
   -Wshadow)
 
+add_compile_options(-fno-rtti -fno-exceptions)
+
 add_subdirectory(time-trace-wrapper)
 
 # Docs
