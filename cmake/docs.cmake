@@ -4,7 +4,7 @@ find_package(Doxygen REQUIRED dot OPTIONAL_COMPONENTS mscgen dia)
 # Documentation options
 set(DOXYGEN_EXTRACT_ALL YES)
 set(DOXYGEN_GENERATE_TREEVIEW YES)
-set(DOXYGEN_EXCLUDE_PATTERNS */build/* */tests/* */build-docs/* )
+set(DOXYGEN_EXCLUDE_PATTERNS */build/* */tests/* */build-docs/*)
 set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${CMAKE_SOURCE_DIR}/readme.md)
 set(DOXYGEN_EXAMPLE_PATH ${CMAKE_SOURCE_DIR})
 set(DOXYGENT_DOT_TRANSPARENT YES)
@@ -33,9 +33,8 @@ doxygen_add_docs(docs ALL)
 
 add_custom_target(
   extract-api-doc
-  cmake-doc-extractor
-    --input ${CMAKE_SOURCE_DIR}/benchmarking.cmake
-    --output ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md
+  cmake-doc-extractor --input ${CMAKE_SOURCE_DIR}/benchmarking.cmake --output
+  ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md
   DEPENDS ${CMAKE_SOURCE_DIR}/benchmarking.cmake)
 
 add_dependencies(docs extract-api-doc)
