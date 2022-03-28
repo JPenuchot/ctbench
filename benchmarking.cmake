@@ -117,6 +117,7 @@ function(ctbench_add_graph category config)
   add_custom_target(
     ${category}
     COMMAND grapher-plot --output=${category} --config=${config_path} ${ARGN}
-    DEPENDS ${config_path} ${ARGN})
+    DEPENDS ${config_path} ${ARGN}
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   add_dependencies(ctbench-graph-all ${category})
 endfunction(ctbench_add_graph)
