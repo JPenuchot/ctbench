@@ -10,18 +10,10 @@ find_package(LLVM REQUIRED CONFIG)
 
 llvm_map_components_to_libnames(llvm_libs core support)
 
-target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json sciplot::sciplot stdc++fs tbb ${llvm_libs})
+target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json
+                                     sciplot::sciplot stdc++fs tbb ${llvm_libs})
 
-target_compile_options(
-  grapher
-  PUBLIC -Wall
-         -Wextra
-         -Werror
-         -Wnull-dereference
-         -Wold-style-cast
-         -Wdouble-promotion
-         -Wshadow
-         -fno-rtti)
+target_compile_options(grapher PUBLIC -fno-rtti -fno-exceptions)
 
 # Adding executables
 
@@ -30,6 +22,8 @@ target_link_libraries(ctbench-grapher-plot PRIVATE grapher)
 
 add_executable(ctbench-grapher-utils grapher-utils.cpp)
 target_link_libraries(ctbench-grapher-utils PRIVATE grapher)
+
+install(TARGETS ctbench-grapher-plot ctbench-grapher-utils EXPORT ctbench-targets)
 
 if(BUILD_TESTING)
   add_subdirectory(tests)

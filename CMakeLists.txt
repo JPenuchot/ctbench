@@ -13,8 +13,6 @@ add_compile_options(
   -Wdouble-promotion
   -Wshadow)
 
-add_compile_options(-fno-rtti -fno-exceptions)
-
 # Docs
 if(${PROJECT_IS_TOP_LEVEL})
   add_subdirectory(cmake-doc-extractor)
@@ -24,6 +22,11 @@ endif()
 add_subdirectory(time-trace-wrapper)
 add_subdirectory(grapher)
 
-include(benchmarking.cmake)
+export(
+  EXPORT ctbench-targets
+  NAMESPACE ctbench::
+  FILE CtbenchTargets.cmake)
 
-set(CTBENCH_TIME_TRACE_WRAPPER_EXEC ${CTBENCH_TIME_TRACE_WRAPPER_EXEC} PARENT_SCOPE)
+install(EXPORT ctbench-targets DESTINATION ctbench)
+
+include(cmake/benchmarking.cmake)

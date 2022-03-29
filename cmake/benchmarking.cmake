@@ -27,7 +27,7 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   # Setting ctbench-ttw as a compiler launcher
   set_target_properties(
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
-                              "${CTBENCH_TIME_TRACE_WRAPPER_EXEC};${output}")
+                              "ctbench::ctbench-time-trace-wrapper;${output}")
 
   # Adding dependency because CMake won't
   add_dependencies(${target_name} ctbench-ttw)
@@ -161,7 +161,8 @@ function(ctbench_add_graph category config)
   set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
   add_custom_target(
     ${category}
-    COMMAND ctbench-grapher-plot --output=${category} --config=${config_path} ${ARGN}
+    COMMAND ctbench::ctbench-grapher-plot --output=${category} --config=${config_path}
+            ${ARGN}
     DEPENDS ${config_path} ${ARGN}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   add_dependencies(ctbench-graph-all ${category})
