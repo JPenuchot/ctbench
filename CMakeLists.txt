@@ -30,6 +30,6 @@ export(
 install(EXPORT ctbench-targets DESTINATION ctbench)
 
 set(GRAPHER_FOLDER ${CMAKE_BINARY_DIR}/grapher/)
-set(TIME_TRACE_WRAPPER_FOLDER ${CMAKE_BINARY_DIR}/ttw/)
+set(TTW_FOLDER ${CMAKE_BINARY_DIR}/ttw/)
 
 include(cmake/benchmarking.cmake)
