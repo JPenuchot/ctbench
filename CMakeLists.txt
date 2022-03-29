@@ -29,6 +29,4 @@ export(
 
 install(EXPORT ctbench-targets DESTINATION ctbench)
 
-set(CTBENCH_PORTABLE ON PARENT_SCOPE)
-
 include(cmake/benchmarking.cmake)

@@ -6,7 +6,7 @@
 #@
 ## =============================================================================
 
-if(CTBENCH_PORTABLE)
+if(NOT ctbench_FOUND)
   set(GRAPHER_PREFIX ${CMAKE_BINARY_DIR}/grapher/ PARENT_SCOPE)
   set(TTW_PREFIX ${CMAKE_BINARY_DIR}/ttw/ PARENT_SCOPE)
 
@@ -38,7 +38,7 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
                               "${TTW_PREFIX}ctbench-ttw;${output}")
 
-  if(CTBENCH_PORTABLE)
+  if(NOT ctbench_FOUND)
     add_dependencies(${target_name} ctbench-ttw)
   endif()
 
