@@ -6,6 +6,11 @@
 #@
 ## =============================================================================
 
+if(CTBENCH_PORTABLE)
+  set(GRAPHER_FOLDER ${CMAKE_BINARY_DIR}/grapher/ PARENT_SCOPE)
+  set(TTW_FOLDER ${CMAKE_BINARY_DIR}/ttw/ PARENT_SCOPE)
+endif()
+
 ## =============================================================================
 #@
 #@ _ctbench_internal_add_compile_benchmark
@@ -29,8 +34,9 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
                               "${GRAPHER_FOLDER}ctbench-ttw;${output}")
 
-  # Adding dependency because CMake won't
-  add_dependencies(${target_name} ctbench::ctbench-ttw)
+  if(CTBENCH_PORTABLE)
+    add_dependencies(${target_name} ctbench-ttw)
+  endif()
 
   # Pass benchmark size
   target_compile_options(${target_name} PRIVATE ${options})
