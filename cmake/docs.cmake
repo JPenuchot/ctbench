@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
   dac_content
   GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css.git
-  GIT_TAG v1.6.1
+  GIT_TAG v2.0.3
   GIT_SHALLOW)
 
 FetchContent_GetProperties(dac_content)
