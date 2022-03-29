@@ -7,8 +7,8 @@
 ## =============================================================================
 
 if(NOT ctbench_FOUND)
-  set(GRAPHER_PREFIX ${CMAKE_BINARY_DIR}/grapher/ PARENT_SCOPE)
-  set(TTW_PREFIX ${CMAKE_BINARY_DIR}/ttw/ PARENT_SCOPE)
+  set(GRAPHER_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/grapher/ PARENT_SCOPE)
+  set(TTW_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/ttw/ PARENT_SCOPE)
 
   message(ctbench was imported)
   message(GRAPHER_PREFIX: ${GRAPHER_PREFIX})
