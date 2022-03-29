@@ -25,3 +25,7 @@ add_subdirectory(time-trace-wrapper)
 add_subdirectory(grapher)
 
 include(benchmarking.cmake)
+
+set(CTBENCH_TIME_TRACE_WRAPPER_EXEC
+    "${PROJECT_BINARY_DIR}/ctbench-ttw"
+    PARENT_SCOPE)
