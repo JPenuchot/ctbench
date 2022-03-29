@@ -19,7 +19,7 @@ if(${PROJECT_IS_TOP_LEVEL})
   include(cmake/docs.cmake)
 endif()
 
-add_subdirectory(time-trace-wrapper)
+add_subdirectory(ttw)
 add_subdirectory(grapher)
 
 export(
@@ -28,5 +28,8 @@ export(
   FILE CtbenchTargets.cmake)
 
 install(EXPORT ctbench-targets DESTINATION ctbench)
+
+set(GRAPHER_FOLDER ${CMAKE_BINARY_DIR}/grapher/)
+set(TIME_TRACE_WRAPPER_FOLDER ${CMAKE_BINARY_DIR}/ttw/)
 
 include(cmake/benchmarking.cmake)
