@@ -30,7 +30,7 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
                               "ctbench::ctbench-time-trace-wrapper;${output}")
 
   # Adding dependency because CMake won't
-  add_dependencies(${target_name} ctbench-ttw)
+  add_dependencies(${target_name} ctbench::ctbench-time-trace-wrapper)
 
   # Pass benchmark size
   target_compile_options(${target_name} PRIVATE ${options})
