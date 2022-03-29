@@ -29,7 +29,7 @@ export(
 
 install(EXPORT ctbench-targets DESTINATION ctbench)
 
-set(GRAPHER_FOLDER ${CMAKE_BINARY_DIR}/grapher/)
-set(TTW_FOLDER ${CMAKE_BINARY_DIR}/ttw/)
+set(GRAPHER_FOLDER ${CMAKE_BINARY_DIR}/grapher/ PARENT_SCOPE)
+set(TTW_FOLDER ${CMAKE_BINARY_DIR}/ttw/ PARENT_SCOPE)
 
 include(cmake/benchmarking.cmake)
