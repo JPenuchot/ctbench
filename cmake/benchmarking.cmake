@@ -32,7 +32,7 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   # Setting ctbench-ttw as a compiler launcher
   set_target_properties(
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
-                              "${GRAPHER_FOLDER}ctbench-ttw;${output}")
+                              "${TTW_FOLDER}ctbench-ttw;${output}")
 
   if(CTBENCH_PORTABLE)
     add_dependencies(${target_name} ctbench-ttw)
@@ -167,7 +167,7 @@ function(ctbench_add_graph category config)
   set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
   add_custom_target(
     ${category}
-    COMMAND ${CTBENCH_FOLDER}ctbench-grapher-plot --output=${category}
+    COMMAND ${GRAPHER_FOLDER}ctbench-grapher-plot --output=${category}
             --config=${config_path} ${ARGN}
     DEPENDS ${config_path} ${ARGN}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
