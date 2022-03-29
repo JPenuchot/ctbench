@@ -1,5 +1,46 @@
+#! ctbench - CMake documentation
+
 ## =============================================================================
-#! # CMake API
+#@
+#@ ## Internal API
+#@
+## =============================================================================
+
+## =============================================================================
+#@
+#@ _ctbench_internal_add_compile_benchmark
+#@
+#@ Creates a library target for a file and extracts the compilation time trace
+#@ file.
+#@
+#@ - `target_name`: Name of the benchmark target
+#@ - `output`: Time trace output path
+#@ - `file`: Source file
+#@ - `size`: Sets BENCHMARK_SIZE define (can be something else than a number)
+#@ - `options`: Options passed to the compiler
+
+function(_ctbench_internal_add_compile_benchmark target_name output source
+         options)
+
+  add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
+  target_include_directories(${target_name} PUBLIC "../include")
+
+  # Setting time-trace-wrapper as a compiler launcher
+  set_target_properties(
+    ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
+                              "${CTBENCH_TIME_TRACE_WRAPPER_EXEC};${output}")
+
+  # Adding dependency because CMake won't
+  add_dependencies(${target_name} time-trace-wrapper)
+
+  # Pass benchmark size
+  target_compile_options(${target_name} PRIVATE ${options})
+
+endfunction(_ctbench_internal_add_compile_benchmark)
+
+## =============================================================================
+#!
+#! ## Public API
 #!
 #! Functions for automated benchmark declarations.
 #!
@@ -14,9 +55,8 @@
 
 add_custom_target(ctbench-graph-all)
 
-include(cmake/internal.cmake)
-
 ## =============================================================================
+#!
 #! ## ctbench_add_benchmark
 #!
 #! Add a benchmark for a given source, with a given size range.
@@ -25,7 +65,6 @@ include(cmake/internal.cmake)
 #! - `source`: Source file
 #! - `begin, end, step`: Iteration parameters
 #! - `samples`: Number of samples per iteration
-#!
 
 function(
   ctbench_add_benchmark
@@ -57,6 +96,7 @@ function(
 endfunction(ctbench_add_benchmark)
 
 ## =============================================================================
+#!
 #! ## ctbench_add_custom_benchmark
 #!
 #! Add a benchmark for a given source with a given size range
@@ -68,7 +108,6 @@ endfunction(ctbench_add_benchmark)
 #! - `iterations`: Number of benchmark iterations for a given size
 #! - `generator`: Compile option generator. Takes a size and an output
 #!                variable name as parameters.
-#!
 
 function(
   ctbench_add_custom_benchmark
@@ -101,6 +140,7 @@ function(
 endfunction(ctbench_add_custom_benchmark)
 
 ## =============================================================================
+#!
 #! ## ctbench_add_graph
 #!
 #! Adds a graph target for a set of benchmarks,
@@ -110,7 +150,6 @@ endfunction(ctbench_add_custom_benchmark)
 #!               target, and the folder where the graphs will be saved.
 #! - `config`: Config file for plotting
 #! - `benchmarks`: List of benchmark names
-#!
 
 function(ctbench_add_graph category config)
   set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
