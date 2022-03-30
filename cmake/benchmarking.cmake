@@ -10,11 +10,19 @@
 # ctbench_FOUND being false means ctbench was imported inside of the tree.
 # ctbench_FOUND being true means ctbench found through find_package.
 if(NOT ctbench_FOUND)
-  set(GRAPHER_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/grapher/ PARENT_SCOPE)
-  set(TTW_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/ttw/ PARENT_SCOPE)
+  set(GRAPHER_PREFIX
+      ${CMAKE_CURRENT_BINARY_DIR}/grapher/
+      PARENT_SCOPE)
+  set(TTW_PREFIX
+      ${CMAKE_CURRENT_BINARY_DIR}/ttw/
+      PARENT_SCOPE)
 else()
-  set(GRAPHER_PREFIX ctbench:: PARENT_SCOPE)
-  set(TTW_PREFIX ctbench:: PARENT_SCOPE)
+  set(GRAPHER_PREFIX
+      ctbench::
+      PARENT_SCOPE)
+  set(TTW_PREFIX
+      ctbench::
+      PARENT_SCOPE)
 endif()
 
 ## =============================================================================
