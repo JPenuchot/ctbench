@@ -180,7 +180,7 @@ function(ctbench_add_graph category config)
   add_dependencies(ctbench-graph-all ${category})
 
   if(NOT ctbench_FOUND)
-    add_dependencies(${target_name} ctbench-grapher-plot)
+    add_dependencies(${category} ctbench-grapher-plot)
   endif()
 endfunction(ctbench_add_graph)
 
