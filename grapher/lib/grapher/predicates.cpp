@@ -1,6 +1,7 @@
 #include "grapher/predicates.hpp"
 #include "grapher/utils/json.hpp"
 
+#include <bits/ranges_algo.h>
 #include <nlohmann/json_fwd.hpp>
 #include <regex>
 #include <string>
@@ -82,33 +83,27 @@ inline auto match(nlohmann::json const &constraint) {
               json_value<nlohmann::json>(constraint, "matcher").flatten(),
           regex_match_opt = constraint.value("regex", false)](
              nlohmann::json const &value) -> bool {
-    for (auto const &[k, v] : matcher_flat.items()) {
-      nlohmann::json::json_pointer ptr(k);
+    auto items_iteration_proxy = matcher_flat.items();
+    return std::all_of(
+        items_iteration_proxy.begin(), items_iteration_proxy.end(),
+        [&](auto const &matcher_item_kv) -> bool {
+          // Pointer to the value we should observe
+          nlohmann::json::json_pointer const ptr(matcher_item_kv.key());
 
-      // Regex match
-      if (regex_match_opt) {
-        if (v.is_string()) {
-          if (!value.contains(ptr) || !value.is_string() ||
-              !std::regex_match(
-                  value[ptr].get_ref<nlohmann::json::string_t const &>(),
-                  std::regex(v))) {
+          // Checking for existence of matching value
+          if (!value.contains(ptr)) {
             return false;
           }
-        } else {
-          if (!value.contains(ptr) || value[ptr] != v) {
-            return false;
-          }
-        }
-      }
 
-      // Default match
-      else {
-        if (!value.contains(ptr) || value[ptr] != v) {
-          return false;
-        }
-      }
-    }
-    return true;
+          // Regex match
+          if (regex_match_opt) {
+            return std::regex_match(to_string(value[ptr]),
+                                    std::regex(matcher_item_kv.value()));
+          }
+
+          // Regular match
+          return value[ptr] == matcher_item_kv.value();
+        });
   };
 }
 
@@ -206,7 +201,7 @@ inline auto op_and(nlohmann::json const &constraint) {
 ///   "type": "val_true",
 /// }
 /// ```
-inline auto val_true(nlohmann::json const &) {
+inline auto val_true(nlohmann::json const & /* unused */) {
   return [](nlohmann::json const &) -> bool { return true; };
 }
 
@@ -219,7 +214,7 @@ inline auto val_true(nlohmann::json const &) {
 ///   "type": "val_false",
 /// }
 /// ```
-inline auto val_false(nlohmann::json const &) {
+inline auto val_false(nlohmann::json const & /* unused */) {
   return [](nlohmann::json const &) -> bool { return false; };
 }
 

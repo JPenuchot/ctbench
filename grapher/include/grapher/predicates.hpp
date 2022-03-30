@@ -6,7 +6,7 @@
 
 namespace grapher {
 
-/// \defgroup predicates
+/// \defgroup predicates Predicates
 /// Predicates for group descriptors.
 
 /// \ingroup predicates

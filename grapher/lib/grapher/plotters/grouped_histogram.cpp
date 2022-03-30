@@ -17,9 +17,10 @@ nlohmann::json plotter_grouped_histogram_t::get_default_config() const {
   return grapher::base_default_config();
 }
 
-void plotter_grouped_histogram_t::plot(const benchmark_set_t &,
-                                       const std::filesystem::path &,
-                                       const nlohmann::json &) const {
+void plotter_grouped_histogram_t::plot(
+    const benchmark_set_t & /* bset */,
+    const std::filesystem::path & /* dest */,
+    const nlohmann::json & /* config */) const {
   // TODO
 }
 

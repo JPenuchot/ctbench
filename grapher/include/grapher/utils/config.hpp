@@ -30,6 +30,6 @@ std::vector<nlohmann::json>
 write_descriptors(std::vector<group_descriptor_t> const &descriptors);
 
 std::vector<group_descriptor_t>
-read_descriptors(std::vector<nlohmann::json> const &j);
+read_descriptors(std::vector<nlohmann::json> const &list);
 
 } // namespace grapher

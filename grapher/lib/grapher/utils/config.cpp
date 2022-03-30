@@ -1,7 +1,9 @@
 #include "grapher/utils/config.hpp"
 
 #include <algorithm>
+#include <bits/ranges_algo.h>
 #include <iterator>
+#include <ranges>
 
 #include <llvm/Support/raw_ostream.h>
 
@@ -25,23 +27,18 @@ std::vector<nlohmann::json>
 extract_group(group_descriptor_t const &descriptor,
               std::vector<nlohmann::json> const &events) {
   std::vector<predicate_t> predicates;
+
   predicates.reserve(descriptor.predicates.size());
-
-  std::transform(descriptor.predicates.begin(), descriptor.predicates.end(),
-                 std::back_inserter(predicates), &get_predicate);
-
-  auto check_predicates = [&](nlohmann::json const &event) -> bool {
-    for (predicate_t const &p : predicates) {
-      if (!p(event)) {
-        return false;
-      }
-    }
-    return true;
-  };
+  std::ranges::transform(descriptor.predicates, std::back_inserter(predicates),
+                         get_predicate);
 
   std::vector<nlohmann::json> res;
-  std::copy_if(events.begin(), events.end(), std::back_inserter(res),
-               check_predicates);
+
+  std::ranges::copy_if(
+      events, std::back_inserter(res), [&](nlohmann::json const &event) {
+        return std::ranges::all_of(
+            predicates, [&](predicate_t const &p) { return p(event); });
+      });
 
   return res;
 }

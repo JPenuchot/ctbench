@@ -18,7 +18,7 @@ nlohmann::json plotter_debug_t::get_default_config() const {
 
 void plotter_debug_t::plot(const benchmark_set_t &bset,
                            const std::filesystem::path &dest,
-                           const nlohmann::json &) const {
+                           const nlohmann::json & /* config */) const {
   llvm::outs() << "Output path: " << dest << '\n';
   llvm::outs() << "Category size: " << bset.size() << '\n';
 
