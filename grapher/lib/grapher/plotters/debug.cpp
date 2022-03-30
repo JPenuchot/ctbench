@@ -28,8 +28,7 @@ void plotter_debug_t::plot(const benchmark_set_t &bset,
 
     for (benchmark_iteration_t const &iteration : bench.iterations) {
       llvm::outs() << "\t\tIteration size: " << iteration.size << '\n'
-                   << "\t\tSamples: " << iteration.samples.size()
-                   << "\n\n";
+                   << "\t\tSamples: " << iteration.samples.size() << "\n\n";
     }
     llvm::outs() << '\n';
   }

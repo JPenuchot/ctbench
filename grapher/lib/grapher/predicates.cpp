@@ -77,7 +77,6 @@ inline auto regex(nlohmann::json const &constraint) {
 ///   }
 /// }
 /// ```
-
 inline auto match(nlohmann::json const &constraint) {
   return [matcher_flat =
               json_value<nlohmann::json>(constraint, "matcher").flatten(),
