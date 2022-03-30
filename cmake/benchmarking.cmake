@@ -6,13 +6,15 @@
 #@
 ## =============================================================================
 
+# Setting executable/target prefix.
+# ctbench_FOUND being false means ctbench was imported inside of the tree.
+# ctbench_FOUND being true means ctbench found through find_package.
 if(NOT ctbench_FOUND)
   set(GRAPHER_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/grapher/ PARENT_SCOPE)
   set(TTW_PREFIX ${CMAKE_CURRENT_BINARY_DIR}/ttw/ PARENT_SCOPE)
-
-  message(ctbench was imported)
-  message(GRAPHER_PREFIX: ${GRAPHER_PREFIX})
-  message(TTW_PREFIX: ${TTW_PREFIX})
+else()
+  set(GRAPHER_PREFIX ctbench:: PARENT_SCOPE)
+  set(TTW_PREFIX ctbench:: PARENT_SCOPE)
 endif()
 
 ## =============================================================================
@@ -176,6 +178,10 @@ function(ctbench_add_graph category config)
     DEPENDS ${config_path} ${ARGN}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   add_dependencies(ctbench-graph-all ${category})
+
+  if(NOT ctbench_FOUND)
+    add_dependencies(${target_name} ctbench-grapher-plot)
+  endif()
 endfunction(ctbench_add_graph)
 
 #!
