@@ -1,4 +1,4 @@
-#include <time-trace-wrapper.hpp>
+#include <ttw.hpp>
 
 // auto parse_args(int argc, char const *argv[])
 void test_parse_args() {
@@ -16,4 +16,4 @@ void test_all() {
   test_get_timetrace_file();
 }
 
-int main(int argc, char const *argv[]) { test_all(); }
+int main(int /*argc*/, char const * /*argv*/[]) { test_all(); }

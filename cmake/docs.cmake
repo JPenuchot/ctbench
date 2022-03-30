@@ -17,7 +17,7 @@ include(FetchContent)
 FetchContent_Declare(
   dac_content
   GIT_REPOSITORY https://github.com/jothepro/doxygen-awesome-css.git
-  GIT_TAG v1.6.1
+  GIT_TAG v2.0.3
   GIT_SHALLOW)
 
 FetchContent_GetProperties(dac_content)
@@ -33,8 +33,8 @@ doxygen_add_docs(docs ALL)
 
 add_custom_target(
   extract-api-doc
-  cmake-doc-extractor --input ${CMAKE_SOURCE_DIR}/benchmarking.cmake --output
-  ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md
-  DEPENDS ${CMAKE_SOURCE_DIR}/benchmarking.cmake)
+  cmake-doc-extractor --input ${CMAKE_SOURCE_DIR}/cmake/benchmarking.cmake
+  --output ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md
+  DEPENDS ${CMAKE_SOURCE_DIR}/cmake/benchmarking.cmake)
 
 add_dependencies(docs extract-api-doc)

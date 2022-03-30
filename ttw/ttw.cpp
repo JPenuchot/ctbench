@@ -6,7 +6,7 @@
 #include <string>
 #include <string_view>
 
-#include <time-trace-wrapper.hpp>
+#include <ttw.hpp>
 
 /// Wrapper for a given clang command.
 
