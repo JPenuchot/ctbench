@@ -8,14 +8,17 @@ if(ENABLE_CLANG_TIDY)
   set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
 endif()
 
-add_compile_options(
+add_library(ctbench-compile-opts INTERFACE)
+
+target_compile_options(ctbench-compile-opts INTERFACE
   -Wall
   -Wextra
   -Werror
   -Wnull-dereference
   -Wold-style-cast
   -Wdouble-promotion
-  -Wshadow)
+  -Wshadow
+  -fno-rtti)
 
 # Docs
 if(${PROJECT_IS_TOP_LEVEL})
