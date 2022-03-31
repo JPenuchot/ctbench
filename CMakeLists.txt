@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(ctbench)
+project(ctbench VERSION 0.0.0)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
@@ -26,11 +26,5 @@ endif()
 add_subdirectory(ttw)
 add_subdirectory(grapher)
 
-export(
-  EXPORT ctbench-targets
-  NAMESPACE ctbench::
-  FILE CtbenchTargets.cmake)
-
-install(EXPORT ctbench-targets DESTINATION ctbench)
-
-include(cmake/benchmarking.cmake)
+include(cmake/ctbench-api.cmake)
+include(cmake/install.cmake)

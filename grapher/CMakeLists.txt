@@ -23,9 +23,6 @@ target_link_libraries(ctbench-grapher-plot PRIVATE grapher)
 add_executable(ctbench-grapher-utils grapher-utils.cpp)
 target_link_libraries(ctbench-grapher-utils PRIVATE grapher)
 
-install(TARGETS ctbench-grapher-plot ctbench-grapher-utils
-        EXPORT ctbench-targets)
-
 if(BUILD_TESTING)
   add_subdirectory(tests)
 endif()

@@ -1,0 +1,4 @@
+@PACKAGE_INIT@
+
+include(${ctbench_DIR}/ctbench-targets.cmake)
+include(${ctbench_DIR}/ctbench-api.cmake)

@@ -33,8 +33,8 @@ doxygen_add_docs(docs ALL)
 
 add_custom_target(
   extract-api-doc
-  cmake-doc-extractor --input ${CMAKE_SOURCE_DIR}/cmake/benchmarking.cmake
-  --output ${CMAKE_SOURCE_DIR}/generated-docs/benchmarking.md
-  DEPENDS ${CMAKE_SOURCE_DIR}/cmake/benchmarking.cmake)
+  cmake-doc-extractor --input ${CMAKE_SOURCE_DIR}/cmake/ctbench-api.cmake
+  --output ${CMAKE_SOURCE_DIR}/generated-docs/ctbench-api.md
+  DEPENDS ${CMAKE_SOURCE_DIR}/cmake/ctbench-api.cmake)
 
 add_dependencies(docs extract-api-doc)
