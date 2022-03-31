@@ -13,7 +13,7 @@ llvm_map_components_to_libnames(llvm_libs core support)
 target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json
                                      sciplot::sciplot stdc++fs tbb ${llvm_libs})
 
-target_compile_options(grapher PUBLIC -fno-rtti -fno-exceptions)
+target_compile_options(grapher PUBLIC -fno-rtti)
 
 # Adding executables
 
