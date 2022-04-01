@@ -50,6 +50,8 @@ inline plotter_t plotter_type_to_plotter(plotter_type_t type) {
   case stack_v:
     return std::make_unique<grapher::plotters::plotter_stack_t>();
   }
+
+  return std::make_unique<grapher::plotters::plotter_debug_t>();
 }
 
 /// Converts a string to a plotter type.
