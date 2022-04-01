@@ -21,7 +21,7 @@ target_compile_options(ctbench-compile-opts INTERFACE
   -fno-rtti)
 
 # Docs
-if(${PROJECT_IS_TOP_LEVEL})
+if(${PROJECT_IS_TOP_LEVEL} AND ${ENABLE_DOCS})
   add_subdirectory(cmake-doc-extractor)
   include(cmake/docs.cmake)
 endif()
