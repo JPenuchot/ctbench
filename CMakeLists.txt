@@ -10,15 +10,16 @@ endif()
 
 add_library(ctbench-compile-opts INTERFACE)
 
-target_compile_options(ctbench-compile-opts INTERFACE
-  -Wall
-  -Wextra
-  -Werror
-  -Wnull-dereference
-  -Wold-style-cast
-  -Wdouble-promotion
-  -Wshadow
-  -fno-rtti)
+target_compile_options(
+  ctbench-compile-opts
+  INTERFACE -Wall
+            -Wextra
+            -Werror
+            -Wnull-dereference
+            -Wold-style-cast
+            -Wdouble-promotion
+            -Wshadow
+            -fno-rtti)
 
 # Docs
 if(${ENABLE_DOCS})
