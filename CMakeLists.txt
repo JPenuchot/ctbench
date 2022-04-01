@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.21)
-project(ctbench VERSION 0.0.0)
+project(ctbench VERSION 0.0.1)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
