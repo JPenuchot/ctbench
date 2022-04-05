@@ -10,6 +10,7 @@
 
 #include "grapher/core.hpp"
 #include "grapher/plotters/stack.hpp"
+#include "grapher/predicates.hpp"
 #include "grapher/utils/config.hpp"
 #include "grapher/utils/json.hpp"
 #include "grapher/utils/plot.hpp"
@@ -84,10 +85,12 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
       // Storing previous value as we iterate
       std::string curve_name = descriptor.name;
 
+      std::vector<predicate_t> predicates = get_predicates(descriptor);
+
       for (std::size_t i = 0; i < bench.iterations.size(); i++) {
         benchmark_iteration_t const &iteration = bench.iterations[i];
         std::vector<double> const values =
-            get_values(iteration, descriptor, feature_value_jptr);
+            get_values(iteration, predicates, feature_value_jptr);
 
         if (values.empty()) {
           llvm::errs() << "[ERROR] No event matching descriptor "

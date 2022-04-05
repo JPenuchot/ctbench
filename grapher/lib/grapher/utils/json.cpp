@@ -1,23 +1,17 @@
 #include "grapher/utils/json.hpp"
+#include "grapher/predicates.hpp"
+#include "grapher/utils/config.hpp"
 
 #include <algorithm>
 #include <execution>
 #include <fstream>
-#include <iostream>
-#include <optional>
-
-#include <llvm/Support/raw_ostream.h>
 
 #include <nlohmann/json.hpp>
-#include <pstl/glue_execution_defs.h>
-
-#include "grapher/predicates.hpp"
-#include "grapher/utils/config.hpp"
 
 namespace grapher {
 
 std::vector<double> get_values(benchmark_iteration_t const &iteration,
-                               group_descriptor_t const &descriptor,
+                               std::vector<predicate_t> const &predicates,
                                nlohmann::json::json_pointer value_jptr) {
   std::vector<double> res(iteration.samples.size());
 
@@ -36,8 +30,6 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
 
     nlohmann::json::array_t const &events =
         j["traceEvents"].get_ref<nlohmann::json::array_t const &>();
-
-    std::vector<predicate_t> predicates = get_predicates(descriptor);
 
     // Accumulate
     double val = 0.;

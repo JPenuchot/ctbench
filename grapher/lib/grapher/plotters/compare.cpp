@@ -11,6 +11,7 @@
 
 #include "grapher/core.hpp"
 #include "grapher/plotters/compare.hpp"
+#include "grapher/predicates.hpp"
 #include "grapher/utils/config.hpp"
 #include "grapher/utils/json.hpp"
 #include "grapher/utils/plot.hpp"
@@ -62,6 +63,9 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
     sciplot::Plot plot;
     apply_config(plot, config);
 
+    // Generating predicates
+    std::vector<predicate_t> predicates = get_predicates(descriptor);
+
     for (benchmark_case_t const &bench : bset) {
       std::vector<double> x_points;
       std::vector<double> y_points;
@@ -77,7 +81,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
         }
 
         std::vector<double> const values =
-            get_values(iteration, descriptor, value_json_pointer);
+            get_values(iteration, predicates, value_json_pointer);
 
         if (values.empty()) {
           llvm::errs() << "[WARNING] No event in benchmark " << bench.name
