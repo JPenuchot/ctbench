@@ -8,6 +8,7 @@
 #include <llvm/Support/raw_ostream.h>
 
 #include <nlohmann/json.hpp>
+#include <vector>
 
 #include "grapher/predicates.hpp"
 #include "grapher/utils/json.hpp"
@@ -23,14 +24,19 @@ group_descriptor_t get_default_group_descriptor() {
           }})};
 }
 
-std::vector<nlohmann::json>
-extract_group(group_descriptor_t const &descriptor,
-              std::vector<nlohmann::json> const &events) {
+std::vector<predicate_t> get_predicates(group_descriptor_t const &descriptor) {
   std::vector<predicate_t> predicates;
 
   predicates.reserve(descriptor.predicates.size());
   std::ranges::transform(descriptor.predicates, std::back_inserter(predicates),
                          get_predicate);
+  return predicates;
+}
+
+std::vector<nlohmann::json>
+extract_group(group_descriptor_t const &descriptor,
+              std::vector<nlohmann::json> const &events) {
+  std::vector<predicate_t> predicates = get_predicates(descriptor);
 
   std::vector<nlohmann::json> res;
 

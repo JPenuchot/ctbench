@@ -1,5 +1,7 @@
 #pragma once
 
+#include <grapher/predicates.hpp>
+
 #include <vector>
 
 #include <nlohmann/json.hpp>
@@ -17,6 +19,8 @@ struct group_descriptor_t {
 };
 
 group_descriptor_t get_default_group_descriptor();
+
+std::vector<predicate_t> get_predicates(group_descriptor_t const &descriptor);
 
 std::vector<nlohmann::json>
 extract_group(group_descriptor_t const &descriptor,

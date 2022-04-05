@@ -29,22 +29,23 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
       repetition_ifstream >> j;
     }
 
-    std::vector<nlohmann::json> events =
-        json_value<std::vector<nlohmann::json>>(j, "traceEvents");
-
-    // Filter events
-    std::vector<nlohmann::json> matching_events =
-        extract_group(descriptor, events);
-
-    // Check for data
-    if (matching_events.empty()) {
+    if (!j.contains("traceEvents") || !j["traceEvents"].is_array() ||
+        j["traceEvents"].empty()) {
       return 0.;
     }
 
+    nlohmann::json::array_t const &events =
+        j["traceEvents"].get_ref<nlohmann::json::array_t const &>();
+
+    std::vector<predicate_t> predicates = get_predicates(descriptor);
+
     // Accumulate
     double val = 0.;
-    for (nlohmann::json const &event : matching_events) {
-      val += json_value<double>(event, value_jptr);
+    for (nlohmann::json const &event : events) {
+      if (std::all_of(predicates.begin(), predicates.end(),
+                      [&](predicate_t const &p) -> bool { return p(event); })) {
+        val += json_value<double>(event, value_jptr);
+      }
     }
     return val;
   };
