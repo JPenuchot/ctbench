@@ -40,6 +40,8 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(ctbench)
 ```
 
+or through `find_package(ctbench REQUIRED)` after installing it.
+
 The [Rule of Cheese](https://github.com/JPenuchot/rule-of-cheese) project can be
 used as an example of how to use `ctbench`. It is the project that gave birth to
 this tool and is maintained as `ctbench` evolves.
@@ -94,52 +96,54 @@ ctbench_add_benchmark(function_selection.requires # Benchmark case name
 ### Declaring a graph target
 
 Once you have several benchmark cases, you can start writing a graph config.
-Here's an example as a starting point:
+
+Example configs can be found [here](./grapher/configs/), or by running
+`ctbench-grapher-utils --plotter=<plotter> --command=get-default-config`.
 
 ```json
 {
   "plotter": "compare",
-  "group_descriptors": [
-    {
-      "name": "Total ExecuteCompiler",
-      "predicates": [
-        {
-          "pointer": "/name",
-          "string": "Total ExecuteCompiler",
-          "type": "streq"
-        }
-      ]
-    },
-    {
-      "name": "Total Frontend",
-      "predicates": [
-        {
-          "pointer": "/name",
-          "string": "Total Frontend",
-          "type": "streq"
-        }
-      ]
-    },
-    {
-      "name": "Total Backend",
-      "predicates": [
-        {
-          "pointer": "/name",
-          "string": "Total Backend",
-          "type": "streq"
-        }
-      ]
-    }
-  ],
-  "width": 1500,
-  "height": 500,
   "draw_average": true,
   "draw_points": false,
   "plot_file_extension": ".svg",
   "value_json_pointer": "/dur",
+  "width": 1500,
+  "height": 500,
   "legend_title": "Timings",
   "xlabel": "Benchmark size factor",
-  "ylabel": "Time (µs)"
+  "ylabel": "Time (µs)",
+  "group_descriptors": [
+    {
+      "name": "ExecuteCompiler",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total ExecuteCompiler"
+        }
+      ]
+    },
+    {
+      "name": "Frontend",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total Frontend"
+        }
+      ]
+    },
+    {
+      "name": "Backend",
+      "predicates": [
+        {
+          "type": "streq",
+          "pointer": "/name",
+          "string": "Total Backend"
+        }
+      ]
+    }
+  ]
 }
 ```
 
@@ -163,9 +167,9 @@ ctbench_add_graph(function_selection-feature_comparison-graph # Target name
 ```
 
 For each group descriptor, a graph will be generated with one curve
-per benchmark case. In this case, you would then get 2 graphs
-(Frontend and Backend) with 5 curves (enable_if, enable_if_t, if_constexpr,
-control, and requires).
+per benchmark case. In this case, you would then get 3 graphs
+(`ExecuteCompiler`, `Frontend`, and `Backend`) each with 5 curves (`enable_if`,
+`enable_if_t`, `if_constexpr`, `control`, and `requires`).
 
 ## Additional
 
