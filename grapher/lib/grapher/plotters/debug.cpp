@@ -10,15 +10,15 @@ std::string_view plotter_debug_t::get_help() const {
          "debug category building or traversal issues.";
 }
 
-nlohmann::json plotter_debug_t::get_default_config() const {
-  nlohmann::json res;
+grapher::json_t plotter_debug_t::get_default_config() const {
+  grapher::json_t res;
   res["plotter"] = "debug";
   return res;
 }
 
 void plotter_debug_t::plot(const benchmark_set_t &bset,
                            const std::filesystem::path &dest,
-                           const nlohmann::json & /* config */) const {
+                           const grapher::json_t & /* config */) const {
   llvm::outs() << "Output path: " << dest << '\n';
   llvm::outs() << "Category size: " << bset.size() << '\n';
 

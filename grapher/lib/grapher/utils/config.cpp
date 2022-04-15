@@ -17,7 +17,7 @@ namespace grapher {
 
 group_descriptor_t get_default_group_descriptor() {
   return {.name = "All",
-          .predicates = nlohmann::json::array({nlohmann::json{
+          .predicates = grapher::json_t::array({grapher::json_t{
               {"type", "regex"},
               {"pointer", "/name"},
               {"regex", "*"},
@@ -33,15 +33,15 @@ std::vector<predicate_t> get_predicates(group_descriptor_t const &descriptor) {
   return predicates;
 }
 
-std::vector<nlohmann::json>
+std::vector<grapher::json_t>
 extract_group(group_descriptor_t const &descriptor,
-              std::vector<nlohmann::json> const &events) {
+              std::vector<grapher::json_t> const &events) {
   std::vector<predicate_t> predicates = get_predicates(descriptor);
 
-  std::vector<nlohmann::json> res;
+  std::vector<grapher::json_t> res;
 
   std::ranges::copy_if(
-      events, std::back_inserter(res), [&](nlohmann::json const &event) {
+      events, std::back_inserter(res), [&](grapher::json_t const &event) {
         return std::ranges::all_of(
             predicates, [&](predicate_t const &p) { return p(event); });
       });
@@ -49,21 +49,21 @@ extract_group(group_descriptor_t const &descriptor,
   return res;
 }
 
-group_descriptor_t json_to_group_descriptor(nlohmann::json const &j) {
+group_descriptor_t json_to_group_descriptor(grapher::json_t const &j) {
   return {.name = json_value<std::string>(j, "name"),
           .predicates =
-              json_value<std::vector<nlohmann::json>>(j, "predicates")};
+              json_value<std::vector<grapher::json_t>>(j, "predicates")};
 }
-nlohmann::json group_descriptor_json(group_descriptor_t const &descriptor) {
+grapher::json_t group_descriptor_json(group_descriptor_t const &descriptor) {
   return {
       {"name", descriptor.name},
       {"predicates", descriptor.predicates},
   };
 }
 
-std::vector<nlohmann::json>
+std::vector<grapher::json_t>
 write_descriptors(std::vector<group_descriptor_t> const &descriptors) {
-  std::vector<nlohmann::json> res;
+  std::vector<grapher::json_t> res;
   res.reserve(descriptors.size());
 
   for (group_descriptor_t const &d : descriptors) {
@@ -73,7 +73,7 @@ write_descriptors(std::vector<group_descriptor_t> const &descriptors) {
 }
 
 std::vector<group_descriptor_t>
-read_descriptors(std::vector<nlohmann::json> const &list) {
+read_descriptors(std::vector<grapher::json_t> const &list) {
   std::vector<group_descriptor_t> res;
   res.reserve(list.size());
   std::transform(list.begin(), list.end(), std::back_inserter(res),

@@ -23,8 +23,8 @@ std::string_view plotter_compare_t::get_help() const {
          "benchmark cases in the set.";
 }
 
-nlohmann::json plotter_compare_t::get_default_config() const {
-  nlohmann::json res = grapher::base_default_config();
+grapher::json_t plotter_compare_t::get_default_config() const {
+  grapher::json_t res = grapher::base_default_config();
 
   res["plotter"] = "compare";
 
@@ -42,10 +42,10 @@ nlohmann::json plotter_compare_t::get_default_config() const {
 
 void plotter_compare_t::plot(benchmark_set_t const &bset,
                              std::filesystem::path const &dest,
-                             nlohmann::json const &config) const {
+                             grapher::json_t const &config) const {
   // Config
 
-  nlohmann::json::json_pointer value_json_pointer(
+  grapher::json_t::json_pointer value_json_pointer(
       json_value<std::string>(config, "value_json_pointer"));
 
   bool draw_average = config.value("draw_average", true);
@@ -54,7 +54,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
   std::string plot_file_extension = config.value("plot_file_extension", ".svg");
 
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
-      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
+      json_value<std::vector<grapher::json_t>>(config, "group_descriptors"));
 
   // Drawing
 

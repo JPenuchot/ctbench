@@ -15,25 +15,25 @@ namespace grapher {
 /// Named set of constraint.
 struct group_descriptor_t {
   std::string name;
-  std::vector<nlohmann::json> predicates;
+  std::vector<grapher::json_t> predicates;
 };
 
 group_descriptor_t get_default_group_descriptor();
 
 std::vector<predicate_t> get_predicates(group_descriptor_t const &descriptor);
 
-std::vector<nlohmann::json>
+std::vector<grapher::json_t>
 extract_group(group_descriptor_t const &descriptor,
-              std::vector<nlohmann::json> const &events);
+              std::vector<grapher::json_t> const &events);
 
-group_descriptor_t json_to_group_descriptor(nlohmann::json const &j);
+group_descriptor_t json_to_group_descriptor(grapher::json_t const &j);
 
-nlohmann::json group_descriptor_json(group_descriptor_t const &descriptor);
+grapher::json_t group_descriptor_json(group_descriptor_t const &descriptor);
 
-std::vector<nlohmann::json>
+std::vector<grapher::json_t>
 write_descriptors(std::vector<group_descriptor_t> const &descriptors);
 
 std::vector<group_descriptor_t>
-read_descriptors(std::vector<nlohmann::json> const &list);
+read_descriptors(std::vector<grapher::json_t> const &list);
 
 } // namespace grapher

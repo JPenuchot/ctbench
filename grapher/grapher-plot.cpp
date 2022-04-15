@@ -28,7 +28,7 @@ int main(int argc, char const *argv[]) {
   llvm::cl::ParseCommandLineOptions(argc, argv);
 
   // Get configed
-  nlohmann::json config;
+  grapher::json_t config;
   {
     std::ifstream config_file(cli::config_opt.getValue());
     if (!config_file) {

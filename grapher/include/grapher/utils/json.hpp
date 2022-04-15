@@ -18,22 +18,22 @@ namespace grapher {
 /// value_jptr in the events matching the descriptor's predicates.
 std::vector<double> get_values(benchmark_iteration_t const &iteration,
                                std::vector<predicate_t> const &predicates,
-                               nlohmann::json::json_pointer value_jptr);
+                               grapher::json_t::json_pointer value_jptr);
 
 /// Merges the contents of b into a, with items of a being overwritten if items
 /// present in b share the same key.
-nlohmann::json merge_into(nlohmann::json a, nlohmann::json const &b);
+grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b);
 
 /// Wrapper for strict JSON type error management.
 /// Exits program if value at given field location is empty or isn't of the
 /// right type.
 template <typename ValueType, typename LocType>
-inline ValueType json_value(nlohmann::json const &object,
+inline ValueType json_value(grapher::json_t const &object,
                             LocType const &field_location,
                             const std::experimental::source_location loc =
                                 std::experimental::source_location::current()) {
-  // nlohmann::json
-  if constexpr (std::is_same<nlohmann::json, ValueType>::value) {
+  // grapher::json_t
+  if constexpr (std::is_same<grapher::json_t, ValueType>::value) {
     if (!object.contains(field_location)) {
       llvm::errs() << loc.function_name() << " - Empty field " << field_location
                    << ":\n"
@@ -57,13 +57,13 @@ inline ValueType json_value(nlohmann::json const &object,
     }
   }
 
-  // std::vector<nlohmann::json>
-  if constexpr (std::is_same<std::vector<nlohmann::json>, ValueType>::value) {
+  // std::vector<grapher::json_t>
+  if constexpr (std::is_same<std::vector<grapher::json_t>, ValueType>::value) {
     if (!object.contains(field_location) ||
         !object[field_location].is_array()) {
       llvm::errs() << loc.function_name() << " - Invalid field "
                    << field_location
-                   << ", expected std::vector<nlohmann::json>:\n"
+                   << ", expected std::vector<grapher::json_t>:\n"
                    << object.dump(2) << '\n';
       std::exit(1);
     } else {

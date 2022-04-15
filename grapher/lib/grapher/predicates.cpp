@@ -23,12 +23,12 @@ namespace grapher::predicates {
 ///   "regex": "Total*"
 /// }
 /// ```
-inline auto regex(nlohmann::json const &constraint) {
+inline auto regex(grapher::json_t const &constraint) {
   // Validating pointer parameter
-  return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
+  return [pointer = grapher::json_t::json_pointer{json_value<std::string>(
               constraint, "pointer")},
           regex = std::regex(json_value<std::string>(constraint, "regex"))](
-             nlohmann::json const &value) -> bool {
+             grapher::json_t const &value) -> bool {
     if (!value.contains(pointer) || !value[pointer].is_string()) {
       return false;
     }
@@ -77,17 +77,17 @@ inline auto regex(nlohmann::json const &constraint) {
 ///   }
 /// }
 /// ```
-inline auto match(nlohmann::json const &constraint) {
+inline auto match(grapher::json_t const &constraint) {
   return [matcher_flat =
-              json_value<nlohmann::json>(constraint, "matcher").flatten(),
+              json_value<grapher::json_t>(constraint, "matcher").flatten(),
           regex_match_opt = constraint.value("regex", false)](
-             nlohmann::json const &value) -> bool {
+             grapher::json_t const &value) -> bool {
     auto items_iteration_proxy = matcher_flat.items();
     return std::all_of(
         items_iteration_proxy.begin(), items_iteration_proxy.end(),
         [&](auto const &matcher_item_kv) -> bool {
           // Pointer to the value we should observe
-          nlohmann::json::json_pointer const ptr(matcher_item_kv.key());
+          grapher::json_t::json_pointer const ptr(matcher_item_kv.key());
 
           // Checking for existence of matching value
           if (!value.contains(ptr)) {
@@ -117,16 +117,16 @@ inline auto match(nlohmann::json const &constraint) {
 ///   "string": "Total Source"
 /// }
 /// ```
-inline auto streq(nlohmann::json const &constraint) {
-  return [pointer = nlohmann::json::json_pointer{json_value<std::string>(
+inline auto streq(grapher::json_t const &constraint) {
+  return [pointer = grapher::json_t::json_pointer{json_value<std::string>(
               constraint, "pointer")},
           str = json_value<std::string>(constraint, "string")](
-             nlohmann::json const &value) -> bool {
+             grapher::json_t const &value) -> bool {
     if (!value.contains(pointer) || !value[pointer].is_string()) {
       return false;
     }
 
-    return value[pointer].get_ref<nlohmann::json::string_t const &>() == str;
+    return value[pointer].get_ref<grapher::json_t::string_t const &>() == str;
   };
 }
 
@@ -152,11 +152,11 @@ inline auto streq(nlohmann::json const &constraint) {
 ///   }
 /// }
 /// ```
-inline auto op_or(nlohmann::json const &constraint) {
+inline auto op_or(grapher::json_t const &constraint) {
   return
-      [first = get_predicate(json_value<nlohmann::json>(constraint, "first")),
-       second = get_predicate(json_value<nlohmann::json>(
-           constraint, "second"))](nlohmann::json const &value) -> bool {
+      [first = get_predicate(json_value<grapher::json_t>(constraint, "first")),
+       second = get_predicate(json_value<grapher::json_t>(
+           constraint, "second"))](grapher::json_t const &value) -> bool {
         return first(value) || second(value);
       };
 }
@@ -182,11 +182,11 @@ inline auto op_or(nlohmann::json const &constraint) {
 ///   }
 /// }
 /// ```
-inline auto op_and(nlohmann::json const &constraint) {
+inline auto op_and(grapher::json_t const &constraint) {
   return
-      [first = get_predicate(json_value<nlohmann::json>(constraint, "first")),
-       second = get_predicate(json_value<nlohmann::json>(
-           constraint, "second"))](nlohmann::json const &value) -> bool {
+      [first = get_predicate(json_value<grapher::json_t>(constraint, "first")),
+       second = get_predicate(json_value<grapher::json_t>(
+           constraint, "second"))](grapher::json_t const &value) -> bool {
         return first(value) && second(value);
       };
 }
@@ -200,8 +200,8 @@ inline auto op_and(nlohmann::json const &constraint) {
 ///   "type": "val_true",
 /// }
 /// ```
-inline auto val_true(nlohmann::json const & /* unused */) {
-  return [](nlohmann::json const &) -> bool { return true; };
+inline auto val_true(grapher::json_t const & /* unused */) {
+  return [](grapher::json_t const &) -> bool { return true; };
 }
 
 /// \ingroup predicates
@@ -213,8 +213,8 @@ inline auto val_true(nlohmann::json const & /* unused */) {
 ///   "type": "val_false",
 /// }
 /// ```
-inline auto val_false(nlohmann::json const & /* unused */) {
-  return [](nlohmann::json const &) -> bool { return false; };
+inline auto val_false(grapher::json_t const & /* unused */) {
+  return [](grapher::json_t const &) -> bool { return false; };
 }
 
 } // namespace grapher::predicates
@@ -223,7 +223,7 @@ namespace grapher {
 
 /// \ingroup predicates
 /// Builds predicate and stores it in an std::function object.
-predicate_t get_predicate(nlohmann::json const &constraint) {
+predicate_t get_predicate(grapher::json_t const &constraint) {
   std::string constraint_type = json_value<std::string>(constraint, "type");
 
 #define REGISTER_PREDICATE(name)                                               \

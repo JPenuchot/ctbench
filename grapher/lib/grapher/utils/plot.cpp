@@ -8,7 +8,7 @@
 namespace grapher {
 
 /// Default config file for plots
-nlohmann::json const default_config = {
+grapher::json_t const default_config = {
     {"width", 1500},
     {"height", 500},
     {"legend_title", "Timings"},
@@ -16,7 +16,7 @@ nlohmann::json const default_config = {
     {"ylabel", "Time (µs)"},
 };
 
-sciplot::Plot &apply_config(sciplot::Plot &plot, nlohmann::json config) {
+sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t config) {
   // Dimensions
   if (config.contains("width") && config.contains("height")) {
     plot.size(config["width"], config["height"]);
@@ -38,6 +38,6 @@ sciplot::Plot &apply_config(sciplot::Plot &plot, nlohmann::json config) {
   return plot;
 }
 
-nlohmann::json base_default_config() { return default_config; }
+grapher::json_t base_default_config() { return default_config; }
 
 } // namespace grapher

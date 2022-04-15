@@ -12,12 +12,12 @@ namespace grapher {
 
 std::vector<double> get_values(benchmark_iteration_t const &iteration,
                                std::vector<predicate_t> const &predicates,
-                               nlohmann::json::json_pointer value_jptr) {
+                               grapher::json_t::json_pointer value_jptr) {
   std::vector<double> res(iteration.samples.size());
 
   auto get_val = [&](std::filesystem::path const &repetition_path) -> double {
     // Extract events
-    nlohmann::json j;
+    grapher::json_t j;
     {
       std::ifstream repetition_ifstream(repetition_path);
       repetition_ifstream >> j;
@@ -28,12 +28,12 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
       return 0.;
     }
 
-    nlohmann::json::array_t const &events =
-        j["traceEvents"].get_ref<nlohmann::json::array_t const &>();
+    grapher::json_t::array_t const &events =
+        j["traceEvents"].get_ref<grapher::json_t::array_t const &>();
 
     // Accumulate
     double val = 0.;
-    for (nlohmann::json const &event : events) {
+    for (grapher::json_t const &event : events) {
       if (std::all_of(predicates.begin(), predicates.end(),
                       [&](predicate_t const &p) -> bool { return p(event); })) {
         val += json_value<double>(event, value_jptr);
@@ -48,10 +48,10 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
   return res;
 }
 
-nlohmann::json merge_into(nlohmann::json a, nlohmann::json const &b) {
-  for (nlohmann::json const b_flat = b.flatten();
+grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b) {
+  for (grapher::json_t const b_flat = b.flatten();
        auto const &[k_ptr, v] : b_flat.items()) {
-    a[nlohmann::json::json_pointer(k_ptr)] = v;
+    a[grapher::json_t::json_pointer(k_ptr)] = v;
   }
   return a;
 }

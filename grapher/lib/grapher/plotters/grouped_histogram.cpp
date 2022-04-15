@@ -12,7 +12,7 @@ std::string_view plotter_grouped_histogram_t::get_help() const {
   return "TODO";
 }
 
-nlohmann::json plotter_grouped_histogram_t::get_default_config() const {
+grapher::json_t plotter_grouped_histogram_t::get_default_config() const {
   // TODO
   return grapher::base_default_config();
 }
@@ -20,7 +20,7 @@ nlohmann::json plotter_grouped_histogram_t::get_default_config() const {
 void plotter_grouped_histogram_t::plot(
     const benchmark_set_t & /* bset */,
     const std::filesystem::path & /* dest */,
-    const nlohmann::json & /* config */) const {
+    const grapher::json_t & /* config */) const {
   // TODO
 }
 

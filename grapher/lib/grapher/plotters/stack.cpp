@@ -23,8 +23,8 @@ std::string_view plotter_stack_t::get_help() const {
          "field.";
 }
 
-nlohmann::json plotter_stack_t::get_default_config() const {
-  nlohmann::json res = grapher::base_default_config();
+grapher::json_t plotter_stack_t::get_default_config() const {
+  grapher::json_t res = grapher::base_default_config();
 
   res["plotter"] = "stack";
 
@@ -42,19 +42,19 @@ nlohmann::json plotter_stack_t::get_default_config() const {
 
 void plotter_stack_t::plot(benchmark_set_t const &bset,
                            std::filesystem::path const &dest,
-                           nlohmann::json const &config) const {
+                           grapher::json_t const &config) const {
   // Config
 
-  nlohmann::json::json_pointer feature_value_jptr(
+  grapher::json_t::json_pointer feature_value_jptr(
       config.value("value_json_pointer", "/dur"));
 
-  nlohmann::json::json_pointer feature_name_jptr(
+  grapher::json_t::json_pointer feature_name_jptr(
       config.value("name_json_pointer", "/name"));
 
   std::string plot_file_extension = config.value("plot_file_extension", ".svg");
 
   std::vector<group_descriptor_t> descriptors = read_descriptors(
-      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
+      json_value<std::vector<grapher::json_t>>(config, "group_descriptors"));
 
   // Drawing
 
