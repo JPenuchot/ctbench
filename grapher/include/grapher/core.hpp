@@ -11,6 +11,8 @@
 
 namespace grapher {
 
+using json_t = nlohmann::json;
+
 /// Set of results for a benchmark case iteration of a given size.
 struct benchmark_iteration_t {
   /// Size of the benchmark instance
