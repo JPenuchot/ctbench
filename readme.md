@@ -97,7 +97,8 @@ ctbench_add_benchmark(function_selection.requires # Benchmark case name
 
 Once you have several benchmark cases, you can start writing a graph config.
 
-Example configs can be found [here](./grapher/configs/), or by running
+Example configs can be found [here](
+https://github.com/JPenuchot/ctbench/tree/main/grapher/configs), or by running
 `ctbench-grapher-utils --plotter=<plotter> --command=get-default-config`.
 
 ```json
