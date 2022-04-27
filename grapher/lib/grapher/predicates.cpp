@@ -1,14 +1,17 @@
-#include "grapher/predicates.hpp"
-#include "grapher/utils/json.hpp"
-
-#include <bits/ranges_algo.h>
-#include <nlohmann/json_fwd.hpp>
+#include <bits/iterator_concepts.h>
 #include <regex>
 #include <string>
 
 #include <nlohmann/json.hpp>
 
 #include <llvm/Support/raw_ostream.h>
+
+#include <fmt/core.h>
+
+#include "grapher/core.hpp"
+#include "grapher/predicates.hpp"
+#include "grapher/utils/error.hpp"
+#include "grapher/utils/json.hpp"
 
 namespace grapher::predicates {
 
@@ -241,9 +244,9 @@ predicate_t get_predicate(grapher::json_t const &constraint) {
 
 #undef REGISTER_PREDICATE
 
-  llvm::errs() << "[ERROR] Predicate error, invalid type:\n"
-               << constraint.dump(2) << '\n';
-  std::exit(1);
+  check(false,
+        fmt::format("Predicate error, invalid type:\n{}", constraint.dump(2)));
+  return {};
 }
 
 } // namespace grapher

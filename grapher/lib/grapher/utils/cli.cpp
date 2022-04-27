@@ -4,7 +4,10 @@
 
 #include <llvm/Support/raw_ostream.h>
 
+#include <fmt/core.h>
+
 #include "grapher/utils/cli.hpp"
+#include "grapher/utils/error.hpp"
 
 namespace grapher {
 
@@ -18,8 +21,8 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
     fs::path bench_path(bench_path_str.data());
 
     if (!fs::is_directory(bench_path)) {
-      llvm::errs() << "[WARNING] Not a directory: " << bench_path
-                   << " (current path: " << fs::current_path() << ").\n";
+      warn(fmt::format("Not a directory: {} (current path: {}).",
+                       bench_path.string(), fs::current_path().string()));
       continue;
     }
 
@@ -36,10 +39,9 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       {
         std::istringstream iss(entry_dir.path().filename().stem());
         if (!(iss >> iteration.size)) {
-          llvm::errs() << "[WARNING] Entry directory name is not a size: "
-                       << entry_dir.path()
-                       << " (current path: " << fs::current_path() << ").\n";
-
+          warn(fmt::format(
+              "Entry directory name is not a size: {} (current path: {}).",
+              entry_dir.path().string(), fs::current_path().string()));
           continue;
         }
       }
@@ -50,11 +52,10 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
 
         // Basic property check
         if (!std::filesystem::is_regular_file(sample_path_entry)) {
-          llvm::errs()
-              << "[WARNING] Invalid repetition file (not a regular file): "
-              << sample_path_entry.path()
-              << " (current path: " << fs::current_path() << ").\n";
-
+          warn(fmt::format("Invalid repetition file (not a regular file): {} "
+                           "(current path: {}).",
+                           sample_path_entry.path().string(),
+                           fs::current_path().string()));
           continue;
         }
 

@@ -1,17 +1,18 @@
 #include <algorithm>
 #include <filesystem>
+#include <numeric>
 
 #include <llvm/Support/raw_ostream.h>
 
-#include <nlohmann/json.hpp>
+#include <fmt/core.h>
 
-#include <numeric>
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/core.hpp"
 #include "grapher/plotters/stack.hpp"
 #include "grapher/predicates.hpp"
 #include "grapher/utils/config.hpp"
+#include "grapher/utils/error.hpp"
 #include "grapher/utils/json.hpp"
 #include "grapher/utils/plot.hpp"
 
@@ -92,12 +93,10 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
         std::vector<double> const values =
             get_values(iteration, predicates, feature_value_jptr);
 
-        if (values.empty()) {
-          llvm::errs() << "[ERROR] No event matching descriptor "
-                       << descriptor.name << " in benchmark " << bench.name
-                       << " with iteration size " << iteration.size << ".\n";
-          std::exit(1);
-        }
+        check(values.empty(),
+              fmt::format("No event matching descriptor {} in benchmark {} "
+                          "with iteration size {}.\n",
+                          descriptor.name, bench.name, iteration.size));
 
         // TODO: Get better stats (standard deviation, etc...)
         double const y_val =

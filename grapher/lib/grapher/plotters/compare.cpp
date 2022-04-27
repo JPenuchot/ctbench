@@ -5,6 +5,8 @@
 
 #include <llvm/Support/raw_ostream.h>
 
+#include <fmt/core.h>
+
 #include <nlohmann/json.hpp>
 
 #include <sciplot/sciplot.hpp>
@@ -13,6 +15,7 @@
 #include "grapher/plotters/compare.hpp"
 #include "grapher/predicates.hpp"
 #include "grapher/utils/config.hpp"
+#include "grapher/utils/error.hpp"
 #include "grapher/utils/json.hpp"
 #include "grapher/utils/plot.hpp"
 
@@ -74,22 +77,19 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
       std::vector<double> y_average;
 
       for (benchmark_iteration_t const &iteration : bench.iterations) {
-        if (iteration.samples.empty()) {
-          llvm::errs() << "[WARNING] No data in benchmark " << bench.name
-                       << " for iteration size " << iteration.size << "\n";
-          continue;
-        }
+        check(!iteration.samples.empty(),
+              fmt::format("No data in benchmark {} for iteration size {}.",
+                          bench.name, iteration.size),
+              error_level_t::warning_v);
 
         std::vector<double> const values =
             get_values(iteration, predicates, value_json_pointer);
 
-        if (values.empty()) {
-          llvm::errs() << "[WARNING] No event in benchmark " << bench.name
-                       << " at size " << iteration.size
-                       << " matched by group descriptor " << descriptor.name
-                       << ".\n";
-          continue;
-        }
+        check(!values.empty(),
+              fmt::format("No event in benchmark {} at size {} matched by "
+                          "group descriptor {}.\n",
+                          bench.name, iteration.size, descriptor.name),
+              error_level_t::warning_v);
 
         // Drawing points
         if (draw_points) {

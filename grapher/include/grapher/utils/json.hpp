@@ -7,10 +7,11 @@
 
 #include <llvm/Support/raw_ostream.h>
 
-#include <nlohmann/json.hpp>
+#include <fmt/core.h>
 
 #include "grapher/core.hpp"
 #include "grapher/utils/config.hpp"
+#include "grapher/utils/error.hpp"
 
 namespace grapher {
 
@@ -32,82 +33,68 @@ inline ValueType json_value(grapher::json_t const &object,
                             LocType const &field_location,
                             const std::experimental::source_location loc =
                                 std::experimental::source_location::current()) {
-  // grapher::json_t
-  if constexpr (std::is_same<grapher::json_t, ValueType>::value) {
-    if (!object.contains(field_location)) {
-      llvm::errs() << loc.function_name() << " - Empty field " << field_location
-                   << ":\n"
-                   << object.dump(2) << '\n';
-      std::exit(1);
-    } else {
-      return object[field_location];
-    }
-  }
+  std::string const field_location_str = field_location;
+
+  check(object.contains(field_location),
+        fmt::format("Empty field {}:\n{}", field_location_str, object.dump(2)),
+        error_v, -1, loc);
 
   // std::string
   if constexpr (std::is_same<std::string, ValueType>::value) {
-    if (!object.contains(field_location) ||
-        !object[field_location].is_string()) {
-      llvm::errs() << loc.function_name() << " - Invalid field "
-                   << field_location << ", expected string:\n"
-                   << object.dump(2) << '\n';
-      std::exit(1);
-    } else {
-      return object[field_location];
-    }
+    check(object[field_location].is_string(),
+          fmt::format("Invalid field {}, expected string:\n{}",
+                      field_location_str, object.dump(2)),
+          error_v, -1, loc);
+
+    return object[field_location];
   }
 
   // std::vector<grapher::json_t>
-  if constexpr (std::is_same<std::vector<grapher::json_t>, ValueType>::value) {
-    if (!object.contains(field_location) ||
-        !object[field_location].is_array()) {
-      llvm::errs() << loc.function_name() << " - Invalid field "
-                   << field_location
-                   << ", expected std::vector<grapher::json_t>:\n"
-                   << object.dump(2) << '\n';
-      std::exit(1);
-    } else {
-      return object[field_location];
-    }
+  else if constexpr (std::is_same<std::vector<grapher::json_t>,
+                                  ValueType>::value) {
+    check(object[field_location].is_array(),
+          fmt::format(
+              "Invalid field {}, expected std::vector<grapher::json_t>:\n{}",
+              field_location_str, object.dump(2)),
+          error_v, -1, loc);
+
+    return object[field_location];
   }
 
   // bool
-  if constexpr (std::is_same<bool, ValueType>::value) {
-    if (!object.contains(field_location) ||
-        !object[field_location].is_boolean()) {
-      llvm::errs() << loc.function_name() << " - Invalid field "
-                   << field_location << ", expected bool:\n"
-                   << object.dump(2) << '\n';
-      std::exit(1);
-    } else {
-      return object[field_location];
-    }
+  else if constexpr (std::is_same<bool, ValueType>::value) {
+    check(object.contains(field_location) &&
+              object[field_location].is_boolean(),
+          fmt::format("Invalid field {}, expected bool:\n{}",
+                      field_location_str, object.dump(2)),
+          error_v, -1, loc);
+
+    return object[field_location];
   }
 
   // int
-  if constexpr (std::is_same<int, ValueType>::value) {
-    if (!object.contains(field_location) ||
-        !object[field_location].is_number()) {
-      llvm::errs() << loc.function_name() << " - Invalid field "
-                   << field_location << ", expected number:\n"
-                   << object.dump(2) << '\n';
-      std::exit(1);
-    } else {
-      return object[field_location];
-    }
+  else if constexpr (std::is_same<int, ValueType>::value) {
+    check(object[field_location].is_number(),
+          fmt::format("Invalid field {}, expected number:\n{}",
+                      field_location_str, object.dump(2)),
+          error_v, -1, loc);
+
+    return object[field_location];
   }
 
   // double
-  if constexpr (std::is_same<double, ValueType>::value) {
-    if (!object.contains(field_location) ||
-        !object[field_location].is_number()) {
-      llvm::errs() << loc.function_name() << " - Invalid field "
-                   << field_location << ", expected number:\n"
-                   << object.dump(2) << '\n';
-      std::exit(1);
-    } else {
-      return object[field_location];
-    }
+  else if constexpr (std::is_same<double, ValueType>::value) {
+    check(object[field_location].is_number(),
+          fmt::format("Invalid field {}, expected number:\n{}",
+                      field_location_str, object.dump(2)),
+          error_v, -1, loc);
+
+    return object[field_location];
+  }
+
+  // Anything else
+  else {
+    return object[field_location];
   }
 }
 
