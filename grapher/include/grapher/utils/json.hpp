@@ -25,22 +25,22 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
 /// present in b share the same key.
 grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b);
 
-/// Wrapper for strict JSON type error management.
-/// Exits program if value at given field location is empty or isn't of the
-/// right type.
-template <typename ValueType, typename LocType>
-inline ValueType json_value(grapher::json_t const &object,
-                            LocType const &field_location,
-                            const std::experimental::source_location loc =
-                                std::experimental::source_location::current()) {
+/// Wraps value access with type checking and error reporting.
+template <typename ReturnType, typename LocType>
+inline ReturnType
+json_value(grapher::json_t const &object, LocType const &field_location,
+           const std::experimental::source_location loc =
+               std::experimental::source_location::current()) {
+
+  using ValueType = std::decay_t<ReturnType>;
+
   std::string const field_location_str = field_location;
 
   check(object.contains(field_location),
         fmt::format("Empty field {}:\n{}", field_location_str, object.dump(2)),
         error_v, -1, loc);
 
-  // std::string
-  if constexpr (std::is_same<std::string, ValueType>::value) {
+  if constexpr (std::is_same<grapher::json_t::string_t, ValueType>::value) {
     check(object[field_location].is_string(),
           fmt::format("Invalid field {}, expected string:\n{}",
                       field_location_str, object.dump(2)),
@@ -49,20 +49,17 @@ inline ValueType json_value(grapher::json_t const &object,
     return object[field_location];
   }
 
-  // std::vector<grapher::json_t>
-  else if constexpr (std::is_same<std::vector<grapher::json_t>,
-                                  ValueType>::value) {
+  else if constexpr (std::is_same<grapher::json_t::array_t, ValueType>::value) {
     check(object[field_location].is_array(),
-          fmt::format(
-              "Invalid field {}, expected std::vector<grapher::json_t>:\n{}",
-              field_location_str, object.dump(2)),
+          fmt::format("Invalid field {}, expected array:\n{}",
+                      field_location_str, object.dump(2)),
           error_v, -1, loc);
 
     return object[field_location];
   }
 
-  // bool
-  else if constexpr (std::is_same<bool, ValueType>::value) {
+  else if constexpr (std::is_same<grapher::json_t::boolean_t,
+                                  ValueType>::value) {
     check(object.contains(field_location) &&
               object[field_location].is_boolean(),
           fmt::format("Invalid field {}, expected bool:\n{}",
@@ -72,8 +69,8 @@ inline ValueType json_value(grapher::json_t const &object,
     return object[field_location];
   }
 
-  // int
-  else if constexpr (std::is_same<int, ValueType>::value) {
+  else if constexpr (std::is_same<grapher::json_t::number_integer_t,
+                                  ValueType>::value) {
     check(object[field_location].is_number(),
           fmt::format("Invalid field {}, expected number:\n{}",
                       field_location_str, object.dump(2)),
@@ -83,7 +80,8 @@ inline ValueType json_value(grapher::json_t const &object,
   }
 
   // double
-  else if constexpr (std::is_same<double, ValueType>::value) {
+  else if constexpr (std::is_same<grapher::json_t::number_float_t,
+                                  ValueType>::value) {
     check(object[field_location].is_number(),
           fmt::format("Invalid field {}, expected number:\n{}",
                       field_location_str, object.dump(2)),
