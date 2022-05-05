@@ -49,7 +49,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
   // Config
 
   grapher::json_t::json_pointer value_json_pointer(
-      json_value<std::string>(config, "value_json_pointer"));
+      json_value<json_t::string_t const &>(config, "value_json_pointer"));
 
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
@@ -57,7 +57,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
   std::string plot_file_extension = config.value("plot_file_extension", ".svg");
 
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
-      json_value<std::vector<grapher::json_t>>(config, "group_descriptors"));
+      json_value<json_t::array_t const &>(config, "group_descriptors"));
 
   // Drawing
 
