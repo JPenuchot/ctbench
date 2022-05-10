@@ -24,13 +24,8 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
       repetition_ifstream >> j;
     }
 
-    if (!j.contains("traceEvents") || !j["traceEvents"].is_array() ||
-        j["traceEvents"].empty()) {
-      return 0.;
-    }
-
     grapher::json_t::array_t const &events =
-        j["traceEvents"].get_ref<grapher::json_t::array_t const &>();
+        json_at_ref<grapher::json_t::array_t const &>(j, "traceEvents");
 
     // Accumulate
     double val = 0.;
