@@ -55,7 +55,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
   std::string plot_file_extension = config.value("plot_file_extension", ".svg");
 
   std::vector<group_descriptor_t> descriptors = read_descriptors(
-      json_value<std::vector<grapher::json_t>>(config, "group_descriptors"));
+      json_at_ref<json_t::array_t const &>(config, "group_descriptors"));
 
   // Drawing
 

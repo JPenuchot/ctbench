@@ -28,15 +28,17 @@ namespace grapher::predicates {
 /// ```
 inline auto regex(grapher::json_t const &constraint) {
   // Validating pointer parameter
-  return [pointer = grapher::json_t::json_pointer{json_value<std::string>(
-              constraint, "pointer")},
-          regex = std::regex(json_value<std::string>(constraint, "regex"))](
-             grapher::json_t const &value) -> bool {
+  return [pointer =
+              grapher::json_t::json_pointer{
+                  json_at_ref<json_t::string_t const &>(constraint, "pointer")},
+          regex = std::regex(json_at_ref<json_t::string_t const &>(
+              constraint, "regex"))](grapher::json_t const &value) -> bool {
     if (!value.contains(pointer) || !value[pointer].is_string()) {
       return false;
     }
 
-    return std::regex_match(json_value<std::string>(value, pointer), regex);
+    return std::regex_match(
+        json_at_ref<json_t::string_t const &>(value, pointer), regex);
   };
 }
 
@@ -81,8 +83,7 @@ inline auto regex(grapher::json_t const &constraint) {
 /// }
 /// ```
 inline auto match(grapher::json_t const &constraint) {
-  return [matcher_flat =
-              json_value<grapher::json_t>(constraint, "matcher").flatten(),
+  return [matcher_flat = json_at(constraint, "matcher").flatten(),
           regex_match_opt = constraint.value("regex", false)](
              grapher::json_t const &value) -> bool {
     auto items_iteration_proxy = matcher_flat.items();
@@ -121,9 +122,10 @@ inline auto match(grapher::json_t const &constraint) {
 /// }
 /// ```
 inline auto streq(grapher::json_t const &constraint) {
-  return [pointer = grapher::json_t::json_pointer{json_value<std::string>(
-              constraint, "pointer")},
-          str = json_value<std::string>(constraint, "string")](
+  return [pointer =
+              grapher::json_t::json_pointer{
+                  json_at_ref<json_t::string_t const &>(constraint, "pointer")},
+          str = json_at_ref<json_t::string_t const &>(constraint, "string")](
              grapher::json_t const &value) -> bool {
     if (!value.contains(pointer) || !value[pointer].is_string()) {
       return false;
@@ -156,12 +158,11 @@ inline auto streq(grapher::json_t const &constraint) {
 /// }
 /// ```
 inline auto op_or(grapher::json_t const &constraint) {
-  return
-      [first = get_predicate(json_value<grapher::json_t>(constraint, "first")),
-       second = get_predicate(json_value<grapher::json_t>(
-           constraint, "second"))](grapher::json_t const &value) -> bool {
-        return first(value) || second(value);
-      };
+  return [first = get_predicate(json_at(constraint, "first")),
+          second = get_predicate(json_at(constraint, "second"))](
+             grapher::json_t const &value) -> bool {
+    return first(value) || second(value);
+  };
 }
 
 /// \ingroup predicates
@@ -186,12 +187,11 @@ inline auto op_or(grapher::json_t const &constraint) {
 /// }
 /// ```
 inline auto op_and(grapher::json_t const &constraint) {
-  return
-      [first = get_predicate(json_value<grapher::json_t>(constraint, "first")),
-       second = get_predicate(json_value<grapher::json_t>(
-           constraint, "second"))](grapher::json_t const &value) -> bool {
-        return first(value) && second(value);
-      };
+  return [first = get_predicate(json_at(constraint, "first")),
+          second = get_predicate(json_at(constraint, "second"))](
+             grapher::json_t const &value) -> bool {
+    return first(value) && second(value);
+  };
 }
 
 /// \ingroup predicates
@@ -227,7 +227,8 @@ namespace grapher {
 /// \ingroup predicates
 /// Builds predicate and stores it in an std::function object.
 predicate_t get_predicate(grapher::json_t const &constraint) {
-  std::string constraint_type = json_value<std::string>(constraint, "type");
+  std::string constraint_type =
+      json_at_ref<json_t::string_t const &>(constraint, "type");
 
 #define REGISTER_PREDICATE(name)                                               \
   if (constraint_type == #name) {                                              \

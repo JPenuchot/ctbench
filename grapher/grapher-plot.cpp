@@ -47,7 +47,8 @@ int main(int argc, char const *argv[]) {
   // Acquire plotter
   grapher::plotter_t plotter =
       grapher::plotter_type_to_plotter(grapher::string_to_plotter_type(
-          grapher::json_value<std::string>(config, "plotter")));
+          grapher::json_at_ref<grapher::json_t::string_t const &>(config,
+                                                                  "plotter")));
 
   // Build cats
   grapher::benchmark_set_t bset =
