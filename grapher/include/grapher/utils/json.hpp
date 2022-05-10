@@ -27,7 +27,7 @@ grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b);
 
 /// Wraps json_t object access with error management.
 template <typename LocType>
-grapher::json_t::const_reference
+inline grapher::json_t::const_reference
 json_at(grapher::json_t const &object, LocType const &field_location,
         const std::experimental::source_location loc =
             std::experimental::source_location::current()) {
