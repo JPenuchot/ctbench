@@ -1,6 +1,7 @@
 #include <filesystem>
 #include <fstream>
 #include <numeric>
+#include <sciplot/Plot.hpp>
 #include <string>
 #include <vector>
 
@@ -37,16 +38,18 @@ grapher::json_t plotter_compare_all_t::get_default_config() const {
   return res;
 }
 
-// Point aggregate (multiple Y coordinates)
+// Plot-friendly data structures
+
+/// Point aggregate (multiple Y coordinates)
 using point_data_t = std::vector<double>;
 
-// Curve: X -> vec<Y>
+/// Curve: X -> vec<Y>
 using benchmark_curve_t = map_t<std::size_t, point_data_t>;
 
-// Benchmark name -> Curve
+/// Benchmark name -> Curve
 using curve_aggregate_t = map_t<std::string, benchmark_curve_t>;
 
-// Feature -> Benchmark aggregate
+/// Feature -> Benchmark aggregate
 using curve_aggregate_map_t = map_t<std::string, curve_aggregate_t>;
 
 /// Wrangles data into a structure that's easier to work with for plotting.
@@ -72,38 +75,74 @@ get_bench_curves(benchmark_set_t const &bset,
 
         for (grapher::json_t const &event :
              json_at_ref<json_t::array_t const &>(sample_json, "traceEvents")) {
-          grapher::json_t::string_t const &key =
-              json_at_ref<grapher::json_t::string_t const &>(event, key_ptr);
 
-          double value = json_at(event, value_ptr);
+          if ((!event.contains(key_ptr) || !event[key_ptr].is_string()) ||
+              (!event.contains(value_ptr) || !event[value_ptr].is_number())) {
+            continue;
+          }
 
-          res[key][bench_case.name][iteration.size].push_back(value);
-        } // sample_json["traceEvents"]
-      }   // iteration.samples
-    }     // bench_case.iterations
-  }       // bset
+          res[event[key_ptr].get_ref<grapher::json_t::string_t const &>()]
+             [bench_case.name][iteration.size]
+                 .push_back(event[value_ptr]);
+        }
+      }
+    }
+  }
 
   return res;
 }
 
-void plotter_compare_all_t::plot(benchmark_set_t const & /*bset*/,
-                                 std::filesystem::path const & /*dest*/,
+void plotter_compare_all_t::plot(benchmark_set_t const &bset,
+                                 std::filesystem::path const &/*dest*/,
                                  grapher::json_t const &config) const {
   // Config
 
   grapher::json_t::json_pointer value_json_pointer(
       json_at_ref<json_t::string_t const &>(config, "value_json_pointer"));
 
-  // bool draw_average = config.value("draw_average", true);
-  // bool draw_points = config.value("draw_points", true);
+  bool draw_average = config.value("draw_average", true);
+  bool draw_points = config.value("draw_points", true);
 
   std::vector<std::string> plot_file_extensions = config.value(
       "plot_file_extensions", grapher::json_t::array({".svg", ".png"}));
 
-  std::string key_ptr = config.value("key_ptr", "/name");
+  json_t::json_pointer key_ptr =
+      config.value("key_ptr", json_t::json_pointer("/name"));
 
-  std::vector<group_descriptor_t> group_descriptors = read_descriptors(
-      json_at_ref<json_t::array_t const &>(config, "group_descriptors"));
+  json_t::json_pointer value_ptr =
+      config.value("value_ptr", json_t::json_pointer("/dur"));
+
+  // Wrangling
+
+  curve_aggregate_map_t curve_aggregate_map =
+      get_bench_curves(bset, key_ptr, value_ptr);
+
+  // Drawing
+
+  for (auto const &[feature_name, curve_aggregate] : curve_aggregate_map) {
+    for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
+
+      std::vector<double> x_curve, y_curve, x_points, y_points;
+
+      for (auto const &[x_value, y_values] : benchmark_curve) {
+        // ...
+        if (draw_average && !y_values.empty()) {
+          x_curve.push_back(x_value);
+          y_curve.push_back(std::reduce(y_values.begin(), y_values.end()) /
+                            y_values.size());
+        }
+
+        if (draw_points) {
+          for (double y_value : y_values) {
+            x_points.push_back(x_value);
+            y_points.push_back(y_value);
+          }
+        }
+      }
+
+      // Configure + draw + save plot(s)
+    }
+  }
 }
 
 } // namespace grapher::plotters
