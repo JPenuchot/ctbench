@@ -22,7 +22,7 @@
 namespace grapher::plotters {
 
 std::string_view plotter_compare_all_t::get_help() const {
-  return "Compares all traceEvents that have a matching name.";
+  return "Compares all traceEvents with a matching feature.";
 }
 
 grapher::json_t plotter_compare_all_t::get_default_config() const {
@@ -109,11 +109,8 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
   std::vector<std::string> plot_file_extensions = config.value(
       "plot_file_extensions", grapher::json_t::array({".svg", ".png"}));
 
-  json_t::json_pointer key_ptr =
-      config.value("key_ptr", json_t::json_pointer("/name"));
-
-  json_t::json_pointer value_ptr =
-      config.value("value_ptr", json_t::json_pointer("/dur"));
+  json_t::json_pointer key_ptr(config.value("key_ptr", "/name"));
+  json_t::json_pointer value_ptr(config.value("value_ptr", "/dur"));
 
   // Wrangling
 
@@ -124,8 +121,10 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
 
   for (auto const &[feature_name, curve_aggregate] : curve_aggregate_map) {
     for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
-
-      std::vector<double> x_curve, y_curve, x_points, y_points;
+      std::vector<double> x_curve;
+      std::vector<double> y_curve;
+      std::vector<double> x_points;
+      std::vector<double> y_points;
 
       // Build point & curve vectors
       for (auto const &[x_value, y_values] : benchmark_curve) {
