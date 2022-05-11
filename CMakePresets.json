@@ -1,0 +1,57 @@
+{
+  "version": 4,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 23,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "dev",
+      "displayName": "Development",
+      "description": "Development build, provides compile_commands.json",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build",
+      "cacheVariables": {
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "clang++",
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_CLANG_TIDY": "clang-tidy;-checks=-*,readability-*"
+      }
+    },
+    {
+      "name": "release",
+      "displayName": "Release",
+      "description": "Release build",
+      "binaryDir": "${sourceDir}/builds/release",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release"
+      }
+    },
+    {
+      "name": "debug",
+      "inherits": "release",
+      "displayName": "Debug",
+      "description": "Debug build",
+      "binaryDir": "${sourceDir}/builds/debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "dev",
+      "configurePreset": "dev"
+    },
+    {
+      "name": "release",
+      "configurePreset": "release"
+    },
+    {
+      "name": "debug",
+      "configurePreset": "debug"
+    }
+  ]
+}
