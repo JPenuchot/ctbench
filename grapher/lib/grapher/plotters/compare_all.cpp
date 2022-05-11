@@ -3,6 +3,7 @@
 #include <numeric>
 #include <sciplot/Plot.hpp>
 #include <string>
+#include <string_view>
 #include <vector>
 
 #include <llvm/Support/raw_ostream.h>
@@ -93,8 +94,10 @@ get_bench_curves(benchmark_set_t const &bset,
 }
 
 void plotter_compare_all_t::plot(benchmark_set_t const &bset,
-                                 std::filesystem::path const &/*dest*/,
+                                 std::filesystem::path const & /*dest*/,
                                  grapher::json_t const &config) const {
+  namespace sp = sciplot;
+
   // Config
 
   grapher::json_t::json_pointer value_json_pointer(
@@ -124,6 +127,7 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
 
       std::vector<double> x_curve, y_curve, x_points, y_points;
 
+      // Build point & curve vectors
       for (auto const &[x_value, y_values] : benchmark_curve) {
         // ...
         if (draw_average && !y_values.empty()) {
@@ -140,7 +144,21 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
         }
       }
 
-      // Configure + draw + save plot(s)
+      // Configure + draw + save plots
+      sp::Plot plot;
+
+      if (draw_average && !x_curve.empty()) {
+        plot.drawCurve(x_curve, y_curve);
+      }
+
+      if (draw_points && !x_points.empty()) {
+        plot.drawPoints(x_points, y_points);
+      }
+
+      for (std::string const &extension : plot_file_extensions) {
+        namespace fs = std::filesystem;
+        plot.save(fs::path{feature_name} / (bench_name + extension));
+      }
     }
   }
 }
