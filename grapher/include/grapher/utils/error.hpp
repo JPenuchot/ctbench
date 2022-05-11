@@ -23,6 +23,7 @@ inline std::string to_string(error_level_t error_level) {
   case info_v:
     return "INFO";
   }
+  return "";
 }
 
 /// Prints a warning
