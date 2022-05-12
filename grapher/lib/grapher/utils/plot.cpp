@@ -3,6 +3,7 @@
 #include <nlohmann/json.hpp>
 #include <sciplot/sciplot.hpp>
 
+#include "grapher/core.hpp"
 #include "grapher/plotters/plotter_i.hpp"
 
 namespace grapher {
@@ -14,6 +15,7 @@ grapher::json_t const default_config = {
     {"legend_title", "Timings"},
     {"xlabel", "Benchmark size factor"},
     {"ylabel", "Time (µs)"},
+    {"plot_file_extensions", grapher::json_t::array({".svg", ".png"})},
 };
 
 sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t config) {
@@ -39,5 +41,15 @@ sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t config) {
 }
 
 grapher::json_t base_default_config() { return default_config; }
+
+void save_plot(sciplot::Plot const &plot, std::string const &dest,
+               grapher::json_t const &config) {
+  std::vector<std::string> plot_file_extensions = config.value(
+      "plot_file_extensions", grapher::json_t::array({".svg", ".png"}));
+
+  for (std::string const &extension : plot_file_extensions) {
+    plot.save(dest + extension);
+  }
+}
 
 } // namespace grapher
