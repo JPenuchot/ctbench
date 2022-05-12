@@ -5,7 +5,7 @@
 #include <llvm/Support/CommandLine.h>
 
 #include "grapher/plotters/compare.hpp"
-#include "grapher/plotters/compare_all.hpp"
+#include "grapher/plotters/compare_by.hpp"
 #include "grapher/plotters/debug.hpp"
 //#include "grapher/plotters/grouped_histogram.hpp"
 #include "grapher/plotters/stack.hpp"
@@ -15,7 +15,7 @@ namespace grapher {
 /// Plotter type enumeration. One per plotter.
 enum plotter_type_t {
   compare_v,
-  compare_all_v,
+  compare_by_v,
   debug_v,
   // grouped_histogram_v,
   stack_v,
@@ -24,7 +24,7 @@ enum plotter_type_t {
 /// String to plotter type map.
 inline const std::map<std::string, plotter_type_t> plotter_name_map = {
     {"compare", compare_v},
-    {"compare_all", compare_all_v},
+    {"compare_by", compare_by_v},
     {"debug", debug_v},
     // {"grouped_histogram", grouped_histogram_v},
     {"stack", stack_v},
@@ -34,7 +34,7 @@ inline const std::map<std::string, plotter_type_t> plotter_name_map = {
 inline const llvm::cl::ValuesClass plotter_cl_values{
     llvm::cl::OptionEnumValue{"compare", compare_v,
                               "Compare benchmarks feature by feature."},
-    llvm::cl::OptionEnumValue{"compare_all", compare_all_v,
+    llvm::cl::OptionEnumValue{"compare_by", compare_by_v,
                               "Stack features for each benchmark."},
     llvm::cl::OptionEnumValue{"debug", debug_v,
                               "Output category stats for debug."},
@@ -49,8 +49,8 @@ inline plotter_t plotter_type_to_plotter(plotter_type_t type) {
   switch (type) {
   case compare_v:
     return std::make_unique<plotters::plotter_compare_t>();
-  case compare_all_v:
-    return std::make_unique<plotters::plotter_compare_all_t>();
+  case compare_by_v:
+    return std::make_unique<plotters::plotter_compare_by_t>();
   case debug_v:
     return std::make_unique<plotters::plotter_debug_t>();
   // case grouped_histogram_v:

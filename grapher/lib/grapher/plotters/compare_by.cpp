@@ -13,7 +13,7 @@
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/core.hpp"
-#include "grapher/plotters/compare_all.hpp"
+#include "grapher/plotters/compare_by.hpp"
 #include "grapher/utils/config.hpp"
 #include "grapher/utils/error.hpp"
 #include "grapher/utils/json.hpp"
@@ -21,16 +21,18 @@
 
 namespace grapher::plotters {
 
-std::string_view plotter_compare_all_t::get_help() const {
+std::string_view plotter_compare_by_t::get_help() const {
   return "Compares all traceEvents with a matching feature.";
 }
 
-grapher::json_t plotter_compare_all_t::get_default_config() const {
+grapher::json_t plotter_compare_by_t::get_default_config() const {
   grapher::json_t res = grapher::base_default_config();
 
-  res["plotter"] = "compare";
+  res["plotter"] = "compare_by";
 
-  res["value_json_pointer"] = "/dur";
+  res["key_ptr"] = "/name";
+  res["value_ptr"] = "/dur";
+
   res["draw_average"] = true;
   res["draw_points"] = true;
 
@@ -57,7 +59,7 @@ using curve_aggregate_map_t = map_t<std::string, curve_aggregate_t>;
 curve_aggregate_map_t
 get_bench_curves(benchmark_set_t const &bset,
                  grapher::json_t::json_pointer const &key_ptr,
-                 grapher::json_t::json_pointer const &value_ptr) {
+                 grapher::json_t::json_pointer const &val_ptr) {
   namespace fs = std::filesystem;
 
   curve_aggregate_map_t res;
@@ -77,14 +79,28 @@ get_bench_curves(benchmark_set_t const &bset,
         for (grapher::json_t const &event :
              json_at_ref<json_t::array_t const &>(sample_json, "traceEvents")) {
 
-          if ((!event.contains(key_ptr) || !event[key_ptr].is_string()) ||
-              (!event.contains(value_ptr) || !event[value_ptr].is_number())) {
-            continue;
+          // Key/value presence and type checks
+          if (check(event.contains(key_ptr),
+                    fmt::format("No matching key at {}:\n{}",
+                                key_ptr.to_string(), event.dump(2)),
+                    warning_v) &&
+              check(event[key_ptr].is_string(),
+                    fmt::format("Key at {} is not a string:\n{}",
+                                key_ptr.to_string(), event.dump(2)),
+                    warning_v) &&
+              check(event.contains(val_ptr),
+                    fmt::format("No matching value at {}:\n{}",
+                                val_ptr.to_string(), event.dump(2)),
+                    warning_v) &&
+              check(event[val_ptr].is_number(),
+                    fmt::format("Value at {} is not an integer:\n{}",
+                                val_ptr.to_string(), event.dump(2)),
+                    warning_v)) {
+            // Adding value
+            res[event[key_ptr].get_ref<grapher::json_t::string_t const &>()]
+               [bench_case.name][iteration.size]
+                   .push_back(event[val_ptr]);
           }
-
-          res[event[key_ptr].get_ref<grapher::json_t::string_t const &>()]
-             [bench_case.name][iteration.size]
-                 .push_back(event[value_ptr]);
         }
       }
     }
@@ -93,15 +109,13 @@ get_bench_curves(benchmark_set_t const &bset,
   return res;
 }
 
-void plotter_compare_all_t::plot(benchmark_set_t const &bset,
-                                 std::filesystem::path const & /*dest*/,
-                                 grapher::json_t const &config) const {
+void plotter_compare_by_t::plot(benchmark_set_t const &bset,
+                                std::filesystem::path const &dest,
+                                grapher::json_t const &config) const {
   namespace sp = sciplot;
+  namespace fs = std::filesystem;
 
   // Config
-
-  grapher::json_t::json_pointer value_json_pointer(
-      json_at_ref<json_t::string_t const &>(config, "value_json_pointer"));
 
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
@@ -117,11 +131,14 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
   curve_aggregate_map_t curve_aggregate_map =
       get_bench_curves(bset, key_ptr, value_ptr);
 
+  fs::create_directories(dest);
+
   // Drawing
 
   for (auto const &[feature_name, curve_aggregate] : curve_aggregate_map) {
     // Configure + draw + save plots
     sp::Plot plot;
+    apply_config(plot, config);
 
     for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
       std::vector<double> x_curve;
@@ -156,7 +173,7 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
     }
 
     for (std::string const &extension : plot_file_extensions) {
-      plot.save(feature_name + extension);
+      plot.save(fs::path{dest} / (feature_name + extension));
     }
   }
 }
