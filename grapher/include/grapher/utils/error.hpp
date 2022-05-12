@@ -12,7 +12,7 @@
 
 namespace grapher {
 
-enum error_level_t : std::uint8_t { error_v, warning_v, info_v };
+enum error_level_t : std::uint8_t { error_v, warning_v, info_v, log_v };
 
 inline std::string to_string(error_level_t error_level) {
   switch (error_level) {
@@ -22,6 +22,8 @@ inline std::string to_string(error_level_t error_level) {
     return "WARNING";
   case info_v:
     return "INFO";
+  case log_v:
+    return "LOG";
   }
   return "";
 }
@@ -31,9 +33,9 @@ inline void warn(std::string_view explain,
                  error_level_t error_level = warning_v,
                  std::experimental::source_location loc =
                      std::experimental::source_location::current()) {
-  llvm::errs() << fmt::format("{} {}, {}:{}:{} - {}\n", to_string(error_level),
-                              loc.file_name(), loc.function_name(), loc.line(),
-                              loc.column(), explain);
+  llvm::errs() << fmt::format(
+      "[{}] {}:{}:{} ({}) - {}\n", to_string(error_level), loc.file_name(),
+      loc.line(), loc.column(), loc.function_name(), explain);
 }
 
 /// Error management: if the condition is false, it will print a warning or
