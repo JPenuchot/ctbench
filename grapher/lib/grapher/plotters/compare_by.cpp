@@ -81,21 +81,21 @@ get_bench_curves(benchmark_set_t const &bset,
 
           // Key/value presence and type checks
           if (check(event.contains(key_ptr),
-                    fmt::format("No matching key at {}:\n{}",
-                                key_ptr.to_string(), event.dump(2)),
-                    warning_v) &&
+                    fmt::format("No matching key at {}: {}",
+                                key_ptr.to_string(), event.dump()),
+                    info_v) &&
               check(event[key_ptr].is_string(),
-                    fmt::format("Key at {} is not a string:\n{}",
-                                key_ptr.to_string(), event.dump(2)),
-                    warning_v) &&
+                    fmt::format("Key at {} is not a string: {}",
+                                key_ptr.to_string(), event.dump()),
+                    info_v) &&
               check(event.contains(val_ptr),
-                    fmt::format("No matching value at {}:\n{}",
-                                val_ptr.to_string(), event.dump(2)),
-                    warning_v) &&
+                    fmt::format("No matching value at {}: {}",
+                                val_ptr.to_string(), event.dump()),
+                    info_v) &&
               check(event[val_ptr].is_number(),
-                    fmt::format("Value at {} is not an integer:\n{}",
-                                val_ptr.to_string(), event.dump(2)),
-                    warning_v)) {
+                    fmt::format("Value at {} is not an integer: {}",
+                                val_ptr.to_string(), event.dump()),
+                    info_v)) {
             // Adding value
             res[event[key_ptr].get_ref<grapher::json_t::string_t const &>()]
                [bench_case.name][iteration.size]
