@@ -120,6 +120,9 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
   // Drawing
 
   for (auto const &[feature_name, curve_aggregate] : curve_aggregate_map) {
+    // Configure + draw + save plots
+    sp::Plot plot;
+
     for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
       std::vector<double> x_curve;
       std::vector<double> y_curve;
@@ -143,21 +146,17 @@ void plotter_compare_all_t::plot(benchmark_set_t const &bset,
         }
       }
 
-      // Configure + draw + save plots
-      sp::Plot plot;
-
       if (draw_average && !x_curve.empty()) {
-        plot.drawCurve(x_curve, y_curve);
+        plot.drawCurve(x_curve, y_curve).label(bench_name + " average");
       }
 
       if (draw_points && !x_points.empty()) {
-        plot.drawPoints(x_points, y_points);
+        plot.drawPoints(x_points, y_points).label(bench_name + " points");
       }
+    }
 
-      for (std::string const &extension : plot_file_extensions) {
-        namespace fs = std::filesystem;
-        plot.save(fs::path{feature_name} / (bench_name + extension));
-      }
+    for (std::string const &extension : plot_file_extensions) {
+      plot.save(feature_name + extension);
     }
   }
 }
