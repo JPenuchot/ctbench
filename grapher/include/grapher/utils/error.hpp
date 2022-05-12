@@ -38,16 +38,18 @@ inline void warn(std::string_view explain,
 
 /// Error management: if the condition is false, it will print a warning or
 /// error message and termineate the program if error_level is error_v.
-inline void check(bool condition, std::string_view explain,
+/// Condition value is then returned (useful for warnings).
+inline bool check(bool condition, std::string_view explain,
                   error_level_t error_level = error_v, int err_code = -1,
                   std::experimental::source_location loc =
                       std::experimental::source_location::current()) {
   if (!condition) {
     warn(explain, error_level, loc);
-    if (error_level) {
+    if (error_level == error_v) {
       std::exit(err_code);
     }
   }
+  return condition;
 }
 
 } // namespace grapher
