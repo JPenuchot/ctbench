@@ -35,8 +35,6 @@ grapher::json_t plotter_compare_t::get_default_config() const {
   res["draw_average"] = true;
   res["draw_points"] = true;
 
-  res["plot_file_extension"] = ".svg";
-
   res["group_descriptors"] =
       write_descriptors({get_default_group_descriptor()});
 
@@ -118,7 +116,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
 
     // Saving plot
     std::filesystem::create_directories(dest);
-    plot.save(dest / (std::move(descriptor.name) + plot_file_extension));
+    save_plot(plot, dest / std::move(descriptor.name), config);
   }
 }
 

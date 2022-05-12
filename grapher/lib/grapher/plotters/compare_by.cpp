@@ -28,15 +28,18 @@ std::string_view plotter_compare_by_t::get_help() const {
 grapher::json_t plotter_compare_by_t::get_default_config() const {
   grapher::json_t res = grapher::base_default_config();
 
+  // Plotter name
   res["plotter"] = "compare_by";
 
+  // Pointer to the grouping key
   res["key_ptr"] = "/name";
+  // Pointer to the values
   res["value_ptr"] = "/dur";
 
+  // Draw average curve
   res["draw_average"] = true;
+  // Draw value points
   res["draw_points"] = true;
-
-  res["plot_file_extension"] = grapher::json_t::array({".svg", ".png"});
 
   return res;
 }
@@ -116,7 +119,6 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   namespace fs = std::filesystem;
 
   // Config
-
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
 
@@ -127,13 +129,13 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   json_t::json_pointer value_ptr(config.value("value_ptr", "/dur"));
 
   // Wrangling
-
   curve_aggregate_map_t curve_aggregate_map =
       get_bench_curves(bset, key_ptr, value_ptr);
 
+  // Ensure the destination folder exists
   fs::create_directories(dest);
 
-  // Drawing
+  // Drawing, ie. unwrapping the nested maps and drawing curves + saving plots
 
   for (auto const &[feature_name, curve_aggregate] : curve_aggregate_map) {
     // Configure + draw + save plots
@@ -141,21 +143,26 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
     apply_config(plot, config);
 
     for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
+      // The following vectors store point coordinates for average curve and
+      // individual point drawing
+
       std::vector<double> x_curve;
       std::vector<double> y_curve;
+
       std::vector<double> x_points;
       std::vector<double> y_points;
 
       // Build point & curve vectors
       for (auto const &[x_value, y_values] : benchmark_curve) {
-        // ...
         if (draw_average && !y_values.empty()) {
+          // Computing and drawing average
           x_curve.push_back(x_value);
           y_curve.push_back(std::reduce(y_values.begin(), y_values.end()) /
                             y_values.size());
         }
 
         if (draw_points) {
+          // Drawing points
           for (double y_value : y_values) {
             x_points.push_back(x_value);
             y_points.push_back(y_value);
@@ -164,17 +171,17 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
       }
 
       if (draw_average && !x_curve.empty()) {
+        // Draw average curve
         plot.drawCurve(x_curve, y_curve).label(bench_name + " average");
       }
 
       if (draw_points && !x_points.empty()) {
+        // Draw points
         plot.drawPoints(x_points, y_points).label(bench_name + " points");
       }
     }
 
-    for (std::string const &extension : plot_file_extensions) {
-      plot.save(fs::path{dest} / (feature_name + extension));
-    }
+    save_plot(plot, dest, config);
   }
 }
 

@@ -32,7 +32,6 @@ grapher::json_t plotter_stack_t::get_default_config() const {
   // Basic values, probably no need to change them
   res["value_json_pointer"] = "/dur";
   res["name_json_pointer"] = "/name";
-  res["plot_file_extension"] = ".svg";
 
   // Some matchers as an example...
   res["group_descriptors"] =
@@ -127,7 +126,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
   std::filesystem::create_directories(dest);
   for (std::size_t i = 0; i < bset.size(); i++) {
     plots[i].yrange(0., max_y_val);
-    plots[i].save(dest / (bset[i].name + plot_file_extension));
+    save_plot(plots[i], dest / bset[i].name, config);
   }
 }
 
