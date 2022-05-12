@@ -81,16 +81,16 @@ get_bench_curves(benchmark_set_t const &bset,
 
           // Key/value presence and type checks
           if (check(event.contains(key_ptr),
-                    fmt::format("No key at {}: {}",
-                                key_ptr.to_string(), event.dump()),
+                    fmt::format("No key at {}: {}", key_ptr.to_string(),
+                                event.dump()),
                     info_v) &&
               check(event[key_ptr].is_string(),
                     fmt::format("Key at {} is not a string: {}",
                                 key_ptr.to_string(), event.dump()),
                     info_v) &&
               check(event.contains(val_ptr),
-                    fmt::format("No value at {}: {}",
-                                val_ptr.to_string(), event.dump()),
+                    fmt::format("No value at {}: {}", val_ptr.to_string(),
+                                event.dump()),
                     info_v) &&
               check(event[val_ptr].is_number(),
                     fmt::format("Value at {} is not an integer: {}",
