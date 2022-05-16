@@ -26,7 +26,7 @@ namespace grapher {
 
 /// Interface for plotters. Plotters should be able to:
 /// - Plot a ctbench::category_t with a grapher::json_t configuration object,
-/// - Output help as a std::string_view,
+/// - Output help as a std::string,
 /// - Output a default config as a grapher::json_t object.
 struct plotter_i {
   virtual ~plotter_i() = default;
@@ -38,7 +38,7 @@ struct plotter_i {
                     grapher::json_t const &config) const = 0;
 
   /// Returns a help message for end-users.
-  virtual std::string_view get_help() const = 0;
+  virtual std::string get_help() const = 0;
 
   /// Returns a default config for end-users.
   virtual grapher::json_t get_default_config() const = 0;
