@@ -1,10 +1,10 @@
 #include <filesystem>
 
 #include <nlohmann/json.hpp>
+
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/core.hpp"
-#include "grapher/plotters/plotter_i.hpp"
 #include "grapher/utils/plot.hpp"
 
 namespace grapher {

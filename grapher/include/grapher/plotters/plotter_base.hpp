@@ -12,9 +12,9 @@ namespace grapher {
 
 /// \addtogroup plotters
 ///
-/// Plotters are objects that inherit the plotter_i virtual interface, and thus
-/// override the plotter_i::plot, plotter_i::get_help, and
-/// plotter_i::get_default_config methods.
+/// Plotters are objects that inherit the plotter_base_t virtual interface, and
+/// thus override the plotter_base_t::plot, and
+/// plotter_base_t::get_default_config methods.
 ///
 /// They're used to generate plots from a grapher::category_t object and a
 /// grapher::json_t object for configuration.
@@ -26,10 +26,9 @@ namespace grapher {
 
 /// Interface for plotters. Plotters should be able to:
 /// - Plot a ctbench::category_t with a grapher::json_t configuration object,
-/// - Output help as a std::string,
 /// - Output a default config as a grapher::json_t object.
-struct plotter_i {
-  virtual ~plotter_i() = default;
+struct plotter_base_t {
+  virtual ~plotter_base_t() = default;
 
   /// Plots a given ctbench::category_t at the given destination.
   /// It receives a grapher::json_t object as a config.
@@ -42,6 +41,6 @@ struct plotter_i {
 };
 
 /// Polymorphic representation of a plotter.
-using plotter_t = std::unique_ptr<plotter_i>;
+using plotter_t = std::unique_ptr<plotter_base_t>;
 
 } // namespace grapher

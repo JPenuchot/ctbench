@@ -1,6 +1,6 @@
 #pragma once
 
-#include "grapher/plotters/plotter_i.hpp"
+#include "grapher/plotters/plotter_base.hpp"
 
 namespace grapher::plotters {
 
@@ -8,7 +8,7 @@ namespace grapher::plotters {
 
 /// Generates one plot per benchmark where all the targeted features are
 /// visualized as stacked curves.
-struct plotter_stack_t : plotter_i {
+struct plotter_stack_t : plotter_base_t {
   void plot(benchmark_set_t const &bset, std::filesystem::path const &dest,
             grapher::json_t const &config) const override;
 
