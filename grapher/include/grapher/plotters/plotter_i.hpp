@@ -37,9 +37,6 @@ struct plotter_i {
                     std::filesystem::path const &dest,
                     grapher::json_t const &config) const = 0;
 
-  /// Returns a help message for end-users.
-  virtual std::string get_help() const = 0;
-
   /// Returns a default config for end-users.
   virtual grapher::json_t get_default_config() const = 0;
 };
