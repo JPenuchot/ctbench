@@ -19,6 +19,17 @@ grapher::json_t const default_config = {
     {"plot_file_extensions", grapher::json_t::array({".svg", ".png"})},
 };
 
+std::string base_default_config_help() {
+  return "General plot parameters:\n"
+         "- width (int): output width\n"
+         "- height (int): output height\n"
+         "- legend_title (string): legend title\n"
+         "- x_label (string): x axis label\n"
+         "- y_label (string): y axis label\n"
+         "- plot_file_extensions (array of string): list of extensions for "
+         "the export\n";
+}
+
 sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t config) {
   // Dimensions
   if (config.contains("width") && config.contains("height")) {
