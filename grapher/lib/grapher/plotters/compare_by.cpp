@@ -52,9 +52,6 @@ get_bench_curves(benchmark_set_t const &bset,
   curve_aggregate_map_t res;
 
   for (benchmark_case_t const &bench_case : bset) {
-
-    // std::size_t const iteration_count = bench_case.iterations.size();
-
     for (benchmark_iteration_t const &iteration : bench_case.iterations) {
       for (fs::path const &sample : iteration.samples) {
         grapher::json_t sample_json;
@@ -96,7 +93,7 @@ get_bench_curves(benchmark_set_t const &bset,
 
 /// Transforms a key into a string that's usable as a path.
 std::string to_string(key_t const &key, bool demangle = true) {
-  if (key.size() == 0) {
+  if (key.empty()) {
     return "empty";
   }
 
@@ -114,9 +111,9 @@ std::string to_string(key_t const &key, bool demangle = true) {
 // =============================================================================
 // OVERRIDES
 
-std::string_view plotter_compare_by_t::get_help() const {
-  return "Compares all traceEvents with a matching feature.\n"
-         "- key_ptrs (string array): Array\n"
+std::string plotter_compare_by_t::get_help() const {
+  return "Compares all traceEvents of matching keys with a matching feature.\n"
+         "- key_ptrs (string array): Pointers to JSON values to use as a key\n"
          "- value_ptr (string):      Pointer to the JSON value to measure\n"
          "- draw_average (bool):     Enable average curve drawing\n"
          "- draw_points (bool):      Enable value point drawing\n"
