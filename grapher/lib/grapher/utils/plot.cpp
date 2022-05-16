@@ -1,11 +1,11 @@
-#include "grapher/utils/plot.hpp"
-
 #include <filesystem>
+
 #include <nlohmann/json.hpp>
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/core.hpp"
 #include "grapher/plotters/plotter_i.hpp"
+#include "grapher/utils/plot.hpp"
 
 namespace grapher {
 
@@ -54,10 +54,12 @@ void save_plot(sciplot::Plot const &plot, std::string const &dest,
     fs::path file_dest = dest + extension;
     fs::create_directories(file_dest.parent_path());
 
+    constexpr std::size_t max_filename_size = 256;
+
     // Avoid filename hitting OS filename size limit (yes, this is bad)
-    if (file_dest.filename().string().size() > 256) {
+    if (file_dest.filename().string().size() > max_filename_size) {
       std::string new_filename = file_dest.stem();
-      new_filename.resize(256 - extension.size());
+      new_filename.resize(max_filename_size - extension.size());
       file_dest.replace_filename(new_filename);
     }
 
