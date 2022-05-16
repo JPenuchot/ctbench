@@ -7,11 +7,6 @@
 
 namespace grapher::plotters {
 
-std::string plotter_grouped_histogram_t::get_help() const {
-  // TODO: Add doc
-  return "TODO";
-}
-
 grapher::json_t plotter_grouped_histogram_t::get_default_config() const {
   // TODO
   return grapher::base_default_config();

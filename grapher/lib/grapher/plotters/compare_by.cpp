@@ -111,15 +111,6 @@ std::string to_string(key_t const &key, bool demangle = true) {
 // =============================================================================
 // OVERRIDES
 
-std::string plotter_compare_by_t::get_help() const {
-  return "Compares all traceEvents of matching keys with a matching feature.\n"
-         "- key_ptrs (string array): Pointers to JSON values to use as a key\n"
-         "- value_ptr (string):      Pointer to the JSON value to measure\n"
-         "- draw_average (bool):     Enable average curve drawing\n"
-         "- draw_points (bool):      Enable value point drawing\n"
-         "- demangle (bool):         Demangle C++ symbol names\n";
-}
-
 grapher::json_t plotter_compare_by_t::get_default_config() const {
   grapher::json_t res = grapher::base_default_config();
 
@@ -142,6 +133,15 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
 
   return res;
 }
+
+/// Compares all traceEvents of matching keys with a matching feature.
+///
+/// JSON config parameters:
+/// - key_ptrs (string array): pointers to JSON values to use as a key
+/// - value_ptr (string): pointer to the JSON value to measure
+/// - draw_average (bool): enable average curve drawing
+/// - draw_points (bool): enable value point drawing
+/// - demangle (bool): demangle C++ symbol names
 
 void plotter_compare_by_t::plot(benchmark_set_t const &bset,
                                 std::filesystem::path const &dest,

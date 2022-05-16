@@ -21,11 +21,6 @@
 
 namespace grapher::plotters {
 
-std::string plotter_compare_t::get_help() const {
-  return "For each group descriptor, generates a graph comparing all "
-         "benchmark cases in the set.";
-}
-
 grapher::json_t plotter_compare_t::get_default_config() const {
   grapher::json_t res = grapher::base_default_config();
 
@@ -40,6 +35,16 @@ grapher::json_t plotter_compare_t::get_default_config() const {
 
   return res;
 }
+
+/// For each group descriptor, generates a graph comparing all benchmark cases
+/// in the set.
+///
+/// JSON config parameters:
+/// - value_json_pointer (string): pointer to JSON value to measure
+/// - draw_average (bool): Enable average curve drawing
+/// - draw_points (bool): Enable point value drawing
+/// - group_descriptors (group descriptors): See group_descriptor_t
+/// documentation
 
 void plotter_compare_t::plot(benchmark_set_t const &bset,
                              std::filesystem::path const &dest,

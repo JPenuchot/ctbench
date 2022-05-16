@@ -5,16 +5,14 @@
 
 namespace grapher::plotters {
 
-std::string plotter_debug_t::get_help() const {
-  return "Debug plotter. Outputs various statistics on benchmark categories to "
-         "debug category building or traversal issues.";
-}
-
 grapher::json_t plotter_debug_t::get_default_config() const {
   grapher::json_t res;
   res["plotter"] = "debug";
   return res;
 }
+
+/// Debug plotter. Outputs various statistics on benchmark categories to debug
+/// category building or traversal issues.
 
 void plotter_debug_t::plot(const benchmark_set_t &bset,
                            const std::filesystem::path &dest,
