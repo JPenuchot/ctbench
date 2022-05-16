@@ -14,16 +14,13 @@ lc::opt<grapher::plotter_type_t> plotter_opt("plotter", lc::Required,
 
 enum command_enum_t {
   generate_config_v,
-  help_v,
 };
 
-lc::opt<command_enum_t> command_opt(
-    "command", lc::Required, lc::desc("Command:"),
-    lc::values(lc::OptionEnumValue{"get-help", command_enum_t::help_v,
-                                   "Get plotter help."},
-               lc::OptionEnumValue{"get-default-config",
-                                   command_enum_t::generate_config_v,
-                                   "Output plotter default config."}));
+lc::opt<command_enum_t>
+    command_opt("command", lc::Required, lc::desc("Command:"),
+                lc::values(lc::OptionEnumValue{
+                    "get-default-config", command_enum_t::generate_config_v,
+                    "Output plotter default config."}));
 
 } // namespace cli
 
@@ -37,9 +34,6 @@ int main(int argc, char const *argv[]) {
   switch (cli::command_opt.getValue()) {
   case cli::generate_config_v:
     llvm::outs() << plotter->get_default_config().dump(2) << '\n';
-    break;
-  case cli::help_v:
-    llvm::outs() << plotter->get_help() << '\n';
     break;
   }
 
