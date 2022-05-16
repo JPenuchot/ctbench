@@ -18,7 +18,7 @@
 
 namespace grapher::plotters {
 
-std::string_view plotter_stack_t::get_help() const {
+std::string plotter_stack_t::get_help() const {
   return "For each benchmark in the category, generates a stakcked curve graph "
          "where each curve corresponds to a matcher in the \'matchers\' JSON "
          "field.";

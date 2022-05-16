@@ -7,7 +7,7 @@
 
 namespace grapher::plotters {
 
-std::string_view plotter_grouped_histogram_t::get_help() const {
+std::string plotter_grouped_histogram_t::get_help() const {
   // TODO: Add doc
   return "TODO";
 }

@@ -5,7 +5,7 @@
 
 namespace grapher::plotters {
 
-std::string_view plotter_debug_t::get_help() const {
+std::string plotter_debug_t::get_help() const {
   return "Debug plotter. Outputs various statistics on benchmark categories to "
          "debug category building or traversal issues.";
 }

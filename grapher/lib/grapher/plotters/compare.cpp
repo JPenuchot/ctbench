@@ -21,7 +21,7 @@
 
 namespace grapher::plotters {
 
-std::string_view plotter_compare_t::get_help() const {
+std::string plotter_compare_t::get_help() const {
   return "For each group descriptor, generates a graph comparing all "
          "benchmark cases in the set.";
 }
