@@ -8,10 +8,6 @@
 
 namespace grapher {
 
-/// \defgroup plotters Plot generators
-
-/// \addtogroup plotters
-///
 /// Plotters are objects that inherit the plotter_base_t virtual interface, and
 /// thus override the plotter_base_t::plot, and
 /// plotter_base_t::get_default_config methods.
@@ -21,9 +17,7 @@ namespace grapher {
 ///
 /// The plotter interface can also be used to implement other exportation modes
 /// such as CSV, plain text, debug, or even HTML export if you want.
-
-/// \ingroup plotters
-
+///
 /// Interface for plotters. Plotters should be able to:
 /// - Plot a ctbench::category_t with a grapher::json_t configuration object,
 /// - Output a default config as a grapher::json_t object.

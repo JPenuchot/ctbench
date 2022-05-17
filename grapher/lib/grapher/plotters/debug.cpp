@@ -11,9 +11,6 @@ grapher::json_t plotter_debug_t::get_default_config() const {
   return res;
 }
 
-/// Debug plotter. Outputs various statistics on benchmark categories to debug
-/// category building or traversal issues.
-
 void plotter_debug_t::plot(const benchmark_set_t &bset,
                            const std::filesystem::path &dest,
                            const grapher::json_t & /* config */) const {

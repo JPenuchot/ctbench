@@ -14,10 +14,8 @@
 #include "grapher/core.hpp"
 #include "grapher/plotters/compare.hpp"
 #include "grapher/predicates.hpp"
-#include "grapher/utils/config.hpp"
 #include "grapher/utils/error.hpp"
 #include "grapher/utils/json.hpp"
-#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
 
@@ -36,16 +34,6 @@ grapher::json_t plotter_compare_t::get_default_config() const {
   return res;
 }
 
-/// For each group descriptor, generates a graph comparing all benchmark cases
-/// in the set.
-///
-/// JSON config parameters:
-/// - value_json_pointer (string): pointer to JSON value to measure
-/// - draw_average (bool): Enable average curve drawing
-/// - draw_points (bool): Enable point value drawing
-/// - group_descriptors (group descriptors): See group_descriptor_t
-/// documentation
-
 void plotter_compare_t::plot(benchmark_set_t const &bset,
                              std::filesystem::path const &dest,
                              grapher::json_t const &config) const {
@@ -56,8 +44,6 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
 
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
-
-  std::string plot_file_extension = config.value("plot_file_extension", ".svg");
 
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
       json_at_ref<json_t::array_t const &>(config, "group_descriptors"));

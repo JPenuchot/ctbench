@@ -3,7 +3,6 @@
 #include "grapher/plotters/grouped_histogram.hpp"
 #include "grapher/plotters/plotters.hpp"
 #include "grapher/utils/json.hpp"
-#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
 

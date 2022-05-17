@@ -15,10 +15,8 @@
 
 #include "grapher/core.hpp"
 #include "grapher/plotters/compare_by.hpp"
-#include "grapher/utils/config.hpp"
 #include "grapher/utils/error.hpp"
 #include "grapher/utils/json.hpp"
-#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
 
@@ -117,31 +115,14 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
   // Plotter name
   res["plotter"] = "compare_by";
 
-  // List of pointers to generate a key
   res["key_ptrs"] = json_t::array({"/name", "/args/detail"});
-
-  // Pointer to the values
   res["value_ptr"] = "/dur";
-
-  // Draw average curve
   res["draw_average"] = true;
-  // Draw value points
   res["draw_points"] = true;
-
-  // Demangle or not
   res["demangle"] = true;
 
   return res;
 }
-
-/// Compares all traceEvents of matching keys with a matching feature.
-///
-/// JSON config parameters:
-/// - key_ptrs (string array): pointers to JSON values to use as a key
-/// - value_ptr (string): pointer to the JSON value to measure
-/// - draw_average (bool): enable average curve drawing
-/// - draw_points (bool): enable value point drawing
-/// - demangle (bool): demangle C++ symbol names
 
 void plotter_compare_by_t::plot(benchmark_set_t const &bset,
                                 std::filesystem::path const &dest,

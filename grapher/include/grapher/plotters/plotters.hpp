@@ -12,6 +12,16 @@
 
 namespace grapher {
 
+/// \page plotter_config Plotter configuration documentation
+/// # compare
+/// \copydoc grapher::plotters::plotter_compare_t
+/// # compare_by
+/// \copydoc grapher::plotters::plotter_compare_by_t
+/// # debug
+/// \copydoc grapher::plotters::plotter_debug_t
+/// # stack
+/// \copydoc grapher::plotters::plotter_stack_t
+
 /// Plotter type enumeration. One per plotter.
 enum plotter_type_t {
   compare_v,
