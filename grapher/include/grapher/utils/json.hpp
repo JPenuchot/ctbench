@@ -61,7 +61,7 @@ json_at_ref(grapher::json_t const &object, LocType const &field_location,
   if constexpr (std::is_same<grapher::json_t::number_unsigned_t,
                              ValueType>::value) {
     check(object[field_location].type() == json_t::value_t::number_unsigned,
-          fmt::format("Invalid field {}, expected string:\n{}",
+          fmt::format("Invalid field {}, expected unsigned number:\n{}",
                       field_location_str, object.dump(2)),
           error_v, -1, loc);
   }
@@ -70,7 +70,7 @@ json_at_ref(grapher::json_t const &object, LocType const &field_location,
   else if constexpr (std::is_same<grapher::json_t::number_integer_t,
                                   ValueType>::value) {
     check(object[field_location].type() == json_t::value_t::number_integer,
-          fmt::format("Invalid field {}, expected number:\n{}",
+          fmt::format("Invalid field {}, expected integer number:\n{}",
                       field_location_str, object.dump(2)),
           error_v, -1, loc);
   }
@@ -79,7 +79,7 @@ json_at_ref(grapher::json_t const &object, LocType const &field_location,
   else if constexpr (std::is_same<grapher::json_t::number_float_t,
                                   ValueType>::value) {
     check(object[field_location].type() == json_t::value_t::number_float,
-          fmt::format("Invalid field {}, expected number:\n{}",
+          fmt::format("Invalid field {}, expected float number:\n{}",
                       field_location_str, object.dump(2)),
           error_v, -1, loc);
   }
@@ -116,7 +116,30 @@ json_at_ref(grapher::json_t const &object, LocType const &field_location,
 // =============================================================================
 // Group descriptors
 
-/// Named set of constraint.
+/// Describes a group of events with a name and a set of constraints. Group
+/// descriptors are used by some plotters to target and aggregate trace events
+/// for data collection.
+///
+/// For example, this could be a group descriptor for collecting data about
+/// Source trace events that are related to Boost include files:
+///
+/// \code{.json}
+/// {
+///   "name": "Boost sources events",
+///   "predicates": [
+///     {
+///       "type": "match",
+///       "regex_match": true,
+///       "matcher": {
+///         "name": "Source",
+///         "args": {
+///           "details": "/usr/include/boost/*"
+///         }
+///       }
+///     }
+///   ]
+/// }
+/// \endcode
 struct group_descriptor_t {
   std::string name;
   grapher::json_t::array_t predicates;
