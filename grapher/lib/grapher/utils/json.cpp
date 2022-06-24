@@ -116,7 +116,8 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
     for (grapher::json_t const &event : events) {
       if (std::all_of(predicates.begin(), predicates.end(),
                       [&](predicate_t const &p) -> bool { return p(event); })) {
-        val += json_at_ref<json_t::number_unsigned_t const &>(event, value_jptr);
+        val +=
+            json_at_ref<json_t::number_unsigned_t const &>(event, value_jptr);
       }
     }
     return val;
@@ -175,7 +176,7 @@ sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t config) {
     plot.xlabel(config["x_label"]);
   }
 
-  if (config.contains("ylabel")) {
+  if (config.contains("y_label")) {
     plot.ylabel(config["y_label"]);
   }
 
