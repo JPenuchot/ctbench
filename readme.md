@@ -97,7 +97,8 @@ ctbench_add_benchmark(function_selection.requires # Benchmark case name
 
 Once you have several benchmark cases, you can start writing a graph config.
 
-Example configs can be found [here](./grapher/configs/), or by running
+Example configs can be found [here](
+https://github.com/JPenuchot/ctbench/tree/main/grapher/configs), or by running
 `ctbench-grapher-utils --plotter=<plotter> --command=get-default-config`.
 
 ```json
@@ -173,5 +174,8 @@ per benchmark case. In this case, you would then get 3 graphs
 
 ## Additional
 
+- [ctbench: compile time benchmarking for Clang](
+  https://www.youtube.com/watch?v=1RZY6skM0Rc) at [CPPP 2021](
+  https://cppp.fr/schedule2021/)
 - [Pyperf - Tune the system for benchmarks](
   https://pyperf.readthedocs.io/en/latest/system.html)

@@ -5,11 +5,32 @@
 
 #include <filesystem>
 #include <string>
-#include <tuple>
 
 #include <nlohmann/json.hpp>
 
+#include <boost/container/flat_map.hpp>
+
 namespace grapher {
+
+// Basic container types
+
+template <typename KeyType, typename ValueType,
+          typename CompareType = std::less<KeyType>>
+using map_t = boost::container::flat_map<KeyType, ValueType, CompareType>;
+
+template <typename KeyType, typename ValueType,
+          typename CompareType = std::less<KeyType>>
+using multimap_t =
+    boost::container::flat_multimap<KeyType, ValueType, CompareType>;
+
+/// Alias type for JSON objects.
+using json_t = nlohmann::basic_json<boost::container::flat_map>;
+
+// `time cmake --build --preset bench` results using different containers
+// (poacher/brainfuck project, pre-built benchmark targets):
+// - boost::container::flat_map -> 78.05 secs
+// - std::map -> 87.08 secs
+// - boost::container::map -> 80.16 secs
 
 /// Set of results for a benchmark case iteration of a given size.
 struct benchmark_iteration_t {

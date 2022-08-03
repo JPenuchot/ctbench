@@ -1,17 +1,19 @@
 find_package(nlohmann_json 3.9.1 REQUIRED)
 find_package(sciplot REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
+find_package(fmt)
 
 # Declaring the grapher library
 file(GLOB_RECURSE GRAPHER_SOURCES lib/*.cpp)
 add_library(grapher STATIC ${GRAPHER_SOURCES})
+
 target_link_libraries(grapher PUBLIC ctbench-compile-opts)
 target_include_directories(grapher PUBLIC include)
 
 llvm_map_components_to_libnames(llvm_libs core support)
 
 target_link_libraries(grapher PUBLIC nlohmann_json::nlohmann_json
-                                     sciplot::sciplot stdc++fs tbb ${llvm_libs})
+                                     sciplot::sciplot stdc++fs tbb fmt::fmt ${llvm_libs})
 
 target_compile_options(grapher PUBLIC -DJSON_NOEXCEPTION)
 

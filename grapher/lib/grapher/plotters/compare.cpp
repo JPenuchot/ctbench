@@ -5,6 +5,8 @@
 
 #include <llvm/Support/raw_ostream.h>
 
+#include <fmt/core.h>
+
 #include <nlohmann/json.hpp>
 
 #include <sciplot/sciplot.hpp>
@@ -12,27 +14,19 @@
 #include "grapher/core.hpp"
 #include "grapher/plotters/compare.hpp"
 #include "grapher/predicates.hpp"
-#include "grapher/utils/config.hpp"
+#include "grapher/utils/error.hpp"
 #include "grapher/utils/json.hpp"
-#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
 
-std::string_view plotter_compare_t::get_help() const {
-  return "For each group descriptor, generates a graph comparing all "
-         "benchmark cases in the set.";
-}
-
-nlohmann::json plotter_compare_t::get_default_config() const {
-  nlohmann::json res = grapher::base_default_config();
+grapher::json_t plotter_compare_t::get_default_config() const {
+  grapher::json_t res = grapher::base_default_config();
 
   res["plotter"] = "compare";
 
   res["value_json_pointer"] = "/dur";
   res["draw_average"] = true;
   res["draw_points"] = true;
-
-  res["plot_file_extension"] = ".svg";
 
   res["group_descriptors"] =
       write_descriptors({get_default_group_descriptor()});
@@ -42,25 +36,23 @@ nlohmann::json plotter_compare_t::get_default_config() const {
 
 void plotter_compare_t::plot(benchmark_set_t const &bset,
                              std::filesystem::path const &dest,
-                             nlohmann::json const &config) const {
+                             grapher::json_t const &config) const {
   // Config
 
-  nlohmann::json::json_pointer value_json_pointer(
-      json_value<std::string>(config, "value_json_pointer"));
+  grapher::json_t::json_pointer value_json_pointer(
+      json_at_ref<json_t::string_t const &>(config, "value_json_pointer"));
 
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
 
-  std::string plot_file_extension = config.value("plot_file_extension", ".svg");
-
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
-      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
+      json_at_ref<json_t::array_t const &>(config, "group_descriptors"));
 
   // Drawing
 
   for (group_descriptor_t const &descriptor : group_descriptors) {
     // Plot init
-    sciplot::Plot plot;
+    sciplot::Plot2D plot;
     apply_config(plot, config);
 
     // Generating predicates
@@ -74,22 +66,19 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
       std::vector<double> y_average;
 
       for (benchmark_iteration_t const &iteration : bench.iterations) {
-        if (iteration.samples.empty()) {
-          llvm::errs() << "[WARNING] No data in benchmark " << bench.name
-                       << " for iteration size " << iteration.size << "\n";
-          continue;
-        }
+        check(!iteration.samples.empty(),
+              fmt::format("No data in benchmark {} for iteration size {}.",
+                          bench.name, iteration.size),
+              error_level_t::warning_v);
 
         std::vector<double> const values =
             get_values(iteration, predicates, value_json_pointer);
 
-        if (values.empty()) {
-          llvm::errs() << "[WARNING] No event in benchmark " << bench.name
-                       << " at size " << iteration.size
-                       << " matched by group descriptor " << descriptor.name
-                       << ".\n";
-          continue;
-        }
+        check(!values.empty(),
+              fmt::format("No event in benchmark {} at size {} matched by "
+                          "group descriptor {}.\n",
+                          bench.name, iteration.size, descriptor.name),
+              error_level_t::warning_v);
 
         // Drawing points
         if (draw_points) {
@@ -118,7 +107,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
 
     // Saving plot
     std::filesystem::create_directories(dest);
-    plot.save(dest / (std::move(descriptor.name) + plot_file_extension));
+    save_plot(plot, dest / std::move(descriptor.name), config);
   }
 }
 

@@ -1,3 +1,5 @@
 .cache/
 generated-docs/
 build/
+builds/
+CMakeUserPresets.json

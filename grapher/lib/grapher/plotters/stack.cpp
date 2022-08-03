@@ -1,39 +1,27 @@
 #include <algorithm>
 #include <filesystem>
+#include <numeric>
 
 #include <llvm/Support/raw_ostream.h>
 
-#include <nlohmann/json.hpp>
+#include <fmt/core.h>
 
-#include <numeric>
+#include <sciplot/Plot2D.hpp>
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/core.hpp"
 #include "grapher/plotters/stack.hpp"
 #include "grapher/predicates.hpp"
-#include "grapher/utils/config.hpp"
+#include "grapher/utils/error.hpp"
 #include "grapher/utils/json.hpp"
-#include "grapher/utils/plot.hpp"
 
 namespace grapher::plotters {
 
-std::string_view plotter_stack_t::get_help() const {
-  return "For each benchmark in the category, generates a stakcked curve graph "
-         "where each curve corresponds to a matcher in the \'matchers\' JSON "
-         "field.";
-}
-
-nlohmann::json plotter_stack_t::get_default_config() const {
-  nlohmann::json res = grapher::base_default_config();
+grapher::json_t plotter_stack_t::get_default_config() const {
+  grapher::json_t res = grapher::base_default_config();
 
   res["plotter"] = "stack";
-
-  // Basic values, probably no need to change them
   res["value_json_pointer"] = "/dur";
-  res["name_json_pointer"] = "/name";
-  res["plot_file_extension"] = ".svg";
-
-  // Some matchers as an example...
   res["group_descriptors"] =
       write_descriptors({get_default_group_descriptor()});
 
@@ -42,32 +30,25 @@ nlohmann::json plotter_stack_t::get_default_config() const {
 
 void plotter_stack_t::plot(benchmark_set_t const &bset,
                            std::filesystem::path const &dest,
-                           nlohmann::json const &config) const {
-  // Config
+                           grapher::json_t const &config) const {
+  // Config reading
 
-  nlohmann::json::json_pointer feature_value_jptr(
+  grapher::json_t::json_pointer feature_value_jptr(
       config.value("value_json_pointer", "/dur"));
 
-  nlohmann::json::json_pointer feature_name_jptr(
-      config.value("name_json_pointer", "/name"));
-
-  std::string plot_file_extension = config.value("plot_file_extension", ".svg");
-
   std::vector<group_descriptor_t> descriptors = read_descriptors(
-      json_value<std::vector<nlohmann::json>>(config, "group_descriptors"));
+      json_at_ref<json_t::array_t const &>(config, "group_descriptors"));
 
   // Drawing
 
-  std::vector<sciplot::Plot> plots;
+  std::vector<sciplot::Plot2D> plots;
 
-  // Saving max y value for normalization
+  // Storing max y value for normalization
   double max_y_val = 0.;
 
   /// Draws a stacked curve graph for a given benchmark
-  auto draw_plot = [&](benchmark_case_t const &bench) -> sciplot::Plot {
-    namespace sp = sciplot;
-
-    sp::Plot plot;
+  auto draw_plot = [&](benchmark_case_t const &bench) -> sciplot::Plot2D {
+    sciplot::Plot2D plot;
     apply_config(plot, config);
 
     // x axis
@@ -92,12 +73,10 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
         std::vector<double> const values =
             get_values(iteration, predicates, feature_value_jptr);
 
-        if (values.empty()) {
-          llvm::errs() << "[ERROR] No event matching descriptor "
-                       << descriptor.name << " in benchmark " << bench.name
-                       << " with iteration size " << iteration.size << ".\n";
-          std::exit(1);
-        }
+        check(values.empty(),
+              fmt::format("No event matching descriptor {} in benchmark {} "
+                          "with iteration size {}.\n",
+                          descriptor.name, bench.name, iteration.size));
 
         // TODO: Get better stats (standard deviation, etc...)
         double const y_val =
@@ -128,7 +107,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
   std::filesystem::create_directories(dest);
   for (std::size_t i = 0; i < bset.size(); i++) {
     plots[i].yrange(0., max_y_val);
-    plots[i].save(dest / (bset[i].name + plot_file_extension));
+    save_plot(plots[i], dest / bset[i].name, config);
   }
 }
 

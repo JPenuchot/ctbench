@@ -6,17 +6,17 @@
 /*
 
 TTS_CASE("find_matching - Basic") {
-  nlohmann::json json_a = {{"a", 42}};
-  nlohmann::json json_b = {{"b", 42}};
-  nlohmann::json json_c = {{"c", "42"}};
+  grapher::json_t json_a = {{"a", 42}};
+  grapher::json_t json_b = {{"b", 42}};
+  grapher::json_t json_c = {{"c", "42"}};
 
-  nlohmann::json json_ac = {{"a", 42}, {"c", "42"}};
-  nlohmann::json json_bc = {{"b", 42}, {"c", "42"}};
+  grapher::json_t json_ac = {{"a", 42}, {"c", "42"}};
+  grapher::json_t json_bc = {{"b", 42}, {"c", "42"}};
 
-  nlohmann::json json_d = {{"d", 42}};
-  nlohmann::json json_ab = {{"a", 42}, {"b", 42}};
+  grapher::json_t json_d = {{"d", 42}};
+  grapher::json_t json_ab = {{"a", 42}, {"b", 42}};
 
-  nlohmann::json json_ac_bc;
+  grapher::json_t json_ac_bc;
 
   json_ac_bc.push_back(json_ac);
   json_ac_bc.push_back(json_bc);
@@ -55,18 +55,18 @@ TTS_CASE("find_matching - Basic") {
 };
 
 TTS_CASE("find_matching - Imbricated JSON") {
-  nlohmann::json json_a = {{"a", 42}};
-  nlohmann::json json_b = {{"b", 42}};
-  nlohmann::json json_c = {{"c", "42"}};
+  grapher::json_t json_a = {{"a", 42}};
+  grapher::json_t json_b = {{"b", 42}};
+  grapher::json_t json_c = {{"c", "42"}};
 
-  nlohmann::json json_jsonc = {{"json_c", json_c}};
+  grapher::json_t json_jsonc = {{"json_c", json_c}};
 
-  nlohmann::json json_ab_jsonc = {{"a", 42}, {"b", 42}, {"json_c", json_c}};
-  nlohmann::json json_a_jsonc = {{"a", 42}, {"json_c", json_c}};
-  nlohmann::json json_b_jsonc = {{"b", 42}, {"json_c", json_c}};
+  grapher::json_t json_ab_jsonc = {{"a", 42}, {"b", 42}, {"json_c", json_c}};
+  grapher::json_t json_a_jsonc = {{"a", 42}, {"json_c", json_c}};
+  grapher::json_t json_b_jsonc = {{"b", 42}, {"json_c", json_c}};
 
   {
-    nlohmann::json list;
+    grapher::json_t list;
 
     list.push_back(json_a);
     list.push_back(json_b);
@@ -85,7 +85,7 @@ TTS_CASE("find_matching - Imbricated JSON") {
   }
 
   {
-    nlohmann::json list;
+    grapher::json_t list;
 
     list.push_back(json_a);
     list.push_back(json_a_jsonc);
@@ -103,7 +103,7 @@ TTS_CASE("find_matching - Imbricated JSON") {
   }
 
   {
-    nlohmann::json list;
+    grapher::json_t list;
 
     list.push_back(json_a);
     list.push_back(json_b);
@@ -120,7 +120,7 @@ TTS_CASE("find_matching - Imbricated JSON") {
 };
 
 TTS_CASE("merge_into - Basic") {
-  nlohmann::json a, b;
+  grapher::json_t a, b;
 
   a["a"] = 0;
   a["b"] = 0;

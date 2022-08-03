@@ -1,18 +1,14 @@
 #pragma once
 
-#include "grapher/plotters/plotter_i.hpp"
+#include "grapher/plotters/plotter_base.hpp"
 
 namespace grapher::plotters {
 
-/// \ingroup plotters
-/// Display bars
-struct plotter_grouped_histogram_t : public plotter_i {
+struct plotter_grouped_histogram_t : public plotter_base_t {
   void plot(benchmark_set_t const &bset, std::filesystem::path const &dest,
-            nlohmann::json const &config) const override;
+            grapher::json_t const &config) const override;
 
-  std::string_view get_help() const override;
-
-  nlohmann::json get_default_config() const override;
+  grapher::json_t get_default_config() const override;
 };
 
 } // namespace grapher::plotters
