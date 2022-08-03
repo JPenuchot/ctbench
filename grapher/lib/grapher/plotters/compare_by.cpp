@@ -2,6 +2,7 @@
 #include <filesystem>
 #include <fstream>
 #include <string>
+#include <thread>
 #include <vector>
 
 #include <boost/container/small_vector.hpp>
@@ -127,7 +128,6 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
 void plotter_compare_by_t::plot(benchmark_set_t const &bset,
                                 std::filesystem::path const &dest,
                                 grapher::json_t const &config) const {
-  namespace sp = sciplot;
   namespace fs = std::filesystem;
 
   // Config reading
@@ -156,9 +156,11 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
 
   // Drawing, ie. unwrapping the nested maps and drawing curves + saving plots
 
+  std::vector<std::thread> thread_pool;
+
   for (auto const &[key, curve_aggregate] : curve_aggregate_map) {
     // Plot init
-    sp::Plot plot;
+    sciplot::Plot2D plot;
     apply_config(plot, config);
 
     for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
@@ -205,7 +207,14 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
       }
     }
 
-    save_plot(plot, dest / to_string(key, demangle), config);
+    // Writing in parallel
+    thread_pool.emplace_back(&save_plot, std::move(plot),
+                             dest / to_string(key, demangle), config);
+  }
+
+  // Joining before returning
+  for (std::thread &t : thread_pool) {
+    t.join();
   }
 }
 

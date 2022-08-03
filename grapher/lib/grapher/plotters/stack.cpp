@@ -6,6 +6,7 @@
 
 #include <fmt/core.h>
 
+#include <sciplot/Plot2D.hpp>
 #include <sciplot/sciplot.hpp>
 
 #include "grapher/core.hpp"
@@ -40,16 +41,14 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
 
   // Drawing
 
-  std::vector<sciplot::Plot> plots;
+  std::vector<sciplot::Plot2D> plots;
 
   // Storing max y value for normalization
   double max_y_val = 0.;
 
   /// Draws a stacked curve graph for a given benchmark
-  auto draw_plot = [&](benchmark_case_t const &bench) -> sciplot::Plot {
-    namespace sp = sciplot;
-
-    sp::Plot plot;
+  auto draw_plot = [&](benchmark_case_t const &bench) -> sciplot::Plot2D {
+    sciplot::Plot2D plot;
     apply_config(plot, config);
 
     // x axis

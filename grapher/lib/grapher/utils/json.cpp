@@ -7,6 +7,8 @@
 #include <fstream>
 
 #include <nlohmann/json.hpp>
+#include <sciplot/Canvas.hpp>
+#include <sciplot/Figure.hpp>
 
 namespace grapher {
 
@@ -80,9 +82,9 @@ write_descriptors(std::vector<group_descriptor_t> const &descriptors) {
   grapher::json_t::array_t res;
   res.reserve(descriptors.size());
 
-  for (group_descriptor_t const &d : descriptors) {
-    res.push_back(group_descriptor_json(d));
-  }
+  std::transform(descriptors.begin(), descriptors.end(),
+                 std::back_inserter(res), &group_descriptor_json);
+
   return res;
 }
 
@@ -137,7 +139,7 @@ grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b) {
   return a;
 }
 
-void save_plot(sciplot::Plot const &plot, std::string const &dest,
+void save_plot(sciplot::Plot2D const &plot, std::string const &dest,
                grapher::json_t const &config) {
   namespace fs = std::filesystem;
   std::vector<std::string> plot_file_extensions = config.value(
@@ -157,7 +159,7 @@ void save_plot(sciplot::Plot const &plot, std::string const &dest,
       file_dest.replace_filename(new_filename);
     }
 
-    plot.save(dest + extension);
+    sciplot::Canvas{{sciplot::Figure{{plot}}}}.save(dest + extension);
   }
 }
 

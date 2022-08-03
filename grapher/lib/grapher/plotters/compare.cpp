@@ -52,7 +52,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
 
   for (group_descriptor_t const &descriptor : group_descriptors) {
     // Plot init
-    sciplot::Plot plot;
+    sciplot::Plot2D plot;
     apply_config(plot, config);
 
     // Generating predicates
