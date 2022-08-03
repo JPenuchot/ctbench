@@ -27,13 +27,25 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
 /// present in b share the same key.
 grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b);
 
+/// Generic conversion of a JSON field location to a std::string
+template <typename T>
+inline std::string field_loc_to_string(T &&field_location) {
+  return std::string{std::forward<T>(field_location)};
+}
+
+/// Specialized conversion of a JSON field location to a std::string
+inline std::string
+field_loc_to_string(grapher::json_t::json_pointer const &json_ptr) {
+  return json_ptr.to_string();
+}
+
 /// Wraps json_t object access with error management.
 template <typename LocType>
 inline grapher::json_t::const_reference
 json_at(grapher::json_t const &object, LocType const &field_location,
         const std::experimental::source_location loc =
             std::experimental::source_location::current()) {
-  std::string const field_location_str = field_location;
+  std::string const field_location_str = field_loc_to_string(field_location);
 
   check(object.contains(field_location),
         fmt::format("Empty field {}:\n{}", field_location_str, object.dump(2)),
@@ -51,7 +63,7 @@ json_at_ref(grapher::json_t const &object, LocType const &field_location,
 
   using ValueType = std::decay_t<ReferenceType>;
 
-  std::string const field_location_str = field_location;
+  std::string const field_location_str = field_loc_to_string(field_location);
 
   check(object.contains(field_location),
         fmt::format("Empty field {}:\n{}", field_location_str, object.dump(2)),
@@ -172,7 +184,7 @@ read_descriptors(grapher::json_t::array_t const &list);
 // Plotter configuration
 
 /// Plot saving helper function.
-void save_plot(sciplot::Plot const &plot, std::string const &dest,
+void save_plot(sciplot::Plot2D const &plot, std::string const &dest,
                grapher::json_t const &config);
 
 /// Returns the default configuration for apply_config.
