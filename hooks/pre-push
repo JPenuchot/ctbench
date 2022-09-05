@@ -43,4 +43,4 @@ git init
 git add .
 git commit -m "docs"
 git remote add gh $docs_repo
-git push gh --force
+git push -u gh main --force
