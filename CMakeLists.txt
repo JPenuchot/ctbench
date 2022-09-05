@@ -5,6 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 
 set(ENABLE_DOCS ON CACHE BOOL "Enable documentation target")
+set(BUILD_TESTING ON CACHE BOOL "Enable test targets")
 
 if(${ENABLE_CLANG_TIDY})
   set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
