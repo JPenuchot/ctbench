@@ -1,7 +1,6 @@
-#define TTS_MAIN
-#include <tts/tts.hpp>
+#include <catch2/catch.hpp>
 
-#include "grapher/utils/json.hpp"
+#include <grapher/utils/json.hpp>
 
 /*
 

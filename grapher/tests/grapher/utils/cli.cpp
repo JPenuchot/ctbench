@@ -1,1 +1,1 @@
-int main() {}
+#include <catch2/catch.hpp>
