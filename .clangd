@@ -1,4 +1,4 @@
 CompileFlags:
-  CompilationDatabase: build
+  CompilationDatabase: build/
 Diagnostics:
   UnusedIncludes: Strict
