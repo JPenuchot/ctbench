@@ -28,6 +28,7 @@ RUN cmake --build build --target install
 
 # Run tests
 
+WORKDIR /
 COPY entrypoint.sh /entrypoint.sh
 ARG CXX_COMPILER=clang++
-ENTRYPOINT ["entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
