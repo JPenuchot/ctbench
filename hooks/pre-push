@@ -26,9 +26,10 @@ cd build-docs
 
 echo "- Building docs..."
 
-CXX=clang++ CC=clang cmake ../ -G Ninja \
+cmake ../ -G Ninja \
 	-DCMAKE_BUILD_TYPE:STRING=Release \
 	-DENABLE_DOCS:BOOL=TRUE \
+	-DBUILD_TESTING:BOOL=FALSE \
 	-DDOXYGEN_HTML_OUTPUT:PATH=$docs_out_dir
 ninja docs
 
