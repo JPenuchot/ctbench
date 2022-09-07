@@ -1,0 +1,19 @@
+name: ctbench CI
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  gcc:
+    runs-on: archlinux
+    steps:
+      - name: Fetch current branch
+        uses: actions/checkout@v2
+      - name: Compiling and running ctbench tests
+        uses: ./.github/actions/run-tests
+        with:
+          compiler: 'clang++'
