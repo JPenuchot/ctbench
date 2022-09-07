@@ -8,11 +8,11 @@ on:
       - main
 
 jobs:
-  gcc:
-    runs-on: archlinux
+  clang:
+    runs-on: ubuntu-latest
     steps:
       - name: Fetch current branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Compiling and running ctbench tests
         uses: ./.github/actions/run-tests
         with:
