@@ -30,6 +30,11 @@ if(${ENABLE_DOCS})
   include(cmake/docs.cmake)
 endif()
 
+if(${BUILD_TESTING})
+  # Dummy target for all tests
+  add_custom_target(test-all)
+endif()
+
 add_subdirectory(ttw)
 add_subdirectory(grapher)
 
