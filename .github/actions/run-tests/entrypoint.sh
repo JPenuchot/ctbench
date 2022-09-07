@@ -1,3 +1,5 @@
-#!/bin/sh
+#!/bin/sh -l
 
-echo Hello world
+mkdir build
+cmake -S . -B build -G Ninja
+cmake --build build --target test-all
