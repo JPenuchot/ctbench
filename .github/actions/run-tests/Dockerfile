@@ -12,6 +12,8 @@ RUN pacman -S --noconfirm \
   llvm-libs \
   nlohmann-json \
   fmt \
+  boost \
+  boost-libs \
   catch2
 
 WORKDIR /tmp
