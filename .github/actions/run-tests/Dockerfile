@@ -30,4 +30,4 @@ RUN cmake --build build --target install
 
 COPY run-tests.sh /run-tests.sh
 ARG CXX_COMPILER=clang++
-ENTRYPOINT ["run-tests.sh", "$CXX_COMPILER"]
+ENTRYPOINT ["entrypoint.sh"]
