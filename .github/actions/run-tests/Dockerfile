@@ -4,13 +4,13 @@ FROM archlinux/archlinux:base-devel
 
 RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm \
-  cmake \
-  clang \
   git \
+  cmake \
   ninja \
-  catch2 \
-  gnuplot \
-  llvm-libs
+  clang \
+  llvm \
+  llvm-libs \
+  catch2
 
 WORKDIR /tmp
 
