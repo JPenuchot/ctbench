@@ -34,9 +34,9 @@ TEST_CASE("match without regex", "[predicates]") {
   positive_case["sub"]["okok"] = "bar";
 
   grapher::json_t negative_case;
-  positive_case["foo"] = "bar";
-  positive_case["bar"] = "foo";
-  positive_case["sub"]["okok"] = "babar";
+  negative_case["foo"] = "bar";
+  negative_case["bar"] = "foo";
+  negative_case["sub"]["okok"] = "babar";
 
   REQUIRE(pred(positive_case) == true);
   REQUIRE(pred(negative_case) == false);
@@ -57,12 +57,17 @@ TEST_CASE("match with regex", "[predicates]") {
   grapher::predicate_t pred = grapher::get_predicate(constraint);
 
   grapher::json_t positive_case;
-
   positive_case["foo"] = "bar";
   positive_case["bar"] = "foo";
   positive_case["sub"]["okok"] = "barbar";
 
+  grapher::json_t negative_case;
+  negative_case["foo"] = "bar";
+  negative_case["bar"] = "foo";
+  negative_case["sub"]["okok"] = "babar";
+
   REQUIRE(pred(positive_case) == true);
+  REQUIRE(pred(negative_case) == false);
   REQUIRE(pred({{"foo", "rar"}}) == false);
   REQUIRE(pred({{"foo", "barbar"}}) == false);
   REQUIRE(pred({{"foof", "bar"}}) == false);

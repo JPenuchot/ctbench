@@ -100,8 +100,16 @@ inline auto match(grapher::json_t const &constraint) {
 
           // Regex match
           if (regex_match_opt) {
-            return std::regex_match(to_string(value[ptr]),
-                                    std::regex(matcher_item_kv.value()));
+            grapher::json_t const &val = value[ptr];
+
+            // Fallback to non regex if the value isn't a string
+            if (!val.is_string()) {
+              return val == matcher_item_kv.value();
+            }
+
+            return std::regex_match(
+                val.get_ref<grapher::json_t::string_t const &>(),
+                std::regex(matcher_item_kv.value()));
           }
 
           // Regular match
