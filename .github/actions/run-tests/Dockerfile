@@ -14,6 +14,7 @@ RUN pacman -S --noconfirm \
   fmt \
   boost \
   boost-libs \
+  tbb \
   catch2
 
 WORKDIR /tmp
