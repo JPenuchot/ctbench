@@ -10,6 +10,8 @@ RUN pacman -S --noconfirm \
   clang \
   llvm \
   llvm-libs \
+  nlohmann-json \
+  fmt \
   catch2
 
 WORKDIR /tmp
