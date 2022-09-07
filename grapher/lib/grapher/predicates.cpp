@@ -8,10 +8,10 @@
 
 #include <fmt/core.h>
 
-#include "grapher/core.hpp"
-#include "grapher/predicates.hpp"
-#include "grapher/utils/error.hpp"
-#include "grapher/utils/json.hpp"
+#include <grapher/core.hpp>
+#include <grapher/predicates.hpp>
+#include <grapher/utils/error.hpp>
+#include <grapher/utils/json.hpp>
 
 namespace grapher::predicates {
 
@@ -71,7 +71,7 @@ inline auto regex(grapher::json_t const &constraint) {
 /// ```json
 /// {
 ///   "type": "match",
-///   "regex_match": false,
+///   "regex": false,
 ///   "matcher":
 ///   {
 ///     "name": "Source",
