@@ -84,19 +84,71 @@ TEST_CASE("streq", "[predicates]") {
 }
 
 TEST_CASE("op_or", "[predicates]") {
-  grapher::json_t constraint;
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_or";
+    constraint["first"]["type"] = "val_true";
+    constraint["second"]["type"] = "val_true";
+    REQUIRE(grapher::get_predicate(constraint)({}) == true);
+  }
 
-  constraint["type"] = "op_or";
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_or";
+    constraint["first"]["type"] = "val_false";
+    constraint["second"]["type"] = "val_true";
+    REQUIRE(grapher::get_predicate(constraint)({}) == true);
+  }
 
-  //   grapher::predicate_t pred = grapher::get_predicate(constraint);
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_or";
+    constraint["first"]["type"] = "val_true";
+    constraint["second"]["type"] = "val_false";
+    REQUIRE(grapher::get_predicate(constraint)({}) == true);
+  }
+
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_or";
+    constraint["first"]["type"] = "val_false";
+    constraint["second"]["type"] = "val_false";
+    REQUIRE(grapher::get_predicate(constraint)({}) == false);
+  }
 }
 
 TEST_CASE("op_and", "[predicates]") {
-  grapher::json_t constraint;
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_and";
+    constraint["first"]["type"] = "val_true";
+    constraint["second"]["type"] = "val_true";
+    REQUIRE(grapher::get_predicate(constraint)({}) == true);
+  }
 
-  constraint["type"] = "op_and";
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_and";
+    constraint["first"]["type"] = "val_false";
+    constraint["second"]["type"] = "val_true";
+    REQUIRE(grapher::get_predicate(constraint)({}) == false);
+  }
 
-  //   grapher::predicate_t pred = grapher::get_predicate(constraint);
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_and";
+    constraint["first"]["type"] = "val_true";
+    constraint["second"]["type"] = "val_false";
+    REQUIRE(grapher::get_predicate(constraint)({}) == false);
+  }
+
+  {
+    grapher::json_t constraint;
+    constraint["type"] = "op_and";
+    constraint["first"]["type"] = "val_false";
+    constraint["second"]["type"] = "val_false";
+    REQUIRE(grapher::get_predicate(constraint)({}) == false);
+  }
 }
 
 TEST_CASE("val_true", "[predicates]") {
