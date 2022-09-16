@@ -6,8 +6,8 @@
 
 #include <fmt/core.h>
 
-#include "grapher/utils/cli.hpp"
-#include "grapher/utils/error.hpp"
+#include <grapher/utils/cli.hpp>
+#include <grapher/utils/error.hpp>
 
 namespace grapher {
 

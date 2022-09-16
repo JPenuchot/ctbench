@@ -11,11 +11,11 @@
 
 #include <sciplot/sciplot.hpp>
 
-#include "grapher/core.hpp"
-#include "grapher/plotters/compare.hpp"
-#include "grapher/predicates.hpp"
-#include "grapher/utils/error.hpp"
-#include "grapher/utils/json.hpp"
+#include <grapher/core.hpp>
+#include <grapher/plotters/compare.hpp>
+#include <grapher/predicates.hpp>
+#include <grapher/utils/error.hpp>
+#include <grapher/utils/json.hpp>
 
 namespace grapher::plotters {
 

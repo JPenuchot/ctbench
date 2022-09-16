@@ -1,7 +1,3 @@
-#include "grapher/utils/json.hpp"
-#include "grapher/core.hpp"
-#include "grapher/predicates.hpp"
-
 #include <algorithm>
 #include <execution>
 #include <fstream>
@@ -9,6 +5,10 @@
 #include <nlohmann/json.hpp>
 #include <sciplot/Canvas.hpp>
 #include <sciplot/Figure.hpp>
+
+#include <grapher/core.hpp>
+#include <grapher/predicates.hpp>
+#include <grapher/utils/json.hpp>
 
 namespace grapher {
 

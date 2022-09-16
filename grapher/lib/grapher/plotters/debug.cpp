@@ -1,6 +1,6 @@
-#include "grapher/plotters/debug.hpp"
-
 #include <llvm/Support/raw_ostream.h>
+
+#include <grapher/plotters/debug.hpp>
 
 namespace grapher::plotters {
 

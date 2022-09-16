@@ -1,8 +1,8 @@
 #include <sciplot/sciplot.hpp>
 
-#include "grapher/plotters/grouped_histogram.hpp"
-#include "grapher/plotters/plotters.hpp"
-#include "grapher/utils/json.hpp"
+#include <grapher/plotters/grouped_histogram.hpp>
+#include <grapher/plotters/plotters.hpp>
+#include <grapher/utils/json.hpp>
 
 namespace grapher::plotters {
 
