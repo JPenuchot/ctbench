@@ -1,7 +1,7 @@
 #include <llvm/Support/CommandLine.h>
 #include <llvm/Support/raw_ostream.h>
 
-#include "grapher/plotters/plotters.hpp"
+#include <grapher/plotters/plotters.hpp>
 
 namespace cli {
 

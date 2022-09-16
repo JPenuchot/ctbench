@@ -6,10 +6,10 @@
 
 #include <nlohmann/json.hpp>
 
-#include "grapher/core.hpp"
-#include "grapher/plotters/plotters.hpp"
-#include "grapher/utils/cli.hpp"
-#include "grapher/utils/json.hpp"
+#include <grapher/core.hpp>
+#include <grapher/plotters/plotters.hpp>
+#include <grapher/utils/cli.hpp>
+#include <grapher/utils/json.hpp>
 
 namespace cli {
 namespace lc = llvm::cl;
