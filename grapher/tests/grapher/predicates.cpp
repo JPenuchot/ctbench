@@ -77,10 +77,23 @@ TEST_CASE("streq", "[predicates]") {
   grapher::json_t constraint;
 
   constraint["type"] = "streq";
-  constraint["pointer"] = "/foo";
-  constraint["string"] = "bar";
+  constraint["pointer"] = "/sub/okok";
+  constraint["string"] = "barbar";
 
   grapher::predicate_t pred = grapher::get_predicate(constraint);
+
+  grapher::json_t positive_case;
+  positive_case["foo"] = "bar";
+  positive_case["bar"] = "foo";
+  positive_case["sub"]["okok"] = "barbar";
+
+  grapher::json_t negative_case;
+  negative_case["foo"] = "baar";
+  negative_case["bar"] = "foo";
+  negative_case["sub"]["okok"] = "babar";
+
+  REQUIRE(pred(positive_case) == true);
+  REQUIRE(pred(negative_case) == false);
 }
 
 TEST_CASE("op_or", "[predicates]") {
