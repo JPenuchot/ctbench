@@ -163,6 +163,8 @@ group_descriptor_t get_default_group_descriptor();
 /// Extracts predicates from a group descriptor.
 std::vector<predicate_t> get_predicates(group_descriptor_t const &descriptor);
 
+/// Given a group descriptor and a list of events, extracts a list of events
+/// that match the group descriptor.
 grapher::json_t::array_t extract_group(group_descriptor_t const &descriptor,
                                        grapher::json_t::array_t const &events);
 
@@ -183,11 +185,12 @@ read_descriptors(grapher::json_t::array_t const &list);
 // =============================================================================
 // Plotter configuration
 
-/// Plot saving helper function.
+/// Plot saving helper function. Saves a plot to a given destination. Config may
+/// contain parameters such as the export format extensions.
 void save_plot(sciplot::Plot2D const &plot, std::string const &dest,
                grapher::json_t const &config);
 
-/// Returns the default configuration for apply_config.
+/// Returns a default configuration for apply_config.
 grapher::json_t base_default_config();
 
 /// Apply config to plot.
