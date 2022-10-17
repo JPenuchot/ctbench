@@ -161,11 +161,16 @@ void save_plot(sciplot::Plot2D plot, std::string const &dest,
       file_dest.replace_filename(new_filename);
     }
 
-    sciplot::Canvas{{sciplot::Figure{{plot}}}}.save(dest + extension);
+    sciplot::Figure figure{{plot}};
+    sciplot::Canvas canvas{{figure}};
+
+    canvas.size(config.value("width", 1500), config.value("height", 1000));
+    canvas.save(dest + extension);
   }
 }
 
-sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t config) {
+sciplot::Plot &apply_config(sciplot::Plot &plot,
+                            grapher::json_t const &config) {
   // Dimensions
   if (config.contains("width") && config.contains("height")) {
     plot.size(config["width"], config["height"]);

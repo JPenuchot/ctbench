@@ -194,6 +194,6 @@ void save_plot(sciplot::Plot2D plot, std::string const &dest,
 grapher::json_t base_default_config();
 
 /// Apply config to plot.
-sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t config);
+sciplot::Plot &apply_config(sciplot::Plot &plot, grapher::json_t const &config);
 
 } // namespace grapher
