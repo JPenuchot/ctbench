@@ -118,8 +118,7 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
     for (grapher::json_t const &event : events) {
       if (std::all_of(predicates.begin(), predicates.end(),
                       [&](predicate_t const &p) -> bool { return p(event); })) {
-        val +=
-            get_as_ref<json_t::number_unsigned_t const &>(event, value_jptr);
+        val += get_as_ref<json_t::number_unsigned_t const &>(event, value_jptr);
       }
     }
     return val;
@@ -139,9 +138,12 @@ grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b) {
   return a;
 }
 
-void save_plot(sciplot::Plot2D const &plot, std::string const &dest,
+void save_plot(sciplot::Plot2D plot, std::string const &dest,
                grapher::json_t const &config) {
   namespace fs = std::filesystem;
+
+  apply_config(plot, config);
+
   std::vector<std::string> plot_file_extensions = config.value(
       "plot_file_extensions", grapher::json_t::array({".svg", ".png"}));
 

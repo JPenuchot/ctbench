@@ -187,7 +187,7 @@ read_descriptors(grapher::json_t::array_t const &list);
 
 /// Plot saving helper function. Saves a plot to a given destination. Config may
 /// contain parameters such as the export format extensions.
-void save_plot(sciplot::Plot2D const &plot, std::string const &dest,
+void save_plot(sciplot::Plot2D plot, std::string const &dest,
                grapher::json_t const &config);
 
 /// Returns a default configuration for apply_config.
