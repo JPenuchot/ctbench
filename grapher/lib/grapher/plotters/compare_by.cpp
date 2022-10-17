@@ -60,7 +60,7 @@ get_bench_curves(benchmark_set_t const &bset,
         }
 
         for (grapher::json_t const &event :
-             json_at_ref<json_t::array_t const &>(sample_json, "traceEvents")) {
+             get_as_ref<json_t::array_t const &>(sample_json, "traceEvents")) {
 
           // Building key from JSON pointers
           key_t key;

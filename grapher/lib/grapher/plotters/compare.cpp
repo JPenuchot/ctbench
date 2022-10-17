@@ -40,13 +40,13 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
   // Config
 
   grapher::json_t::json_pointer value_json_pointer(
-      json_at_ref<json_t::string_t const &>(config, "value_json_pointer"));
+      get_as_ref<json_t::string_t const &>(config, "value_json_pointer"));
 
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
 
   std::vector<group_descriptor_t> group_descriptors = read_descriptors(
-      json_at_ref<json_t::array_t const &>(config, "group_descriptors"));
+      get_as_ref<json_t::array_t const &>(config, "group_descriptors"));
 
   // Drawing
 

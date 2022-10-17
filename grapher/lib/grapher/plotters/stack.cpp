@@ -37,7 +37,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
       config.value("value_json_pointer", "/dur"));
 
   std::vector<group_descriptor_t> descriptors = read_descriptors(
-      json_at_ref<json_t::array_t const &>(config, "group_descriptors"));
+      get_as_ref<json_t::array_t const &>(config, "group_descriptors"));
 
   // Drawing
 

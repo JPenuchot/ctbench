@@ -42,9 +42,9 @@ field_loc_to_string(grapher::json_t::json_pointer const &json_ptr) {
 /// Wraps json_t object access with error management.
 template <typename LocType>
 inline grapher::json_t::const_reference
-json_at(grapher::json_t const &object, LocType const &field_location,
-        const std::experimental::source_location loc =
-            std::experimental::source_location::current()) {
+get_as_json(grapher::json_t const &object, LocType const &field_location,
+            const std::experimental::source_location loc =
+                std::experimental::source_location::current()) {
   std::string const field_location_str = field_loc_to_string(field_location);
 
   check(object.contains(field_location),
@@ -57,9 +57,9 @@ json_at(grapher::json_t const &object, LocType const &field_location,
 /// Wraps reference access with type checking and error management.
 template <typename ReferenceType, typename LocType>
 inline ReferenceType
-json_at_ref(grapher::json_t const &object, LocType const &field_location,
-            const std::experimental::source_location loc =
-                std::experimental::source_location::current()) {
+get_as_ref(grapher::json_t const &object, LocType const &field_location,
+           const std::experimental::source_location loc =
+               std::experimental::source_location::current()) {
 
   using ValueType = std::decay_t<ReferenceType>;
 

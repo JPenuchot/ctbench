@@ -65,9 +65,9 @@ grapher::json_t::array_t extract_group(group_descriptor_t const &descriptor,
 }
 
 group_descriptor_t read_descriptor(grapher::json_t const &j) {
-  return {.name = json_at_ref<grapher::json_t::string_t const &>(j, "name"),
+  return {.name = get_as_ref<grapher::json_t::string_t const &>(j, "name"),
           .predicates =
-              json_at_ref<grapher::json_t::array_t const &>(j, "predicates")};
+              get_as_ref<grapher::json_t::array_t const &>(j, "predicates")};
 }
 
 grapher::json_t group_descriptor_json(group_descriptor_t const &descriptor) {
@@ -111,7 +111,7 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
     }
 
     grapher::json_t::array_t const &events =
-        json_at_ref<grapher::json_t::array_t const &>(j, "traceEvents");
+        get_as_ref<grapher::json_t::array_t const &>(j, "traceEvents");
 
     // Accumulate
     double val = 0.;
@@ -119,7 +119,7 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
       if (std::all_of(predicates.begin(), predicates.end(),
                       [&](predicate_t const &p) -> bool { return p(event); })) {
         val +=
-            json_at_ref<json_t::number_unsigned_t const &>(event, value_jptr);
+            get_as_ref<json_t::number_unsigned_t const &>(event, value_jptr);
       }
     }
     return val;
