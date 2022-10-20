@@ -1,13 +1,17 @@
 # ctbench build options
 
 set(CTBENCH_ENABLE_DOCS
-    ON
-    CACHE BOOL "Enable documentation target")
+    OFF
+    CACHE BOOL "ctbench option: Enable documentation target")
 
-set(BUILD_TESTING
+set(CTBENCH_ENABLE_TESTS
     ON
-    CACHE BOOL "Enable test targets")
+    CACHE BOOL "ctbench option: Enable test targets")
 
 set(CTBENCH_ENABLE_TRACY
     OFF
-    CACHE BOOL "Enable Tracy profiler")
+    CACHE BOOL "ctbench option: Enable Tracy profiler")
+
+SET(CTBENCH_ENABLE_CLANG_TIDY
+    OFF
+    CACHE BOOL "ctbench option: Enable clang tidy")

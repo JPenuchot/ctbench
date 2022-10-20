@@ -15,6 +15,6 @@ if(CTBENCH_ENABLE_TRACY)
 endif()
 
 # Test targets
-if(BUILD_TESTING)
+if(${CTBENCH_ENABLE_TESTS})
   add_subdirectory(tests)
 endif()

@@ -8,7 +8,7 @@ find_package(sciplot REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 find_package(fmt REQUIRED)
 
-if(${BUILD_TESTING})
+if(${CTBENCH_ENABLE_TESTS})
   find_package(Catch2 REQUIRED)
 endif()
 
