@@ -1,6 +1,8 @@
 # Optional: Tracy integration for profiling
 # See: https://github.com/wolfpld/tracy
 
+include(FetchContent)
+
 # Fetch Tracy
 FetchContent_Declare(
   tracy
