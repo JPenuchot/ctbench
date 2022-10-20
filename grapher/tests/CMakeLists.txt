@@ -1,7 +1,5 @@
 file(GLOB_RECURSE SOURCES grapher/*.cpp)
 
-find_package(Catch2 REQUIRED)
-
 add_executable(grapher-tests ${SOURCES} main.cpp)
 target_link_libraries(grapher-tests PRIVATE Catch2::Catch2 grapher)
 
