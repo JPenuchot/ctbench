@@ -2,8 +2,9 @@
 
 mkdir build
 
-cmake -S . -B build -G Ninja \
+cmake --preset release -G Ninja \
   -DBUILD_TESTING=ON \
-  -DENABLE_DOCS=OFF
+  -DCTBENCH_ENABLE_TRACY=OFF \
+  -DCTBENCH_ENABLE_DOCS=OFF
 
-cmake --build build --target test-all
+cmake --build --preset release --target test-all
