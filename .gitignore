@@ -3,3 +3,4 @@ generated-docs/
 build/
 builds/
 CMakeUserPresets.json
+*.kate-swp
