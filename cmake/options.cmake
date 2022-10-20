@@ -9,5 +9,5 @@ set(BUILD_TESTING
     CACHE BOOL "Enable test targets")
 
 set(CTBENCH_ENABLE_TRACY
-    ON
+    OFF
     CACHE BOOL "Enable Tracy profiler")
