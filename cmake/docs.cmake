@@ -24,7 +24,7 @@ endif()
 
 set(DOXYGEN_HTML_EXTRA_STYLESHEET ${dac_content_SOURCE_DIR}/doxygen-awesome.css)
 
-doxygen_add_docs(docs ALL)
+doxygen_add_docs(docs)
 
 # Documentation generation for the CMake API
 
