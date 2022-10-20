@@ -1,0 +1,18 @@
+{
+  "plotter": "compare_by",
+  "legend_title": "Timings",
+  "x_label": "Benchmark size factor",
+  "y_label": "Time (µs)",
+  "draw_average": true,
+  "draw_points": true,
+  "width": 800,
+  "height": 400,
+  "key_ptrs": [
+    "/name",
+    "/args/detail"
+  ],
+  "value_ptr": "/dur",
+  "plot_file_extensions": [
+    ".svg"
+  ]
+}
