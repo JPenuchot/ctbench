@@ -23,10 +23,6 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
                                std::vector<predicate_t> const &predicates,
                                grapher::json_t::json_pointer value_jptr);
 
-/// Merges the contents of b into a, with items of a being overwritten if items
-/// present in b share the same key.
-grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b);
-
 /// Generic conversion of a JSON field location to a std::string
 template <typename T>
 inline std::string field_loc_to_string(T &&field_location) {

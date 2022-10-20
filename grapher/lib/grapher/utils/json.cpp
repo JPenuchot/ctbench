@@ -9,6 +9,7 @@
 #include <grapher/core.hpp>
 #include <grapher/predicates.hpp>
 #include <grapher/utils/json.hpp>
+#include <grapher/utils/tracy.hpp>
 
 namespace grapher {
 
@@ -130,22 +131,21 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
   return res;
 }
 
-grapher::json_t merge_into(grapher::json_t a, grapher::json_t const &b) {
-  for (grapher::json_t const b_flat = b.flatten();
-       auto const &[k_ptr, v] : b_flat.items()) {
-    a[grapher::json_t::json_pointer(k_ptr)] = v;
-  }
-  return a;
-}
-
 void save_plot(sciplot::Plot2D plot, std::string const &dest,
                grapher::json_t const &config) {
+  ZoneScoped;
   namespace fs = std::filesystem;
 
   apply_config(plot, config);
 
   std::vector<std::string> plot_file_extensions = config.value(
       "plot_file_extensions", grapher::json_t::array({".svg", ".png"}));
+
+  sciplot::Figure figure{{plot}};
+  sciplot::Canvas canvas{{figure}};
+
+  // canvas.autoclean(false);
+  // canvas.saveplotdata();
 
   // Saving file for all extensions
   for (std::string const &extension : plot_file_extensions) {
@@ -161,11 +161,13 @@ void save_plot(sciplot::Plot2D plot, std::string const &dest,
       file_dest.replace_filename(new_filename);
     }
 
-    sciplot::Figure figure{{plot}};
-    sciplot::Canvas canvas{{figure}};
-
-    canvas.size(config.value("width", 1500), config.value("height", 1000));
-    canvas.save(dest + extension);
+    if (config.contains("width") && config.contains("height")) {
+      canvas.size(config["width"], config["height"]);
+    }
+    { // Scope to profile canvas saving specifically
+      ZoneScoped;
+      canvas.save(dest + extension);
+    }
   }
 }
 

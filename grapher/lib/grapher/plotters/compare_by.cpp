@@ -1,16 +1,15 @@
 #include <algorithm>
+#include <execution>
 #include <filesystem>
 #include <fstream>
 #include <string>
-#include <thread>
 #include <vector>
+
+#include <fmt/core.h>
 
 #include <boost/container/small_vector.hpp>
 
 #include <llvm/Demangle/Demangle.h>
-#include <llvm/Support/raw_ostream.h>
-
-#include <nlohmann/json.hpp>
 
 #include <sciplot/sciplot.hpp>
 
@@ -18,6 +17,7 @@
 #include <grapher/plotters/compare_by.hpp>
 #include <grapher/utils/error.hpp>
 #include <grapher/utils/json.hpp>
+#include <grapher/utils/tracy.hpp>
 
 namespace grapher::plotters {
 
@@ -46,6 +46,7 @@ curve_aggregate_map_t
 get_bench_curves(benchmark_set_t const &bset,
                  std::vector<json_t::json_pointer> const &key_ptrs,
                  json_t::json_pointer const &val_ptr) {
+  ZoneScoped;
   namespace fs = std::filesystem;
 
   curve_aggregate_map_t res;
@@ -128,6 +129,7 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
 void plotter_compare_by_t::plot(benchmark_set_t const &bset,
                                 std::filesystem::path const &dest,
                                 grapher::json_t const &config) const {
+  ZoneScoped;
   namespace fs = std::filesystem;
 
   // Config reading
@@ -156,66 +158,61 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
 
   // Drawing, ie. unwrapping the nested maps and drawing curves + saving plots
 
-  std::vector<std::thread> thread_pool;
+  std::for_each(
+      std::execution::par_unseq, curve_aggregate_map.begin(),
+      curve_aggregate_map.end(), [&](auto const &kv) {
+        ZoneScoped;
+        auto const &[key, curve_aggregate] = kv;
 
-  for (auto const &[key, curve_aggregate] : curve_aggregate_map) {
-    // Plot init
-    sciplot::Plot2D plot;
-    apply_config(plot, config);
+        // Plot init
+        sciplot::Plot2D plot;
 
-    for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
-      // Average curve coord vectors
-      std::vector<double> x_curve;
-      std::vector<double> y_curve;
+        for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
+          // Average curve coord vectors
+          std::vector<double> x_curve;
+          std::vector<double> y_curve;
 
-      // Point coord vectors
-      std::vector<double> x_points;
-      std::vector<double> y_points;
+          // Point coord vectors
+          std::vector<double> x_points;
+          std::vector<double> y_points;
 
-      // Build point & curve vectors
-      for (auto const &[x, y_vec] : benchmark_curve) {
-        // Building average curve vector
-        if (draw_average && !y_vec.empty()) {
-          double const sum = std::reduce(y_vec.begin(), y_vec.end());
-          std::size_t const n = y_vec.size();
+          // Build point & curve vectors
+          for (auto const &[x, y_vec] : benchmark_curve) {
+            // Building average curve vector
+            if (draw_average && !y_vec.empty()) {
+              double const sum = std::reduce(y_vec.begin(), y_vec.end());
+              std::size_t const n = y_vec.size();
 
-          double const y = sum / n;
+              double const y = sum / n;
 
-          x_curve.push_back(x);
-          y_curve.push_back(y);
-        }
+              x_curve.push_back(x);
+              y_curve.push_back(y);
+            }
 
-        // Building point vector
-        if (draw_points) {
-          for (double y : y_vec) {
-            x_points.push_back(x);
-            y_points.push_back(y);
+            // Building point vector
+            if (draw_points) {
+              for (double y : y_vec) {
+                x_points.push_back(x);
+                y_points.push_back(y);
+              }
+            }
+          }
+
+          // Plot drawing
+
+          if (draw_average && !x_curve.empty()) {
+            // Draw average curve
+            plot.drawCurve(x_curve, y_curve).label(bench_name + " average");
+          }
+
+          if (draw_points && !x_points.empty()) {
+            // Draw points
+            plot.drawPoints(x_points, y_points).label(bench_name + " points");
           }
         }
-      }
 
-      // Plot drawing
-
-      if (draw_average && !x_curve.empty()) {
-        // Draw average curve
-        plot.drawCurve(x_curve, y_curve).label(bench_name + " average");
-      }
-
-      if (draw_points && !x_points.empty()) {
-        // Draw points
-        plot.drawPoints(x_points, y_points).label(bench_name + " points");
-      }
-    }
-
-    // Writing in parallel
-    thread_pool.emplace_back(&save_plot, std::move(plot),
-                             dest / to_string(key, demangle), config);
-  }
-
-  // Joining before returning
-  for (std::thread &t : thread_pool) {
-    t.join();
-  }
+        save_plot(std::move(plot), dest / to_string(key, demangle), config);
+      });
 }
 
 } // namespace grapher::plotters
