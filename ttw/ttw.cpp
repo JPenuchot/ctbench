@@ -1,12 +1,61 @@
-/// -ftime-trace wrapper for clang.
+/// time-trace wrapper
 
+/// This program is supposed to be used as a launcher for clang.
+/// If the -ftime-trace flag is detected, the launcher will copy it to the
+/// ctbench data directory. Otherwise, it will generate one by measuring CPU
+
+#include <chrono>
 #include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <sstream>
-#include <string>
 #include <string_view>
 
-#include <ttw.hpp>
+#include <sys/resource.h>
+
+#include <nlohmann/json.hpp>
+
+inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
+                              std::string cmd,
+                              std::filesystem::path compile_obj_path,
+                              bool time_trace_flag) {
+  namespace fs = std::filesystem;
+
+  // Run program and measure CPU time
+  rusage children_rusage_begin, children_rusage_end;
+  getrusage(RUSAGE_CHILDREN, &children_rusage_begin);
+  std::system(cmd.c_str());
+  getrusage(RUSAGE_CHILDREN, &children_rusage_end);
+
+  // Create destination directory
+  if (auto const out_parent = time_trace_file_dest.parent_path();
+      !out_parent.empty()) {
+    fs::create_directories(time_trace_file_dest.parent_path());
+  }
+
+  if (time_trace_flag) {
+    // Copy trace-time file if already generated
+    fs::copy_file(compile_obj_path.replace_extension(".json"),
+                  time_trace_file_dest, fs::copy_options::overwrite_existing);
+
+  } else {
+    // Generate time-trace file if not already generated
+    namespace nl = nlohmann;
+
+    std::size_t const time_micros = children_rusage_end.ru_utime.tv_usec -
+                                    children_rusage_begin.ru_utime.tv_usec;
+
+    nl::json time_trace_json;
+    time_trace_json["traceEvents"] = nlohmann::json::array();
+    time_trace_json["traceEvents"].push_back(
+        nl::json({{"name", "ExecuteCompiler"}, {"dur", time_micros}}));
+
+    // Write file
+    std::ofstream(time_trace_file_dest) << time_trace_json;
+  }
+
+  return 0;
+}
 
 /// Wrapper for a given clang command.
 
@@ -43,10 +92,6 @@ int main(int argc, char const *argv[]) {
     cmd_builder << ' ' << *beg;
   }
 
-  if (!has_time_trace_flag) {
-    cmd_builder << " -ftime-trace";
-  }
-
   return get_timetrace_file(argv[path_id], cmd_builder.str(),
-                            std::move(obj_path));
+                            std::move(obj_path), has_time_trace_flag);
 }
