@@ -21,19 +21,15 @@ echo "Updating docs..."
 rm -rf $docs_out_dir
 mkdir -p $docs_out_dir
 
-mkdir build-docs
-cd build-docs
-
 echo "- Building docs..."
 
-cmake ../ -G Ninja \
+cmake -S . -B build \
 	-DCMAKE_BUILD_TYPE:STRING=Release \
-	-DENABLE_DOCS:BOOL=TRUE \
-	-DBUILD_TESTING:BOOL=FALSE \
+	-DCTBENCH_ENABLE_DOCS:BOOL=TRUE \
+	-DCTBENCH_ENABLE_TESTS:BOOL=FALSE \
 	-DDOXYGEN_HTML_OUTPUT:PATH=$docs_out_dir
-ninja docs
+cmake --build build --target docs
 
-cd ../
 rm -rf build-docs
 
 cd $docs_out_dir
