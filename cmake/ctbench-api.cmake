@@ -120,7 +120,7 @@ endfunction(ctbench_add_benchmark)
 
 ## =============================================================================
 #!
-#! ### ctbench_add_custom_benchmark(name source begin end step iterations generator)
+#! ### ctbench_add_custom_benchmark(name source begin end step iterations callback)
 #!
 #! Add a benchmark for a given source with a given size range
 #! using a custom compile options generator.
@@ -129,8 +129,8 @@ endfunction(ctbench_add_benchmark)
 #! - `source`: Source file
 #! - `begin, end, step`: Iteration parameters
 #! - `iterations`: Number of benchmark iterations for a given size
-#! - `generator`: Compile option generator. Takes a size and an output
-#!                variable name as parameters.
+#! - `callback`: Callback function that is called for each benchmark iteration
+#!   target. For each target, ctbench will pass it the size and target name.
 
 function(
   ctbench_add_custom_benchmark
@@ -150,7 +150,7 @@ function(
       # Subtargets aren't meant to be compiled by end-users
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
 
-      cmake_language(CALL ${generator} ${size} ctbench_options_output)
+      cmake_language(CALL ${generator} ${size} ${subtarget_name})
 
       _ctbench_internal_add_compile_benchmark(
         ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
