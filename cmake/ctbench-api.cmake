@@ -29,8 +29,8 @@ endif()
 #@
 #@ _ctbench_internal_add_compile_benchmark
 #@
-#@ Creates a library target for a file and extracts the compilation time trace
-#@ file.
+#@ Creates a library target for a file, and runs the compiler using
+#@ time-trace-wrapper.
 #@
 #@ - `target_name`: Name of the benchmark target
 #@ - `output`: Time trace output path
@@ -79,7 +79,13 @@ add_custom_target(ctbench-graph-all)
 #!
 #! ### ctbench_add_benchmark(name source begin end step samples)
 #!
-#! Add a benchmark for a given source, with a given size range.
+#! Add a benchmark for a given source, with a given size range. Please note that
+#! ctbench_add_benchmark does *not* add -ftime-trace flags. If not present,
+#! the compiler execution time will be measured by the compiler execution
+#! wrapper, and only this data will be reported.
+#!
+#! If you need Clang's time-trace data, please specify it manually,
+#! and do not forget to set -ftime-trace-granularity if needed.
 #!
 #! - `name`: Name of benchmark
 #! - `source`: Source file
@@ -106,9 +112,6 @@ function(
         ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
         "-DBENCHMARK_SIZE=${size}")
 
-      # target_compile_options(${subtarget_name}
-                             # PRIVATE -ftime-trace-granularity=1)
-
       add_dependencies(${name} ${subtarget_name})
     endforeach()
   endforeach()
@@ -120,7 +123,7 @@ endfunction(ctbench_add_benchmark)
 
 ## =============================================================================
 #!
-#! ### ctbench_add_custom_benchmark(name source begin end step iterations callback)
+#! ### ctbench_add_custom_benchmark(name source begin end step samples callback)
 #!
 #! Add a benchmark for a given source with a given size range
 #! using a custom compile options generator.
@@ -128,7 +131,7 @@ endfunction(ctbench_add_benchmark)
 #! - `name`: Name of benchmark
 #! - `source`: Source file
 #! - `begin, end, step`: Iteration parameters
-#! - `iterations`: Number of benchmark iterations for a given size
+#! - `samples`: Number of benchmark samples for a given size
 #! - `callback`: Callback function that is called for each benchmark iteration
 #!   target. For each target, ctbench will pass it the size and target name.
 
@@ -139,13 +142,13 @@ function(
   begin
   end
   step
-  iterations
+  samples
   generator)
 
   # Setting names
   add_custom_target(${name})
 
-  foreach(iteration RANGE 1 ${iterations})
+  foreach(iteration RANGE 1 ${samples})
     foreach(size RANGE ${begin} ${end} ${step})
       # Subtargets aren't meant to be compiled by end-users
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
