@@ -99,59 +99,36 @@ Once you have several benchmark cases, you can start writing a graph config.
 
 Example configs can be found [here](
 https://github.com/JPenuchot/ctbench/tree/main/grapher/configs), or by running
-`ctbench-grapher-utils --plotter=<plotter> --command=get-default-config`.
+`ctbench-grapher-utils --plotter=<plotter> --command=get-default-config`. A list
+of available plotters can be retrieved by running
+`ctbench-grapher-utils --help`.
 
 ```json
 {
-  "plotter": "compare",
+  "plotter": "compare_by",
+  "demangle": true,
   "draw_average": true,
-  "draw_points": false,
-  "plot_file_extension": ".svg",
-  "value_json_pointer": "/dur",
+  "draw_points": true,
+  "key_ptrs": [
+    "/name",
+    "/args/detail"
+  ],
+  "legend_title": "Timings",
+  "plot_file_extensions": [
+    ".svg",
+    ".png"
+  ],
+  "value_ptr": "/dur",
   "width": 1500,
   "height": 500,
-  "legend_title": "Timings",
-  "xlabel": "Benchmark size factor",
-  "ylabel": "Time (µs)",
-  "group_descriptors": [
-    {
-      "name": "ExecuteCompiler",
-      "predicates": [
-        {
-          "type": "streq",
-          "pointer": "/name",
-          "string": "Total ExecuteCompiler"
-        }
-      ]
-    },
-    {
-      "name": "Frontend",
-      "predicates": [
-        {
-          "type": "streq",
-          "pointer": "/name",
-          "string": "Total Frontend"
-        }
-      ]
-    },
-    {
-      "name": "Backend",
-      "predicates": [
-        {
-          "type": "streq",
-          "pointer": "/name",
-          "string": "Total Backend"
-        }
-      ]
-    }
-  ]
+  "x_label": "Benchmark size factor",
+  "y_label": "Time (µs)"
 }
 ```
 
-This configuration uses the `compare` plotter. The `group_descriptors` field
-indicates which `time_trace` events to observe using a set of predicates, and
-assign a name to it. The `value_json_pointer` field is a JSON pointer targeting
-the field that the value you want to measure for each `time_trace` event.
+This configuration uses the `compare_by` plotter. It compares features targeted
+by the JSON pointers in `key_ptrs` across all benchmark cases. This is the
+easiest way to extract and compare as many time-trace features at once.
 
 Back to CMake, you can now declare a graph target using this config to compare
 the time spent in the compiler execution, the frontend, and the backend between
