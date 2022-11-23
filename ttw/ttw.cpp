@@ -24,7 +24,7 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
   // Run program and measure CPU time
   rusage children_rusage_begin, children_rusage_end;
   getrusage(RUSAGE_CHILDREN, &children_rusage_begin);
-  std::system(cmd.c_str());
+  std::system(cmd.c_str()); // TODO: Bypass shell
   getrusage(RUSAGE_CHILDREN, &children_rusage_end);
 
   // Create destination directory
@@ -72,7 +72,7 @@ int main(int argc, char const *argv[]) {
     return 1;
   }
 
-  // Building path and finding obj_path
+  // Building command and finding obj_path
   std::ostringstream cmd_builder;
   fs::path obj_path;
   bool has_time_trace_flag = false;
