@@ -13,3 +13,5 @@ target_compile_options(
             -fno-rtti
             -march=native
             -flto)
+
+target_compile_features(ctbench-compile-opts INTERFACE cxx_std_20)
