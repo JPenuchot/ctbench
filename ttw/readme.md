@@ -1,4 +1,4 @@
-# ttw - Time Trace Wrapper
+# Time-Trace Wrapper
 
 `ttw` is a compiler launcher used to catch the flags that are passed to the
 compiler.
