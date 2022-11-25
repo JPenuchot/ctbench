@@ -5,12 +5,12 @@ set(ConfigPackageLocation lib/cmake/${PROJECT_NAME})
 install(TARGETS ctbench-grapher-plot ctbench-grapher-utils ctbench-ttw
         EXPORT ctbench-targets)
 
-export(
-  EXPORT ctbench-targets
-  NAMESPACE ctbench::
-  FILE ctbench-targets.cmake)
+export(EXPORT ctbench-targets FILE ctbench-targets.cmake)
 
-install(EXPORT ctbench-targets DESTINATION ${ConfigPackageLocation})
+install(
+  EXPORT ctbench-targets
+  DESTINATION ${ConfigPackageLocation}
+  NAMESPACE ctbench::)
 install(FILES cmake/ctbench-api.cmake DESTINATION ${ConfigPackageLocation})
 
 # CMake package config files
