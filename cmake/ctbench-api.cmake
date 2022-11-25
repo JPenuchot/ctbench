@@ -6,31 +6,41 @@
 #@
 ## =============================================================================
 
+## =============================================================================
+#@
+#@ _ctbench_internal_add_compile_benchmark
+#@
 #@ Sets ctbench executable/target prefixes for FetchContent support.
+
 function(_ctbench_set_prefixes)
-  # ctbench_FOUND being false means ctbench was imported inside of the tree.
-  # ctbench_FOUND being true means ctbench found through find_package.
   if(ctbench_FOUND)
+    # ctbench_FOUND being true means ctbench found through find_package.
+
     set(GRAPHER_PREFIX
         ctbench::
         CACHE STRING "Prefix for grapher executables")
 
-        # ttw is a special case as it is used as a compiler launcher.
+    # ttw is a special case as it is used as a compiler launcher.
     # Therefore we can't use the imported executable target,
     # and have to provide an executable name assuming ttw can be found in PATH.
     set(TTW_PREFIX
         ""
         CACHE STRING "Prefix for TTW executable")
   else()
-    message("not cool")
+    # ctbench_FOUND being false means ctbench was imported inside of the tree.
+
     set(GRAPHER_PREFIX
         ${CMAKE_CURRENT_BINARY_DIR}/grapher/
         CACHE STRING "Prefix for grapher executables")
+
     set(TTW_PREFIX
         ${CMAKE_CURRENT_BINARY_DIR}/ttw/
         CACHE STRING "Prefix for TTW executable")
   endif()
 endfunction()
+
+#@
+#@ --
 
 ## =============================================================================
 #@
