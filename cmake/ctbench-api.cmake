@@ -6,24 +6,31 @@
 #@
 ## =============================================================================
 
-# Setting executable/target prefix.
-# ctbench_FOUND being false means ctbench was imported inside of the tree.
-# ctbench_FOUND being true means ctbench found through find_package.
-if(NOT ctbench_FOUND)
-  set(GRAPHER_PREFIX
-      ${CMAKE_CURRENT_BINARY_DIR}/grapher/
-      PARENT_SCOPE)
-  set(TTW_PREFIX
-      ${CMAKE_CURRENT_BINARY_DIR}/ttw/
-      PARENT_SCOPE)
-else()
-  set(GRAPHER_PREFIX
-      ctbench::
-      PARENT_SCOPE)
-  set(TTW_PREFIX
-      ctbench::
-      PARENT_SCOPE)
-endif()
+#@ Sets ctbench executable/target prefixes for FetchContent support.
+function(_ctbench_set_prefixes)
+  # ctbench_FOUND being false means ctbench was imported inside of the tree.
+  # ctbench_FOUND being true means ctbench found through find_package.
+  if(ctbench_FOUND)
+    set(GRAPHER_PREFIX
+        ctbench::
+        CACHE STRING "Prefix for grapher executables")
+
+        # ttw is a special case as it is used as a compiler launcher.
+    # Therefore we can't use the imported executable target,
+    # and have to provide an executable name assuming ttw can be found in PATH.
+    set(TTW_PREFIX
+        ""
+        CACHE STRING "Prefix for TTW executable")
+  else()
+    message("not cool")
+    set(GRAPHER_PREFIX
+        ${CMAKE_CURRENT_BINARY_DIR}/grapher/
+        CACHE STRING "Prefix for grapher executables")
+    set(TTW_PREFIX
+        ${CMAKE_CURRENT_BINARY_DIR}/ttw/
+        CACHE STRING "Prefix for TTW executable")
+  endif()
+endfunction()
 
 ## =============================================================================
 #@
@@ -39,7 +46,7 @@ endif()
 
 function(_ctbench_internal_add_compile_benchmark target_name output source
          options)
-
+  _ctbench_set_prefixes()
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
   target_include_directories(${target_name} PUBLIC "../include")
 
@@ -100,6 +107,7 @@ function(
   end
   step
   samples)
+  _ctbench_set_prefixes()
   # Setting names
   add_custom_target(${name})
 
@@ -144,6 +152,7 @@ function(
   step
   samples
   generator)
+  _ctbench_set_prefixes()
 
   # Setting names
   add_custom_target(${name})
@@ -181,6 +190,8 @@ endfunction(ctbench_add_custom_benchmark)
 #! - `benchmarks...`: List of benchmark names
 
 function(ctbench_add_graph category config)
+  _ctbench_set_prefixes()
+
   set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
   add_custom_target(
     ${category}
