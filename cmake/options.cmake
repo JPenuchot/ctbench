@@ -12,6 +12,6 @@ set(CTBENCH_ENABLE_TRACY
     OFF
     CACHE BOOL "ctbench option: Enable Tracy profiler")
 
-SET(CTBENCH_ENABLE_CLANG_TIDY
+set(CTBENCH_ENABLE_CLANG_TIDY
     OFF
     CACHE BOOL "ctbench option: Enable clang tidy")
