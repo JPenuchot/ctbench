@@ -12,31 +12,18 @@
 #@
 #@ Sets ctbench executable/target prefixes for FetchContent support.
 
-function(_ctbench_set_prefixes)
-  if(ctbench_FOUND)
-    # ctbench_FOUND being true means ctbench found through find_package.
-
-    set(GRAPHER_PREFIX
-        ctbench::
-        CACHE STRING "Prefix for grapher executables")
-
-    # ttw is a special case as it is used as a compiler launcher.
-    # Therefore we can't use the imported executable target,
-    # and have to provide an executable name assuming ttw can be found in PATH.
-    set(TTW_PREFIX
-        ""
-        CACHE STRING "Prefix for TTW executable")
-  else()
-    # ctbench_FOUND being false means ctbench was imported inside of the tree.
-
-    set(GRAPHER_PREFIX
-        ${CMAKE_CURRENT_BINARY_DIR}/grapher/
-        CACHE STRING "Prefix for grapher executables")
-
-    set(TTW_PREFIX
-        ${CMAKE_CURRENT_BINARY_DIR}/ttw/
-        CACHE STRING "Prefix for TTW executable")
-  endif()
+function(_ctbench_set_variables)
+  #   if(TARGET ctbench::ctbench-grapher-plot)
+  #     # message("Setting CTBENCH_GRAPHER_PLOT_EXEC")
+  #     # set(CTBENCH_GRAPHER_PLOT_EXEC "$<TARGET_FILE:ctbench::ctbench-grapher-plot>" CACHE STRING "Path to ctbench-grapher-plot executable")
+  #   else()
+  #     message(relou)
+  #   endif()
+  #
+  #   if(TARGET ctbench::ctbench-ttw)
+  #     message("Setting CTBENCH_GRAPHER_TTW_EXEC")
+  #     set(CTBENCH_GRAPHER_TTW_EXEC "$<TARGET_FILE:ctbench::ctbench-ttw>" CACHE STRING "Path to ctbench-ttw executable")
+  #   endif()
 endfunction()
 
 #@
@@ -56,15 +43,16 @@ endfunction()
 
 function(_ctbench_internal_add_compile_benchmark target_name output source
          options)
-  _ctbench_set_prefixes()
+  _ctbench_set_variables()
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
   target_include_directories(${target_name} PUBLIC "../include")
 
   # Setting ctbench-ttw as a compiler launcher
   set_target_properties(
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
-                              "${TTW_PREFIX}ctbench-ttw;${output}")
+                              "$<TARGET_FILE:ctbench::ctbench-ttw>;${output}")
 
+  # Make sure ttw is built even when ctbench is imported using FetchContent
   if(NOT ctbench_FOUND)
     add_dependencies(${target_name} ctbench-ttw)
   endif()
@@ -117,7 +105,7 @@ function(
   end
   step
   samples)
-  _ctbench_set_prefixes()
+  _ctbench_set_variables()
   # Setting names
   add_custom_target(${name})
 
@@ -162,7 +150,7 @@ function(
   step
   samples
   generator)
-  _ctbench_set_prefixes()
+  _ctbench_set_variables()
 
   # Setting names
   add_custom_target(${name})
@@ -200,12 +188,13 @@ endfunction(ctbench_add_custom_benchmark)
 #! - `benchmarks...`: List of benchmark names
 
 function(ctbench_add_graph category config)
-  _ctbench_set_prefixes()
+  _ctbench_set_variables()
 
   set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
   add_custom_target(
     ${category}
-    COMMAND ${GRAPHER_PREFIX}ctbench-grapher-plot --output=${category}
+    # COMMAND ${CTBENCH_GRAPHER_PLOT_EXEC} --output=${category}
+    COMMAND ctbench::ctbench-grapher-plot --output=${category}
             --config=${config_path} ${ARGN}
     DEPENDS ${config_path} ${ARGN}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
