@@ -12,7 +12,9 @@ srcdir=$(pwd)
 
 branch=$(git rev-parse --abbrev-ref HEAD)
 
-if [[ $branch -ne "main" ]]; then
+echo Current branch: $branch
+
+if [[ "$branch" -ne "main" ]]; then
 	echo "Branch is not main, exiting."
 	exit 0
 fi
