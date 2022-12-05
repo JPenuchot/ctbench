@@ -164,3 +164,5 @@ per benchmark case. In this case, you would then get 3 graphs
   https://cppp.fr/schedule2021/)
 - [Pyperf - Tune the system for benchmarks](
   https://pyperf.readthedocs.io/en/latest/system.html)
+- [A totally constexpr standard library - Paul Keir, Joel Falcou et al - Meeting C++ 2022](
+  https://www.youtube.com/watch?v=ekFPm7e__vI)
