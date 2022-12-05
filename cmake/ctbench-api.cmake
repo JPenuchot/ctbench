@@ -10,29 +10,6 @@
 #@
 #@ _ctbench_internal_add_compile_benchmark
 #@
-#@ Sets ctbench executable/target prefixes for FetchContent support.
-
-function(_ctbench_set_variables)
-  #   if(TARGET ctbench::ctbench-grapher-plot)
-  #     # message("Setting CTBENCH_GRAPHER_PLOT_EXEC")
-  #     # set(CTBENCH_GRAPHER_PLOT_EXEC "$<TARGET_FILE:ctbench::ctbench-grapher-plot>" CACHE STRING "Path to ctbench-grapher-plot executable")
-  #   else()
-  #     message(relou)
-  #   endif()
-  #
-  #   if(TARGET ctbench::ctbench-ttw)
-  #     message("Setting CTBENCH_GRAPHER_TTW_EXEC")
-  #     set(CTBENCH_GRAPHER_TTW_EXEC "$<TARGET_FILE:ctbench::ctbench-ttw>" CACHE STRING "Path to ctbench-ttw executable")
-  #   endif()
-endfunction()
-
-#@
-#@ --
-
-## =============================================================================
-#@
-#@ _ctbench_internal_add_compile_benchmark
-#@
 #@ Creates a library target for a file, and runs the compiler using
 #@ time-trace-wrapper.
 #@
@@ -51,11 +28,6 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   set_target_properties(
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
                               "$<TARGET_FILE:ctbench::ctbench-ttw>;${output}")
-
-  # Make sure ttw is built even when ctbench is imported using FetchContent
-  if(NOT ctbench_FOUND)
-    add_dependencies(${target_name} ctbench-ttw)
-  endif()
 
   # Pass benchmark size
   target_compile_options(${target_name} PRIVATE ${options})
