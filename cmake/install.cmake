@@ -9,8 +9,9 @@ export(EXPORT ctbench-targets FILE ctbench-targets.cmake)
 
 install(
   EXPORT ctbench-targets
-  DESTINATION ${ConfigPackageLocation}
-  NAMESPACE ctbench::)
+  NAMESPACE ctbench::
+  DESTINATION ${ConfigPackageLocation})
+
 install(FILES cmake/ctbench-api.cmake DESTINATION ${ConfigPackageLocation})
 
 # CMake package config files
