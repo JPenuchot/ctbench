@@ -80,6 +80,16 @@ int sum() {
 }
 ```
 
+By default, only compiler execution time is measured.
+If you want to generate plots using Clang's builtin profiler, add the following:
+
+```cmake
+add_compile_options(-ftime-trace -ftime-trace-granularity=1)
+```
+
+Note that plotting profiler data takes more time
+and will generate a *lot* of plot files.
+
 Then you can declare a benchmark case target in CMake with the following:
 
 ```cmake
