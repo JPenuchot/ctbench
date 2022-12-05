@@ -26,21 +26,19 @@ reference project for using ctbench.
 
 ## Using ctbench
 
-### Integrating ctbench in your project
+### Installing `ctbench`
 
-You can integrate `ctbench` by adding this into your CMake listfiles:
-
-```cmake
-include(FetchContent)
-FetchContent_Declare(
-  ctbench
-  GIT_REPOSITORY https://github.com/jpenuchot/ctbench.git
-  GIT_TAG main
-  GIT_SHALLOW)
-FetchContent_MakeAvailable(ctbench)
+```sh
+git clone https://github.com/jpenuchot/ctbench
+cd ctbench
+cmake --preset release
+cmake --build --preset release
+sudo cmake --build --preset release --target install
 ```
 
-or through `find_package(ctbench REQUIRED)` after installing it.
+### Integrating `ctbench` in your project
+
+Use `find_package(ctbench REQUIRED)` after installing it.
 
 The [Rule of Cheese](https://github.com/JPenuchot/rule-of-cheese) project can be
 used as an example of how to use `ctbench`. It is the project that gave birth to
