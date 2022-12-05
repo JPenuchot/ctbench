@@ -20,7 +20,6 @@
 
 function(_ctbench_internal_add_compile_benchmark target_name output source
          options)
-  _ctbench_set_variables()
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
   target_include_directories(${target_name} PUBLIC "../include")
 
@@ -77,7 +76,6 @@ function(
   end
   step
   samples)
-  _ctbench_set_variables()
   # Setting names
   add_custom_target(${name})
 
@@ -122,8 +120,6 @@ function(
   step
   samples
   generator)
-  _ctbench_set_variables()
-
   # Setting names
   add_custom_target(${name})
 
@@ -160,8 +156,6 @@ endfunction(ctbench_add_custom_benchmark)
 #! - `benchmarks...`: List of benchmark names
 
 function(ctbench_add_graph category config)
-  _ctbench_set_variables()
-
   set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
   add_custom_target(
     ${category}
