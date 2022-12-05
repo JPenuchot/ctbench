@@ -26,7 +26,7 @@ reference project for using ctbench.
 
 ## Using ctbench
 
-### Installing `ctbench`
+### Installing ctbench
 
 ```sh
 git clone https://github.com/jpenuchot/ctbench
@@ -36,7 +36,7 @@ cmake --build --preset release
 sudo cmake --build --preset release --target install
 ```
 
-### Integrating `ctbench` in your project
+### Integrating ctbench in your project
 
 Use `find_package(ctbench REQUIRED)` after installing it.
 
