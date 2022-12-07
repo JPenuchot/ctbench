@@ -1,8 +1,13 @@
-/// time-trace wrapper
-
+/// \file
 /// This program is supposed to be used as a launcher for clang.
-/// If the -ftime-trace flag is detected, the launcher will copy it to the
-/// ctbench data directory. Otherwise, it will generate one by measuring CPU
+/// It accepts a time-trace export path followed by a compile command.
+///
+/// If `-ftime-trace` is passed to the compiler, ttw will run the command
+/// and copy the time-trace file to the export path.
+///
+/// Otherwise, it will run the command, measure its execution time with
+/// `getrusage`, and generate a time-trace file with only the compiler execution
+/// time. This allows comparing compiler execution times between GCC and Clang.
 
 #include <chrono>
 #include <filesystem>
