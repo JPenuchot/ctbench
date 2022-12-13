@@ -22,13 +22,21 @@ bibliography: paper.bib
 
 C++ metaprograms become larger over time as metaprogramming goes mainstream
 
-more attention to compile-time performance is needed
+metaprogrammed libraries like Eigen <!--TODO: CITE-->, Blaze <!--TODO: CITE-->,
+or even CTRE <!--TODO: CITE--> are require increasingly compute intensive
+at compile-time
+
+therefore more attention to compile-time performance is needed
 
 there are a lot of tool to run benchmarks for runtime programs
-but almost zero tools to run compile-time variably sized benchmarks,
-ie. tools that can help estimate scaling, complexity of metaprograms
+but almost none to run compile-time variably sized benchmarks,
+ie. tools that can help analyze scaling and complexity of metaprograms
 
-we need more tools and more accurate data
+we need proper tools to study how meta-programs scale
+
+metaprograms run within compilers, so we might need more than just measuring
+compiler execution times and start looking at more targeted data like what
+Clang's integrated profiler provides with the `-ftime-trace` option.
 
 <!--The forces on stars, galaxies, and dark matter under external gravitational
 fields lead to the dynamical evolution of structures in the universe. The orbits
@@ -42,11 +50,23 @@ performing numerical orbit integration).-->
 
 # Statement of need
 
-ctbench is an attempt to provide a robust set of tools to run variably sized
-compile-time benchmarks, then aggregate and analyze benchmark data,
-with built-in support for clang's profiling data
+originally inspired by metabench <!--TODO: CITE-->, ctbench development was
+driven by the need for a tool that can be integrated within an existing project
+(metabench being a framework), component reusability, and analysis capabilities
+for Clang profiling data in addition to compiler execution time measurement
 
-it can also used to simply measure and plot compiler execution time
+additionally, metabench uses ERB markup for benchmark generation whereas ctbench
+relies on C++ preprocessor
+
+therefore ctbench is an attempt to provide a robust set of tools to run variably
+sized compile-time benchmarks, then aggregate and analyze benchmark data
+
+It has first class support for Clang's profiling data output format which makes
+it possible to target specific Clang compiling passes, sometimes even for
+specific symbols
+
+It can also used to simply measure and plot compiler execution time for other
+compilers than Clang making comparisons across compilers possible
 
 ## grapher architecture
 
@@ -66,10 +86,16 @@ benchmarks cases rely on the pre-processor for scaling
 ctbench was designed to better understand the impact of metaprogramming
 techniques on compile time, by providing an easy, robust, and repeatable way to
 measure and analyze Clang's profiling data.
+
 Its functionality was then expanded to compiler execution time measurement
 to allow GCC vs Clang comparisons on compile-time benchmarks.
 
+tailored for our own needs in Poacher and other metaprogramming projects
+<!--TODO: CITE-->, with a C++ developer-friendly API to provide a compile-time
+benchmarking toolset for the masses
 
+easy to install, easy to use, reproductible benchmarks and scaling analyses
+for metaprograms
 
 <!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
@@ -93,17 +119,7 @@ scientific explorations of forthcoming data releases from the *Gaia* mission
 
 # Citations
 
-<!--Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"-->
+<!--https://pandoc.org/MANUAL.html#extension-citations-->
 
 # Figures
 
