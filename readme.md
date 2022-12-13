@@ -11,9 +11,10 @@ analysis**, thus it is not a one-shot profiler, but a set of tools that enable
 **reproductible data gathering** from user-defined, variably sized compile-time
 benchmarks.
 
-It was originally made to gather data from Clang's time-trace feature in order
-to gather more comprehensive data from the compiler itself, but it is able to
-measure compiler execution time as well, mostly for GCC compatibility.
+Inspired by [Metabench](https://github.com/ldionne/metabench), it was originally
+made to gather data from Clang's time-trace feature in order to gather more
+comprehensive data from the compiler itself, but it is able to measure compiler
+execution time as well, mostly for GCC compatibility.
 
 It has two main components: a C++ plotting toolset that can be used as a CLI
 program and as a library, and a CMake boilerplate library to generate benchmark
@@ -180,7 +181,8 @@ per benchmark case. In this case, you would then get 3 graphs
 - [ctbench: compile time benchmarking for Clang](
   https://www.youtube.com/watch?v=1RZY6skM0Rc) at [CPPP 2021](
   https://cppp.fr/schedule2021/)
-- [Pyperf - Tune the system for benchmarks](
-  https://pyperf.readthedocs.io/en/latest/system.html)
 - [A totally constexpr standard library - Paul Keir, Joel Falcou et al - Meeting C++ 2022](
   https://www.youtube.com/watch?v=ekFPm7e__vI)
+- [Pyperf - Tune the system for benchmarks](
+  https://pyperf.readthedocs.io/en/latest/system.html)
+- [Metabench](https://github.com/ldionne/metabench)
