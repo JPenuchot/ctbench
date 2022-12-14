@@ -1,11 +1,5 @@
-name: ctbench CI
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+name: ctbench tests
+on: [push]
 
 jobs:
   clang:
