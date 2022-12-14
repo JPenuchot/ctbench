@@ -17,14 +17,28 @@ affiliations:
 date: 07 December 2023
 bibliography: paper.bib
 ---
+<!--
+References:
+  - metabench
+  - templight
+  - metadebug
+  - ctre
+  - cest
+  - ctpg
+  - fmt
+  - blazelib
+  - eigen
+  - iglberger2012_1
+  - iglberger2012_2
+  - thrust
+-->
 
 # Summary
 
 C++ metaprograms become larger over time as metaprogramming goes mainstream
 
-metaprogrammed libraries like Eigen <!--TODO: CITE-->, Blaze <!--TODO: CITE-->,
-or even CTRE <!--TODO: CITE--> are require increasingly compute intensive
-at compile-time
+metaprogrammed libraries like Eigen[@eigen], Blaze[@blaze], or even CTRE[@ctre]
+are require increasingly compute intensive at compile-time
 
 therefore more attention to compile-time performance is needed
 
@@ -50,7 +64,7 @@ performing numerical orbit integration).-->
 
 # Statement of need
 
-originally inspired by metabench <!--TODO: CITE-->, ctbench development was
+originally inspired by Metabench[@metabench], ctbench development was
 driven by the need for a tool that can be integrated within an existing project
 (metabench being a framework), component reusability, and analysis capabilities
 for Clang profiling data in addition to compiler execution time measurement
@@ -91,7 +105,7 @@ Its functionality was then expanded to compiler execution time measurement
 to allow GCC vs Clang comparisons on compile-time benchmarks.
 
 tailored for our own needs in Poacher and other metaprogramming projects
-<!--TODO: CITE-->, with a C++ developer-friendly API to provide a compile-time
+[@poacher], with a C++ developer-friendly API to provide a compile-time
 benchmarking toolset for the masses
 
 easy to install, easy to use, reproductible benchmarks and scaling analyses
@@ -119,7 +133,7 @@ scientific explorations of forthcoming data releases from the *Gaia* mission
 
 # Citations
 
-<!--https://pandoc.org/MANUAL.html#extension-citations-->
+<!-- https://pandoc.org/MANUAL.html#extension-citations -->
 
 # Figures
 
