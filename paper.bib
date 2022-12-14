@@ -1,59 +1,153 @@
-@article{Pearson:2017,
-  url = {http://adsabs.harvard.edu/abs/2017arXiv170304627P},
-  Archiveprefix = {arXiv},
-  Author = {{Pearson}, S. and {Price-Whelan}, A.~M. and {Johnston}, K.~V.},
-  Eprint = {1703.04627},
-  Journal = {ArXiv e-prints},
-  Keywords = {Astrophysics - Astrophysics of Galaxies},
-  Month = mar,
-  Title = {{Gaps in Globular Cluster Streams: Pal 5 and the Galactic Bar}},
-  Year = 2017
+@misc{metabench,
+  title = {Metabench: A simple framework for compile-time microbenchmarks},
+  author = {Dionne, Louis and Dutra, Bruno and Holmes, Odin and others},
+  url = {https://github.com/ldionne/metabench/},
 }
 
-@book{Binney:2008,
-  url = {http://adsabs.harvard.edu/abs/2008gady.book.....B},
-  Author = {{Binney}, J. and {Tremaine}, S.},
-  Booktitle = {Galactic Dynamics: Second Edition, by James Binney and Scott Tremaine.~ISBN 978-0-691-13026-2 (HB).~Published by Princeton University Press, Princeton, NJ USA, 2008.},
-  Publisher = {Princeton University Press},
-  Title = {{Galactic Dynamics: Second Edition}},
-  Year = 2008
+@article{templight,
+  title = {Measuring Compilation Time of C++ Template Metaprograms},
+  author = {Porkol{\'a}b, Zolt{\'a}n and Mihalicza, J{\'o}zsef and Pataki,
+            Norbert},
+  year = {2009},
+  url = {http://aszt.inf.elte.hu/~gsd/s/cikkek/abel/comptime.pdf},
 }
 
-@article{gaia,
-  author = {{Gaia Collaboration}},
-  title = "{The Gaia mission}",
-  journal = {Astronomy and Astrophysics},
-  archivePrefix = "arXiv",
-  eprint = {1609.04153},
-  primaryClass = "astro-ph.IM",
-  keywords = {space vehicles: instruments, Galaxy: structure, astrometry, parallaxes, proper motions, telescopes},
-  year = 2016,
-  month = nov,
-  volume = 595,
-  doi = {10.1051/0004-6361/201629272},
-  url = {http://adsabs.harvard.edu/abs/2016A%26A...595A...1G},
+@inproceedings{metadebug,
+  author = {Porkol\'{a}b, Zolt\'{a}n and Mihalicza, J\'{o}zsef and Sipos, \'{A}d
+            \'{a}m},
+  title = {Debugging C++ Template Metaprograms},
+  year = {2006},
+  isbn = {1595932372},
+  publisher = {Association for Computing Machinery},
+  address = {New York, NY, USA},
+  url = {https://doi.org/10.1145/1173706.1173746},
+  doi = {10.1145/1173706.1173746},
+  abstract = {Template metaprogramming is an emerging new direction in C++
+              programming for executing algorithms in compilation time. Despite
+              all of its already proven benefits and numerous successful
+              applications, it is yet to be accepted in industrial projects. One
+              reason is the lack of professional software tools supporting the
+              development of template metaprograms. A strong analogue exists
+              between traditional runtime programs and compile-time metaprograms.
+              This connection presents the possibility for creating development
+              tools similar to those already used when writing runtime programs.
+              This paper introduces Templight, a debugging framework that reveals
+              the steps executed by the compiler during the compilation of C++
+              programs with templates. Templight's features include following the
+              instantiation chain, setting breakpoints, and inspecting
+              metaprogram information. This framework aims to take a step forward
+              to help template metaprogramming become more accepted in the
+              software industry.},
+  booktitle = {Proceedings of the 5th International Conference on Generative
+               Programming and Component Engineering},
+  pages = {255–264},
+  numpages = {10},
+  keywords = {debugging, C++, template metaprogramming},
+  location = {Portland, Oregon, USA},
+  series = {GPCE '06},
 }
 
-@article{astropy,
-  author = {{Astropy Collaboration}},
-  title = "{Astropy: A community Python package for astronomy}",
-  journal = {Astronomy and Astrophysics},
-  archivePrefix = "arXiv",
-  eprint = {1307.6212},
-  primaryClass = "astro-ph.IM",
-  keywords = {methods: data analysis, methods: miscellaneous, virtual observatory tools},
-  year = 2013,
-  month = oct,
-  volume = 558,
-  doi = {10.1051/0004-6361/201322068},
-  url = {http://adsabs.harvard.edu/abs/2013A%26A...558A..33A}
+@misc{ctre,
+  author = {Hana {Dusíková}},
+  title = {Compile Time Regular Expression in C++},
+  url = {https://github.com/hanickadot/compile-time-regular-expressions},
+  year = {2018},
 }
 
-@misc{fidgit,
-  author = {A. M. Smith and K. Thaney and M. Hahnel},
-  title = {Fidgit: An ungodly union of GitHub and Figshare},
+@misc{cest,
+  author = {Paul {Keir}},
+  title = {Towards a constexpr version of the C++ standard library},
+  url = {https://github.com/pkeir/cest},
   year = {2020},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  url = {https://github.com/arfon/fidgit}
+}
+
+@misc{ctpg,
+  author = {Piotr {Winter}},
+  title = {C++ Compile Time Parser Generator},
+  url = {https://github.com/peter-winter/ctpg},
+  year = {2021},
+}
+
+@misc{fmt,
+  author = {Victor {Zverovich}},
+  title = {A modern formatting library},
+  url = {https://github.com/fmtlib/fmt},
+  year = {2015},
+}
+
+@misc{blazelib,
+  author = {Klaus {Iglberger}},
+  title = {Blaze C++ Linear Algebra Library},
+  url = {https://bitbucket.org/blaze-lib},
+  year = {2012},
+}
+
+@article{eigen,
+  title = {Eigen},
+  author = {Guennebaud, Ga{\"e}l and Jacob, Benoit and others},
+  url = {https://eigen.tuxfamily.org},
+  volume = {3},
+  year = {2010},
+}
+
+@article{iglberger2012_1,
+  author = {Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{
+            \"u}de}},
+  title = {Expression Templates Revisited: A Performance Analysis of Current
+           Methodologies},
+  journal = {SIAM Journal on Scientific Computing},
+  year = {2012},
+  volume = {34(2)},
+  pages = {C42--C69},
+}
+
+@inproceedings{iglberger2012_2,
+  author = {Klaus {Iglberger} and Georg {Hager} and Jan {Treibig} and Ulrich {R{
+            \"u}de}},
+  title = {High Performance Smart Expression Template Math Libraries},
+  booktitle = {Proceedings of the 2nd International Workshop on New Algorithms
+               and Programming Models for the Manycore Era (APMM 2012) at HPCS
+               2012},
+  year = {2012},
+}
+
+@incollection{thrust,
+  title = {Chapter 26 - Thrust: A Productivity-Oriented Library for CUDA},
+  editor = {Wen-mei W. Hwu},
+  booktitle = {GPU Computing Gems Jade Edition},
+  publisher = {Morgan Kaufmann},
+  address = {Boston},
+  pages = {359-371},
+  year = {2012},
+  series = {Applications of GPU Computing Series},
+  isbn = {978-0-12-385963-1},
+  doi = {https://doi.org/10.1016/B978-0-12-385963-1.00026-5},
+  url = {https://www.sciencedirect.com/science/article/pii/B9780123859631000265},
+  author = {Nathan Bell and Jared Hoberock},
+  abstract = {Publisher Summary This chapter demonstrates how to leverage the
+              Thrust parallel template library to implement high performance
+              applications with minimal programming effort. With the introduction
+              of CUDA C/C++, developers can harness the massive parallelism of
+              the graphics processing unit (GPU) through a standard programming
+              language. CUDA allows developers to make fine-grained decisions
+              about how computations are decomposed into parallel threads and
+              executed on the device. The level of control offered by CUDA C/C++
+              is an important feature; it facilitates the development of
+              high-performance algorithms for a variety of computationally
+              demanding tasks which merit significant optimization and profit
+              from low-level control of the mapping onto hardware. With Thrust,
+              developers describe their computation using a collection of
+              high-level algorithms and completely delegate the decision of how
+              to implement the computation to the library. Thrust is implemented
+              entirely within CUDA C/C++ and maintains interoperability with the
+              rest of the CUDA ecosystem. Interoperability is an important
+              feature because no single language or library is the best tool for
+              every problem. Thrust presents a style of programming emphasizing
+              genericity and composability. Indeed, the vast majority of Thrust's
+              functionality is derived from four fundamental parallel
+              algorithms—for each, reduce, scan, and sort. Thrust's high-level
+              algorithms enhance programmer productivity by automating the
+              mapping of computational tasks onto the GPU. Thrust also boosts
+              programmer productivity by providing a rich set of algorithms for
+              common patterns.},
 }
