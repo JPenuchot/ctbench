@@ -17,40 +17,36 @@ affiliations:
 date: 07 December 2023
 bibliography: paper.bib
 ---
-<!--
-References:
-  - metabench
-  - templight
-  - metadebug
-  - ctre
-  - cest
-  - ctpg
-  - fmt
-  - blazelib
-  - eigen
-  - iglberger2012_1
-  - iglberger2012_2
-  - thrust
--->
 
 # Summary
 
 C++ metaprograms become larger over time as metaprogramming goes mainstream
 
-metaprogrammed libraries like Eigen[@eigen], Blaze[@blaze], or even CTRE[@ctre]
-are require increasingly compute intensive at compile-time
+With metaprogrammed libraries like Eigen[@eigen], Blaze[@blazelib], or
+CTRE[@ctre] being developed, we're seeing increasing computing needs at compile
+time. These compile-time computing needs might grow even further as C++ embeds
+more features over time to support and extend this kind of practices, like
+compile-time containers[@more-constexpr-containers] or static
+reflection[@static-reflection].
 
-therefore more attention to compile-time performance is needed
+That increase in compute needs raises the question on how to measure the impact
+of metaprogramming techniques on compile times. There are a lot of tools to run
+benchmarks for "runtime" programs, but as of today, only one tool is capable of
+running compile-time benchmarks instantiated at several sizes to measure
+compile-time scaling of metaprogramming techniques.
 
-there are a lot of tool to run benchmarks for runtime programs
-but almost none to run compile-time variably sized benchmarks,
-ie. tools that can help analyze scaling and complexity of metaprograms
+Metabench[@metabench] is a framework for compile-time benchmarking, it is
+capable of measuring compiler execution time for variably sized benchmarks.
+However, as we know it, metaprograms run on top of compilers, and compiler
+execution time is only one of the many metrics that can be measured and studied
+when benchmarking metaprograms.
 
-we need proper tools to study how meta-programs scale
-
-metaprograms run within compilers, so we might need more than just measuring
-compiler execution times and start looking at more targeted data like what
-Clang's integrated profiler provides with the `-ftime-trace` option.
+Clang has a built-in profiler that provides in-depth time measurements of
+various compilation steps and can be enabled by passing the `-ftime-trace` flag.
+The output contains data that can be directly linked to symbols in the source
+code, making it easier to study the impact of specific symbols on various stages
+of compilation. The output format is a JSON file meant to be compatible with
+Chrome's flame graph visualizer.
 
 <!--The forces on stars, galaxies, and dark matter under external gravitational
 fields lead to the dynamical evolution of structures in the universe. The orbits
@@ -131,22 +127,25 @@ design, and support for Astropy functionality in `Gala` will enable exciting
 scientific explorations of forthcoming data releases from the *Gaia* mission
 [@gaia] by students and experts alike.-->
 
-# Citations
+<!--
+# Reference
 
-<!-- https://pandoc.org/MANUAL.html#extension-citations -->
+## Citations
 
-# Figures
+https://pandoc.org/MANUAL.html#extension-citations
 
-<!--Figures can be included like this:
+## Figures
+
+Figures can be included like this:
 ![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.-->
+and referenced from text using \autoref{fig:example}.
 
-<!--Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }-->
+Figure sizes can be customized by adding an optional second parameter:
+![Caption for example figure.](figure.png){ width=20% }
+-->
 
 # Acknowledgements
 
-<!--We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.-->
+We acknowledge contributions from Philippe Virouleau
 
 # References
