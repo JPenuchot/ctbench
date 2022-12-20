@@ -98,10 +98,10 @@ read_descriptors(grapher::json_t::array_t const &list) {
   return res;
 }
 
-std::vector<double> get_values(benchmark_iteration_t const &iteration,
+std::vector<double> get_values(benchmark_instance_t const &instance,
                                std::vector<predicate_t> const &predicates,
                                grapher::json_t::json_pointer value_jptr) {
-  std::vector<double> res(iteration.samples.size());
+  std::vector<double> res(instance.repetitions.size());
 
   auto get_val = [&](std::filesystem::path const &repetition_path) -> double {
     // Extract events
@@ -125,8 +125,8 @@ std::vector<double> get_values(benchmark_iteration_t const &iteration,
     return val;
   };
 
-  std::transform(std::execution::par_unseq, iteration.samples.begin(),
-                 iteration.samples.end(), res.begin(), get_val);
+  std::transform(std::execution::par_unseq, instance.repetitions.begin(),
+                 instance.repetitions.end(), res.begin(), get_val);
 
   return res;
 }

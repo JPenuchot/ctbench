@@ -65,32 +65,32 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
       std::vector<double> x_average;
       std::vector<double> y_average;
 
-      for (benchmark_iteration_t const &iteration : bench.iterations) {
-        check(!iteration.samples.empty(),
-              fmt::format("No data in benchmark {} for iteration size {}.",
-                          bench.name, iteration.size),
+      for (benchmark_instance_t const &instance : bench.instances) {
+        check(!instance.repetitions.empty(),
+              fmt::format("No data in benchmark {} for instance size {}.",
+                          bench.name, instance.size),
               error_level_t::warning_v);
 
         std::vector<double> const values =
-            get_values(iteration, predicates, value_json_pointer);
+            get_values(instance, predicates, value_json_pointer);
 
         check(!values.empty(),
               fmt::format("No event in benchmark {} at size {} matched by "
                           "group descriptor {}.\n",
-                          bench.name, iteration.size, descriptor.name),
+                          bench.name, instance.size, descriptor.name),
               error_level_t::warning_v);
 
         // Drawing points
         if (draw_points) {
           for (double value : values) {
-            x_points.push_back(iteration.size);
+            x_points.push_back(instance.size);
             y_points.push_back(value);
           }
         }
 
         // Drawing average
         if (draw_average) {
-          x_average.push_back(iteration.size);
+          x_average.push_back(instance.size);
           y_average.push_back(std::reduce(values.begin(), values.end()) /
                               values.size());
         }

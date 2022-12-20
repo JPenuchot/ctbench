@@ -52,16 +52,16 @@ get_bench_curves(benchmark_set_t const &bset,
   curve_aggregate_map_t res;
 
   for (benchmark_case_t const &bench_case : bset) {
-    for (benchmark_iteration_t const &iteration : bench_case.iterations) {
-      for (fs::path const &sample : iteration.samples) {
-        grapher::json_t sample_json;
+    for (benchmark_instance_t const &instance : bench_case.instances) {
+      for (fs::path const &repetition : instance.repetitions) {
+        grapher::json_t repetition_json;
         {
-          std::ifstream sample_ifstream(sample);
-          sample_ifstream >> sample_json;
+          std::ifstream repetition_ifstream(repetition);
+          repetition_ifstream >> repetition_json;
         }
 
-        for (grapher::json_t const &event :
-             get_as_ref<json_t::array_t const &>(sample_json, "traceEvents")) {
+        for (grapher::json_t const &event : get_as_ref<json_t::array_t const &>(
+                 repetition_json, "traceEvents")) {
 
           // Building key from JSON pointers
           key_t key;
@@ -81,7 +81,7 @@ get_bench_curves(benchmark_set_t const &bset,
                                 val_ptr.to_string(), event.dump()),
                     info_v)) {
             // Adding value
-            res[key][bench_case.name][iteration.size].push_back(event[val_ptr]);
+            res[key][bench_case.name][instance.size].push_back(event[val_ptr]);
           }
         }
       }

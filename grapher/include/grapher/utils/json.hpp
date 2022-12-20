@@ -17,9 +17,9 @@
 
 namespace grapher {
 
-/// For each iteration in entry, returns the sum of the values pointed by
+/// For each instance in entry, returns the sum of the values pointed by
 /// value_jptr in the events matching the descriptor's predicates.
-std::vector<double> get_values(benchmark_iteration_t const &iteration,
+std::vector<double> get_values(benchmark_instance_t const &instance,
                                std::vector<predicate_t> const &predicates,
                                grapher::json_t::json_pointer value_jptr);
 

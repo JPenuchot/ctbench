@@ -18,11 +18,12 @@ void plotter_debug_t::plot(const benchmark_set_t &bset,
 
   for (benchmark_case_t const &bench : bset) {
     llvm::outs() << "\tBenchmark case name: " << bench.name << '\n'
-                 << "\tIterations: " << bench.iterations.size() << '\n';
+                 << "\tInstance: " << bench.instances.size() << '\n';
 
-    for (benchmark_iteration_t const &iteration : bench.iterations) {
-      llvm::outs() << "\t\tIteration size: " << iteration.size << '\n'
-                   << "\t\tSamples: " << iteration.samples.size() << "\n\n";
+    for (benchmark_instance_t const &instance : bench.instances) {
+      llvm::outs() << "\t\tIteration size: " << instance.size << '\n'
+                   << "\t\tRepetitions: " << instance.repetitions.size()
+                   << "\n\n";
     }
     llvm::outs() << '\n';
   }

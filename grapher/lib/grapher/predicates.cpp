@@ -86,9 +86,9 @@ inline auto match(grapher::json_t const &constraint) {
   return [matcher_flat = get_as_json(constraint, "matcher").flatten(),
           regex_match_opt = constraint.value("regex", false)](
              grapher::json_t const &value) -> bool {
-    auto items_iteration_proxy = matcher_flat.items();
+    auto items_instance_proxy = matcher_flat.items();
     return std::all_of(
-        items_iteration_proxy.begin(), items_iteration_proxy.end(),
+        items_instance_proxy.begin(), items_instance_proxy.end(),
         [&](auto const &matcher_item_kv) -> bool {
           // Pointer to the value we should observe
           grapher::json_t::json_pointer const ptr(matcher_item_kv.key());
