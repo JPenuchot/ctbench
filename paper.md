@@ -7,20 +7,18 @@ tags:
   - benchmarking
   - library
 authors:
-  - name: Jules P'enuchot
+  - name: Jules Penuchot
     orcid: 0000-0002-6377-6880
     equal-contrib: true
     affiliation: 1
 affiliations:
-  - name: Jules P'enuchot, LISN, Paris-Saclay University, France
+  - name: Jules Penuchot, LISN, Paris-Saclay University, France
     index: 1
 date: 07 December 2023
 bibliography: paper.bib
 ---
 
 # Summary
-
-C++ metaprograms become larger over time as metaprogramming goes mainstream
 
 With metaprogrammed libraries like Eigen[@eigen], Blaze[@blazelib], or
 CTRE[@ctre] being developed, we're seeing increasing computing needs at compile
@@ -31,81 +29,60 @@ reflection[@static-reflection].
 
 That increase in compute needs raises the question on how to measure the impact
 of metaprogramming techniques on compile times. There are a lot of tools to run
-benchmarks for "runtime" programs, but as of today, only one tool is capable of
-running compile-time benchmarks instantiated at several sizes to measure
-compile-time scaling of metaprogramming techniques.
-
-Metabench[@metabench] is a framework for compile-time benchmarking, it is
-capable of measuring compiler execution time for variably sized benchmarks.
-However, as we know it, metaprograms run on top of compilers, and compiler
-execution time is only one of the many metrics that can be measured and studied
-when benchmarking metaprograms.
+benchmarks for "runtime" programs, but as of today, only Metabench[@metabench]
+is capable of running compile-time benchmarks instantiated at several sizes to
+measure compile-time scaling of metaprogramming techniques. Another tool called
+Templight[@templight] has debugging and profiling capabilities for templates
+using Clang, although it only works as a "one-shot" profiler, which can't be
+used to study how metaprograms scale. Online compile-time benchmarking tool
+Build-Bench[@buildbench] is available too, but only allows simple A/B
+comparisons by measuring compiler execution time.
 
 Clang has a built-in profiler that provides in-depth time measurements of
-various compilation steps and can be enabled by passing the `-ftime-trace` flag.
-The output contains data that can be directly linked to symbols in the source
-code, making it easier to study the impact of specific symbols on various stages
-of compilation. The output format is a JSON file meant to be compatible with
-Chrome's flame graph visualizer.
-
-<!--The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).-->
+various compilation steps, which can be enabled by passing the `-ftime-trace`
+flag. Its output contains data that can be directly linked to symbols in the
+source code, making it easier to study the impact of specific symbols on various
+stages of compilation. The output format is a JSON file meant to be compatible
+with Chrome's flame graph visualizer, that contains a series of timed events
+with optional metadata like the (mangled) C++ symbol or the file related to an
+event.
 
 # Statement of need
 
-originally inspired by Metabench[@metabench], ctbench development was
-driven by the need for a tool that can be integrated within an existing project
-(metabench being a framework), component reusability, and analysis capabilities
-for Clang profiling data in addition to compiler execution time measurement
+Originally inspired by Metabench[@metabench], ctbench development was
+driven by the need for a similar tool that allows the observation of Clang's
+time-trace files to help get a more comprehensive view on the impact of
+metaprogramming techniques on compile times.
 
-additionally, metabench uses ERB markup for benchmark generation whereas ctbench
-relies on C++ preprocessor
+A strong emphasis was put on developer friendliness, project integration, and
+component reusability. ctbench provides a well documented CMake API for
+benchmark declaration, allows benchmark generation using the C++ pre-processor,
+and its C++ core can be used as a shared C++ library as well.
 
-therefore ctbench is an attempt to provide a robust set of tools to run variably
-sized compile-time benchmarks, then aggregate and analyze benchmark data
+The core library provides data representations to handle benchmarks cases
+instantited at several sizes, each instance being repeated at least once. It
+also provides tools to aggregate, filter, and sort data from time-trace events,
+as well as various plotters that provide different aggregation and vizualisation
+strategies. The plotters can generate files in various format thanks to the
+Sciplot[@sciplot] library, and they are highly configurable through JSON
+configuration files that are well documented. Default configuration files can be
+generated using a dedicated CLI tool.
 
-It has first class support for Clang's profiling data output format which makes
-it possible to target specific Clang compiling passes, sometimes even for
-specific symbols
+Even though ctbench was made to analyze Clang's time-trace events, it can also
+measure compiler execution time and report it in a synthetic time-trace file,
+making it partially compatible with GCC as well.
 
-It can also used to simply measure and plot compiler execution time for other
-compilers than Clang making comparisons across compilers possible
+All these features make ctbench a very complete toolkit for compile-time
+benchmarking, making comprehensive benchmark quick and easy, and the only
+compile-time benchmarking tool that can gater Clang profiling data for scaling
+analysis.
 
-## grapher architecture
+# Statement of interest
 
-provides several plotting strategies, more or less experimental,
-and extension points to add new strategies in the future
-
-## tooling
-
-provides a dev-friendly CMake API for automated benchmark target declaration,
-and plotters with JSON configuration interfaces
-
-benchmark targets can be customized, CLI tooling is provided as well
-to list plotters and output default configurations
-
-benchmarks cases rely on the pre-processor for scaling
-
-ctbench was designed to better understand the impact of metaprogramming
-techniques on compile time, by providing an easy, robust, and repeatable way to
-measure and analyze Clang's profiling data.
-
-Its functionality was then expanded to compiler execution time measurement
-to allow GCC vs Clang comparisons on compile-time benchmarks.
-
-tailored for our own needs in Poacher and other metaprogramming projects
-[@poacher], with a C++ developer-friendly API to provide a compile-time
-benchmarking toolset for the masses
-
-easy to install, easy to use, reproductible benchmarks and scaling analyses
-for metaprograms
+ctbench was first presented at the CPPP 2021 conference[@ctbench-cppp21] which
+is the main C++ technical conference in France. It is being used to benchmark
+examples from the poacher[@poacher] project, which was briefly presented at the
+Meeting C++ 2022[@meetingcpp22] technical conference.
 
 <!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
