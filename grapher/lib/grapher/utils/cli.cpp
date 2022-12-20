@@ -33,12 +33,12 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
 
     // Adding entries
     for (auto const &entry_dir : fs::directory_iterator(bench_path)) {
-      grapher::benchmark_iteration_t iteration;
+      grapher::benchmark_instance_t instance;
 
       // Entry directory name check and reading to entry size
       {
         std::istringstream iss(entry_dir.path().filename().stem());
-        if (!(iss >> iteration.size)) {
+        if (!(iss >> instance.size)) {
           warn(fmt::format(
               "Entry directory name is not a size: {} (current path: {}).",
               entry_dir.path().string(), fs::current_path().string()));
@@ -47,28 +47,29 @@ build_category(llvm::cl::list<std::string> const &benchmark_path_list) {
       }
 
       // Aggregating paths to repetition data files
-      for (fs::directory_entry const &sample_path_entry :
+      for (fs::directory_entry const &repetition_directory_entry :
            fs::recursive_directory_iterator(entry_dir)) {
 
         // Basic property check
-        if (!std::filesystem::is_regular_file(sample_path_entry)) {
+        if (!std::filesystem::is_regular_file(repetition_directory_entry)) {
           warn(fmt::format("Invalid repetition file (not a regular file): {} "
                            "(current path: {}).",
-                           sample_path_entry.path().string(),
+                           repetition_directory_entry.path().string(),
                            fs::current_path().string()));
           continue;
         }
 
         // Adding path
-        iteration.samples.push_back(sample_path_entry);
+        instance.repetitions.push_back(repetition_directory_entry);
       }
-      bench.iterations.push_back(iteration);
+      bench.instances.push_back(instance);
     }
 
     // Sorting by entry size
-    std::sort(bench.iterations.begin(), bench.iterations.end(),
-              [](benchmark_iteration_t const &a,
-                 benchmark_iteration_t const &b) { return a.size < b.size; });
+    std::sort(bench.instances.begin(), bench.instances.end(),
+              [](benchmark_instance_t const &a, benchmark_instance_t const &b) {
+                return a.size < b.size;
+              });
 
     bset.push_back(std::move(bench));
   }

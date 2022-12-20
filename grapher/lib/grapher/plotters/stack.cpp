@@ -54,8 +54,8 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
     // x axis
     std::vector<double> x;
     std::transform(
-        bench.iterations.begin(), bench.iterations.end(), std::back_inserter(x),
-        [](benchmark_iteration_t const &i) -> double { return i.size; });
+        bench.instances.begin(), bench.instances.end(), std::back_inserter(x),
+        [](benchmark_instance_t const &i) -> double { return i.size; });
 
     // Low y axis
     std::vector<double> y_low(x.size(), 0.);
@@ -68,15 +68,15 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
 
       std::vector<predicate_t> predicates = get_predicates(descriptor);
 
-      for (std::size_t i = 0; i < bench.iterations.size(); i++) {
-        benchmark_iteration_t const &iteration = bench.iterations[i];
+      for (std::size_t i = 0; i < bench.instances.size(); i++) {
+        benchmark_instance_t const &instance = bench.instances[i];
         std::vector<double> const values =
-            get_values(iteration, predicates, feature_value_jptr);
+            get_values(instance, predicates, feature_value_jptr);
 
         check(values.empty(),
               fmt::format("No event matching descriptor {} in benchmark {} "
-                          "with iteration size {}.\n",
-                          descriptor.name, bench.name, iteration.size));
+                          "with instance size {}.\n",
+                          descriptor.name, bench.name, instance.size));
 
         // TODO: Get better stats (standard deviation, etc...)
         double const y_val =

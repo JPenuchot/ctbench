@@ -32,22 +32,22 @@ using json_t = nlohmann::basic_json<boost::container::flat_map>;
 // - std::map -> 87.08 secs
 // - boost::container::map -> 80.16 secs
 
-/// Set of results for a benchmark case iteration of a given size.
-struct benchmark_iteration_t {
-  /// Size of the benchmark instance
+/// Results for a benchmark case instantiated at a given size.
+struct benchmark_instance_t {
+  /// Size at which the benchmark is instantiated at
   unsigned size;
 
   /// Data for each repetition of the benchmark iteration
-  std::vector<std::filesystem::path> samples;
+  std::vector<std::filesystem::path> repetitions;
 };
 
-/// Represents results for a benchmark case as a series of benchmark iterations.
+/// Represents results for a benchmark case as a series of benchmark instances.
 struct benchmark_case_t {
   /// Name of the benchmark case
   std::string name;
 
   /// Instances of various sizes of the benchmark case
-  std::vector<benchmark_iteration_t> iterations;
+  std::vector<benchmark_instance_t> instances;
 };
 
 /// Represents a set of benchmark cases for comparison
