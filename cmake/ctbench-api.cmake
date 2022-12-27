@@ -8,7 +8,7 @@
 
 ## =============================================================================
 #@
-#@ _ctbench_internal_add_compile_benchmark
+#@ ### _ctbench_internal_add_compile_benchmark
 #@
 #@ Creates a library target for a file, and runs the compiler using
 #@ time-trace-wrapper.
@@ -23,7 +23,8 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
   target_include_directories(${target_name} PUBLIC "../include")
 
-  # Setting ctbench-ttw as a compiler launcher
+  # Setting ctbench-ttw as a compiler launcher to handle
+  # time-trace file retrivial and compiler overriding
   set_target_properties(
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
                               "$<TARGET_FILE:ctbench::ctbench-ttw>;${output}")
@@ -31,6 +32,11 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   # Pass benchmark size
   target_compile_options(${target_name} PRIVATE ${options})
 
+  # Compiler overriding
+  if(_CTBENCH_OVERRIDE_COMPILER)
+    message(okokokok)
+    target_compile_options(${target_name} PRIVATE --override-compiler=${_CTBENCH_OVERRIDE_COMPILER})
+  endif()
 endfunction(_ctbench_internal_add_compile_benchmark)
 
 ## =============================================================================
@@ -159,17 +165,40 @@ function(ctbench_add_graph category config)
   set(config_path ${CMAKE_CURRENT_SOURCE_DIR}/${config})
   add_custom_target(
     ${category}
-    # COMMAND ${CTBENCH_GRAPHER_PLOT_EXEC} --output=${category}
     COMMAND ctbench::ctbench-grapher-plot --output=${category}
             --config=${config_path} ${ARGN}
     DEPENDS ${config_path} ${ARGN}
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR})
   add_dependencies(ctbench-graph-all ${category})
-
-  if(NOT ctbench_FOUND)
-    add_dependencies(${category} ctbench-grapher-plot)
-  endif()
 endfunction(ctbench_add_graph)
+
+#!
+#! --
+
+## =============================================================================
+#!
+#! ### ctbench_set_compiler(compiler)
+#!
+#! Sets the compiler for the next benchmarks.
+#! Use `ctbench_unset_compiler()` to revert back to the default compiler.
+
+function(ctbench_set_compiler compiler)
+  set(_CTBENCH_OVERRIDE_COMPILER ${compiler} CACHE INTERNAL "Compiler override variable" FORCE)
+endfunction()
+
+#!
+#! --
+
+## =============================================================================
+#!
+#! ### ctbench_unset_compiler()
+#!
+#! Reverts compiler for the next benchmarks back to default.
+#! (see `ctbench_set_compiler(compiler)`)
+
+function(ctbench_unset_compiler)
+  unset(_CTBENCH_OVERRIDE_COMPILER CACHE)
+endfunction()
 
 #!
 #! --
