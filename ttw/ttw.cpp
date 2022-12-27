@@ -8,8 +8,13 @@
 /// Otherwise, it will run the command, measure its execution time with
 /// `getrusage`, and generate a time-trace file with only the compiler execution
 /// time. This allows comparing compiler execution times between GCC and Clang.
+///
+/// Additionally, ttw accepts an `--override-compiler=<COMPILER>` flag to
+/// override the current compiler, allowing CMake targets to be compiled with
+/// different compilers within a single CMake build.
 
 #include <chrono>
+#include <cstdlib>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -21,7 +26,7 @@
 #include <nlohmann/json.hpp>
 
 inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
-                              std::string cmd,
+                              std::string compile_command,
                               std::filesystem::path compile_obj_path,
                               bool time_trace_flag) {
   namespace fs = std::filesystem;
@@ -29,11 +34,13 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
   // Run program and measure CPU time
   rusage children_rusage_begin, children_rusage_end;
   getrusage(RUSAGE_CHILDREN, &children_rusage_begin);
-  std::system(cmd.c_str()); // TODO: Bypass shell
+  // TODO: Bypass shell call and get return value
+  int const ret = std::system(compile_command.c_str());
   getrusage(RUSAGE_CHILDREN, &children_rusage_end);
 
   // Create destination directory
-  if (auto const out_parent = time_trace_file_dest.parent_path();
+  if (std::filesystem::path const out_parent =
+          time_trace_file_dest.parent_path();
       !out_parent.empty()) {
     fs::create_directories(time_trace_file_dest.parent_path());
   }
@@ -59,44 +66,79 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
     std::ofstream(time_trace_file_dest) << time_trace_json;
   }
 
-  return 0;
+  // Forward return value
+  return ret;
 }
 
-/// Wrapper for a given clang command.
+/// Wrapper for a compiler command.
+/// It allows catching compiler flags to retrieve Clang's time-trace reports or
+/// override the current compiler.
 
 int main(int argc, char const *argv[]) {
   namespace fs = std::filesystem;
 
+  // Argument ranks
   constexpr int exec_id = 0;
   constexpr int path_id = 1;
-  constexpr int cmd_start_id = 2;
+  constexpr int compiler_id = 2;
+  constexpr int args_start_id = 3;
+
+  // Override flag prefix
+  constexpr std::string_view override_flag_prefix = "--override-compiler=";
 
   if (argc < 3) {
     std::cout << "Usage: " << argv[exec_id]
-              << "time_trace_export_path.json COMMAND [ARGS]...\n";
+              << "time_trace_export_path.json COMPILER [ARGS]...\n\n"
+              << override_flag_prefix
+              << "<COMPILER> - Override previously set compiler\n\n"
+              << "If CTBENCH_TTW_VERBOSE is set, the program will display the "
+                 "compile command.\n";
     return 1;
   }
 
   // Building command and finding obj_path
-  std::ostringstream cmd_builder;
+
+  // Compiler exec comes after the wrapper exec and the destination for the
+  // time-trace file, as these two are set as compiler launcher by the CMake
+  // boilerplate.
+  std::string compiler_executable = argv[compiler_id];
+  std::ostringstream args_builder;
   fs::path obj_path;
   bool has_time_trace_flag = false;
 
-  cmd_builder << argv[cmd_start_id];
-  for (auto beg = &argv[cmd_start_id + 1], end = &argv[argc]; beg < end;
-       beg++) {
-    // Object path finding
-    if (*beg == std::string_view("-o") && (beg + 1) != end) {
+  for (auto beg = &argv[args_start_id], end = &argv[argc]; beg < end; beg++) {
+    // Current argument as a string_view
+    std::string_view current_arg{*beg};
+
+    // Handling -o flag
+    if (current_arg == std::string_view("-o") && beg + 1 != end) {
       obj_path = *(beg + 1);
     }
 
-    if (*beg == std::string_view("-ftime-trace") ||
-        *beg == std::string_view("--ftime-trace")) {
+    // Handling Clang -ftime-trace flag
+    else if (current_arg == "-ftime-trace" || current_arg == "--ftime-trace") {
       has_time_trace_flag = true;
     }
-    cmd_builder << ' ' << *beg;
+
+    // Handling --override-compiler flag
+    else if (current_arg.starts_with(override_flag_prefix)) {
+      current_arg.remove_prefix(override_flag_prefix.size());
+      compiler_executable = current_arg;
+
+      // Do not pass argument to the compiler
+      continue;
+    }
+
+    args_builder << ' ' << *beg;
   }
 
-  return get_timetrace_file(argv[path_id], cmd_builder.str(),
+  std::string compile_command =
+      std::move(compiler_executable) + args_builder.str();
+
+  if (std::getenv("CTBENCH_TTW_VERBOSE")) {
+    std::cout << "[CTBENCH_TTW] Compile command: " << compile_command << '\n';
+  }
+
+  return get_timetrace_file(argv[path_id], std::move(compile_command),
                             std::move(obj_path), has_time_trace_flag);
 }
