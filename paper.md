@@ -84,6 +84,15 @@ is the main C++ technical conference in France. It is being used to benchmark
 examples from the poacher[@poacher] project, which was briefly presented at the
 Meeting C++ 2022[@meetingcpp22] technical conference.
 
+# Practical examples
+
+Poacher is a series of experimental projects meant to help us understanding what
+metaprogramming could be thanks to new C++ features such as non-transient
+constexpr memory allocation[@constexpr-memory]. It helped us getting hands-on
+experience on code generation using constexpr allocated memory, studying and
+overcoming the roadblocks, and evaluating the compile-time impact of the
+involved techniques.
+
 <!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
 flexibility or ease-of-use in the user-interface. The API for `Gala` was
