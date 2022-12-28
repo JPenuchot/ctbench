@@ -3,10 +3,6 @@ project(ctbench VERSION 1.1.1)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-if(${CTBENCH_ENABLE_CLANG_TIDY})
-  set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
-endif()
-
 include(cmake/dependencies.cmake)
 include(cmake/ctbench-compile-opts.cmake)
 
