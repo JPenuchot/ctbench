@@ -32,7 +32,9 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
   namespace fs = std::filesystem;
 
   // Run program and measure CPU time
-  rusage children_rusage_begin, children_rusage_end;
+  rusage children_rusage_begin;
+  rusage children_rusage_end;
+
   getrusage(RUSAGE_CHILDREN, &children_rusage_begin);
   // TODO: Bypass shell call and get return value
   int const ret = std::system(compile_command.c_str());
@@ -108,22 +110,23 @@ int main(int argc, char const *argv[]) {
 
   for (auto beg = &argv[args_start_id], end = &argv[argc]; beg < end; beg++) {
     // Current argument as a string_view
-    std::string_view current_arg{*beg};
+    std::string_view current_argument{*beg};
 
     // Handling -o flag
-    if (current_arg == std::string_view("-o") && beg + 1 != end) {
+    if (current_argument == std::string_view("-o") && beg + 1 != end) {
       obj_path = *(beg + 1);
     }
 
     // Handling Clang -ftime-trace flag
-    else if (current_arg == "-ftime-trace" || current_arg == "--ftime-trace") {
+    else if (current_argument == "-ftime-trace" ||
+             current_argument == "--ftime-trace") {
       has_time_trace_flag = true;
     }
 
     // Handling --override-compiler flag
-    else if (current_arg.starts_with(override_flag_prefix)) {
-      current_arg.remove_prefix(override_flag_prefix.size());
-      compiler_executable = current_arg;
+    else if (current_argument.starts_with(override_flag_prefix)) {
+      current_argument.remove_prefix(override_flag_prefix.size());
+      compiler_executable = current_argument;
 
       // Do not pass argument to the compiler
       continue;
@@ -135,7 +138,7 @@ int main(int argc, char const *argv[]) {
   std::string compile_command =
       std::move(compiler_executable) + args_builder.str();
 
-  if (std::getenv("CTBENCH_TTW_VERBOSE")) {
+  if (std::getenv("CTBENCH_TTW_VERBOSE") != nullptr) {
     std::cout << "[CTBENCH_TTW] Compile command: " << compile_command << '\n';
   }
 
