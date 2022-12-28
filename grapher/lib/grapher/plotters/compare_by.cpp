@@ -97,15 +97,15 @@ std::string to_string(key_t const &key, bool demangle = true) {
     return "empty";
   }
 
-  std::string res = demangle ? llvm::demangle(key[0]) : key[0];
+  std::string result = demangle ? llvm::demangle(key[0]) : key[0];
   std::for_each(key.begin() + 1, key.end(), [&](std::string const &part) {
-    res += '/';
-    for (char const c : demangle ? llvm::demangle(part) : part) {
-      res += c == '/' ? '_' : c;
+    result += '/';
+    for (char const name_character : demangle ? llvm::demangle(part) : part) {
+      result += name_character == '/' ? '_' : name_character;
     }
   });
 
-  return res;
+  return result;
 }
 
 // =============================================================================
@@ -124,6 +124,74 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
   res["demangle"] = true;
 
   return res;
+}
+
+/// Parameter list for the generate_plot function
+/// extracted into a struct for readability
+struct generate_plot_params_t {
+  std::filesystem::path const &plot_output_folder;
+  grapher::json_t const &plotter_config;
+  bool draw_average;
+  bool draw_points;
+  bool demangle;
+};
+
+/// Function to generate one plot.
+/// NB: This function must remain free of config reading logic.
+inline void generate_plot(
+    curve_aggregate_map_t::const_iterator::value_type aggregate_key_value,
+    generate_plot_params_t const &parameters) {
+  ZoneScoped;
+  auto const &[key, curve_aggregate] = aggregate_key_value;
+
+  // Plot init
+  sciplot::Plot2D plot;
+
+  for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
+    // Average curve coord vectors
+    std::vector<double> x_curve;
+    std::vector<double> y_curve;
+
+    // Point coord vectors
+    std::vector<double> x_points;
+    std::vector<double> y_points;
+
+    // Build point & curve vectors
+    for (auto const &[x_value, y_values] : benchmark_curve) {
+      // Building average curve vector
+      if (parameters.draw_average && !y_values.empty()) {
+        double const sum = std::reduce(y_values.begin(), y_values.end());
+        double const average_point_y = sum / y_values.size();
+
+        x_curve.push_back(x_value);
+        y_curve.push_back(average_point_y);
+      }
+
+      // Building point vector
+      if (parameters.draw_points) {
+        for (double y_value : y_values) {
+          x_points.push_back(x_value);
+          y_points.push_back(y_value);
+        }
+      }
+    }
+
+    // Plot drawing
+
+    if (parameters.draw_average && !x_curve.empty()) {
+      // Draw average curve
+      plot.drawCurve(x_curve, y_curve).label(bench_name + " average");
+    }
+
+    if (parameters.draw_points && !x_points.empty()) {
+      // Draw points
+      plot.drawPoints(x_points, y_points).label(bench_name + " points");
+    }
+  }
+
+  save_plot(std::move(plot),
+            parameters.plot_output_folder / to_string(key, parameters.demangle),
+            parameters.plotter_config);
 }
 
 void plotter_compare_by_t::plot(benchmark_set_t const &bset,
@@ -145,8 +213,8 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
 
   std::vector<json_t::json_pointer> key_ptrs;
   std::transform(key_strs.begin(), key_strs.end(), std::back_inserter(key_ptrs),
-                 [](std::string const &s) -> json_t::json_pointer {
-                   return json_t::json_pointer{s};
+                 [](std::string const &pointer) -> json_t::json_pointer {
+                   return json_t::json_pointer{pointer};
                  });
 
   // Wrangling
@@ -157,61 +225,14 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   fs::create_directories(dest);
 
   // Drawing, ie. unwrapping the nested maps and drawing curves + saving plots
-
   std::for_each(
       std::execution::par_unseq, curve_aggregate_map.begin(),
-      curve_aggregate_map.end(), [&](auto const &kv) {
-        ZoneScoped;
-        auto const &[key, curve_aggregate] = kv;
-
-        // Plot init
-        sciplot::Plot2D plot;
-
-        for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
-          // Average curve coord vectors
-          std::vector<double> x_curve;
-          std::vector<double> y_curve;
-
-          // Point coord vectors
-          std::vector<double> x_points;
-          std::vector<double> y_points;
-
-          // Build point & curve vectors
-          for (auto const &[x, y_vec] : benchmark_curve) {
-            // Building average curve vector
-            if (draw_average && !y_vec.empty()) {
-              double const sum = std::reduce(y_vec.begin(), y_vec.end());
-              std::size_t const n = y_vec.size();
-
-              double const y = sum / n;
-
-              x_curve.push_back(x);
-              y_curve.push_back(y);
-            }
-
-            // Building point vector
-            if (draw_points) {
-              for (double y : y_vec) {
-                x_points.push_back(x);
-                y_points.push_back(y);
-              }
-            }
-          }
-
-          // Plot drawing
-
-          if (draw_average && !x_curve.empty()) {
-            // Draw average curve
-            plot.drawCurve(x_curve, y_curve).label(bench_name + " average");
-          }
-
-          if (draw_points && !x_points.empty()) {
-            // Draw points
-            plot.drawPoints(x_points, y_points).label(bench_name + " points");
-          }
-        }
-
-        save_plot(std::move(plot), dest / to_string(key, demangle), config);
+      curve_aggregate_map.end(), [&](auto const &aggregate_key_value) {
+        generate_plot(aggregate_key_value, {.plot_output_folder = dest,
+                                            .plotter_config = config,
+                                            .draw_average = draw_average,
+                                            .draw_points = draw_points,
+                                            .demangle = demangle});
       });
 }
 

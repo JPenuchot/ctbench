@@ -59,16 +59,18 @@ grapher::json_t::array_t extract_group(group_descriptor_t const &descriptor,
   std::ranges::copy_if(
       events, std::back_inserter(res), [&](grapher::json_t const &event) {
         return std::ranges::all_of(
-            predicates, [&](predicate_t const &p) { return p(event); });
+            predicates,
+            [&](predicate_t const &predicate) { return predicate(event); });
       });
 
   return res;
 }
 
-group_descriptor_t read_descriptor(grapher::json_t const &j) {
-  return {.name = get_as_ref<grapher::json_t::string_t const &>(j, "name"),
-          .predicates =
-              get_as_ref<grapher::json_t::array_t const &>(j, "predicates")};
+group_descriptor_t read_descriptor(grapher::json_t const &descriptor_json) {
+  return {.name = get_as_ref<grapher::json_t::string_t const &>(descriptor_json,
+                                                                "name"),
+          .predicates = get_as_ref<grapher::json_t::array_t const &>(
+              descriptor_json, "predicates")};
 }
 
 grapher::json_t group_descriptor_json(group_descriptor_t const &descriptor) {
@@ -105,14 +107,15 @@ std::vector<double> get_values(benchmark_instance_t const &instance,
 
   auto get_val = [&](std::filesystem::path const &repetition_path) -> double {
     // Extract events
-    grapher::json_t j;
+    grapher::json_t repetition_data;
     {
       std::ifstream repetition_ifstream(repetition_path);
-      repetition_ifstream >> j;
+      repetition_ifstream >> repetition_data;
     }
 
     grapher::json_t::array_t const &events =
-        get_as_ref<grapher::json_t::array_t const &>(j, "traceEvents");
+        get_as_ref<grapher::json_t::array_t const &>(repetition_data,
+                                                     "traceEvents");
 
     // Accumulate
     double val = 0.;

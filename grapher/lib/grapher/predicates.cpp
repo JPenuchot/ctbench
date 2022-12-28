@@ -87,34 +87,34 @@ inline auto match(grapher::json_t const &constraint) {
           regex_match_opt = constraint.value("regex", false)](
              grapher::json_t const &value) -> bool {
     auto items_instance_proxy = matcher_flat.items();
-    return std::all_of(
-        items_instance_proxy.begin(), items_instance_proxy.end(),
-        [&](auto const &matcher_item_kv) -> bool {
-          // Pointer to the value we should observe
-          grapher::json_t::json_pointer const ptr(matcher_item_kv.key());
+    return std::all_of(items_instance_proxy.begin(), items_instance_proxy.end(),
+                       [&](auto const &matcher_item_kv) -> bool {
+                         // Pointer to the value we should observe
+                         grapher::json_t::json_pointer const ptr(
+                             matcher_item_kv.key());
 
-          // Checking for existence of matching value
-          if (!value.contains(ptr)) {
-            return false;
-          }
+                         // Checking for existence of matching value
+                         if (!value.contains(ptr)) {
+                           return false;
+                         }
 
-          // Regex match
-          if (regex_match_opt) {
-            grapher::json_t const &val = value[ptr];
+                         // Regex match
+                         if (regex_match_opt) {
+                           grapher::json_t const &val = value[ptr];
 
-            // Fallback to non regex if the value isn't a string
-            if (!val.is_string()) {
-              return val == matcher_item_kv.value();
-            }
+                           // Fallback to non regex if the value isn't a string
+                           if (!val.is_string()) {
+                             return val == matcher_item_kv.value();
+                           }
 
-            return std::regex_match(
-                val.get_ref<grapher::json_t::string_t const &>(),
-                std::regex(matcher_item_kv.value()));
-          }
+                           return std::regex_match(
+                               val.get_ref<grapher::json_t::string_t const &>(),
+                               std::regex(matcher_item_kv.value()));
+                         }
 
-          // Regular match
-          return value[ptr] == matcher_item_kv.value();
-        });
+                         // Regular match
+                         return value[ptr] == matcher_item_kv.value();
+                       });
   };
 }
 

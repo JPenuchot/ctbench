@@ -8,9 +8,9 @@ plotter_type_t string_to_plotter_type(std::string const &name) {
     return compare_v;
   }
 
-  if (auto const it = plotter_name_map.find(name);
-      it != plotter_name_map.end()) {
-    return it->second;
+  if (auto const name_iterator = plotter_name_map.find(name);
+      name_iterator != plotter_name_map.end()) {
+    return name_iterator->second;
   }
 
   return compare_v;

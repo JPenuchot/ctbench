@@ -172,7 +172,7 @@ grapher::json_t::array_t
 write_descriptors(std::vector<group_descriptor_t> const &descriptors);
 
 /// Reads a single descriptor.
-group_descriptor_t read_descriptor(grapher::json_t const &j);
+group_descriptor_t read_descriptor(grapher::json_t const &descriptor_json);
 
 /// Reads descriptors from a predicate list.
 std::vector<group_descriptor_t>

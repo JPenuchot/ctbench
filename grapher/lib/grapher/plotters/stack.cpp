@@ -52,15 +52,17 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
     apply_config(plot, config);
 
     // x axis
-    std::vector<double> x;
-    std::transform(
-        bench.instances.begin(), bench.instances.end(), std::back_inserter(x),
-        [](benchmark_instance_t const &i) -> double { return i.size; });
+    std::vector<double> x_axis;
+    std::transform(bench.instances.begin(), bench.instances.end(),
+                   std::back_inserter(x_axis),
+                   [](benchmark_instance_t const &element) -> double {
+                     return element.size;
+                   });
 
     // Low y axis
-    std::vector<double> y_low(x.size(), 0.);
+    std::vector<double> y_low(x_axis.size(), 0.);
     // High y axis
-    std::vector<double> y_high(x.size());
+    std::vector<double> y_high(x_axis.size());
 
     for (group_descriptor_t const &descriptor : descriptors) {
       // Storing previous value as we iterate
@@ -89,7 +91,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
         max_y_val = std::max(max_y_val, y_val);
       }
 
-      plot.drawCurvesFilled(x, y_low, y_high).label(std::move(curve_name));
+      plot.drawCurvesFilled(x_axis, y_low, y_high).label(std::move(curve_name));
 
       // Swapping
       std::swap(y_low, y_high);
