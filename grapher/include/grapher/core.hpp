@@ -26,6 +26,9 @@ using multimap_t =
 /// Alias type for JSON objects.
 using json_t = nlohmann::basic_json<boost::container::flat_map>;
 
+/// Default type to represent scalar values from benchmark data.
+using value_t = unsigned long;
+
 // `time cmake --build --preset bench` results using different containers
 // (poacher/brainfuck project, pre-built benchmark targets):
 // - boost::container::flat_map -> 78.05 secs
