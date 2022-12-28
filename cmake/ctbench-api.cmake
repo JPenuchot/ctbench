@@ -34,7 +34,6 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
 
   # Compiler overriding
   if(_CTBENCH_OVERRIDE_COMPILER)
-    message(okokokok)
     target_compile_options(${target_name} PRIVATE --override-compiler=${_CTBENCH_OVERRIDE_COMPILER})
   endif()
 endfunction(_ctbench_internal_add_compile_benchmark)
