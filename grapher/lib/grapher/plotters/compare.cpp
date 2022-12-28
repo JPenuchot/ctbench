@@ -59,11 +59,11 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
     std::vector<predicate_t> predicates = get_predicates(descriptor);
 
     for (benchmark_case_t const &bench : bset) {
-      std::vector<double> x_points;
-      std::vector<double> y_points;
+      std::vector<grapher::value_t> x_points;
+      std::vector<grapher::value_t> y_points;
 
-      std::vector<double> x_average;
-      std::vector<double> y_average;
+      std::vector<grapher::value_t> x_average;
+      std::vector<grapher::value_t> y_average;
 
       for (benchmark_instance_t const &instance : bench.instances) {
         check(!instance.repetitions.empty(),
@@ -71,7 +71,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
                           bench.name, instance.size),
               error_level_t::warning_v);
 
-        std::vector<double> const values =
+        std::vector<grapher::value_t> const values =
             get_values(instance, predicates, value_json_pointer);
 
         check(!values.empty(),
@@ -82,7 +82,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
 
         // Drawing points
         if (draw_points) {
-          for (double value : values) {
+          for (grapher::value_t value : values) {
             x_points.push_back(instance.size);
             y_points.push_back(value);
           }

@@ -44,7 +44,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
   std::vector<sciplot::Plot2D> plots;
 
   // Storing max y value for normalization
-  double max_y_val = 0.;
+  grapher::value_t max_y_val = 0.;
 
   /// Draws a stacked curve graph for a given benchmark
   auto draw_plot = [&](benchmark_case_t const &bench) -> sciplot::Plot2D {
@@ -52,17 +52,17 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
     apply_config(plot, config);
 
     // x axis
-    std::vector<double> x_axis;
+    std::vector<grapher::value_t> x_axis;
     std::transform(bench.instances.begin(), bench.instances.end(),
                    std::back_inserter(x_axis),
-                   [](benchmark_instance_t const &element) -> double {
+                   [](benchmark_instance_t const &element) -> grapher::value_t {
                      return element.size;
                    });
 
     // Low y axis
-    std::vector<double> y_low(x_axis.size(), 0.);
+    std::vector<grapher::value_t> y_low(x_axis.size(), 0.);
     // High y axis
-    std::vector<double> y_high(x_axis.size());
+    std::vector<grapher::value_t> y_high(x_axis.size());
 
     for (group_descriptor_t const &descriptor : descriptors) {
       // Storing previous value as we iterate
@@ -72,7 +72,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
 
       for (std::size_t i = 0; i < bench.instances.size(); i++) {
         benchmark_instance_t const &instance = bench.instances[i];
-        std::vector<double> const values =
+        std::vector<grapher::value_t> const values =
             get_values(instance, predicates, feature_value_jptr);
 
         check(values.empty(),
@@ -81,7 +81,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
                           descriptor.name, bench.name, instance.size));
 
         // TODO: Get better stats (standard deviation, etc...)
-        double const y_val =
+        grapher::value_t const y_val =
             y_low[i] +
             std::reduce(values.begin(), values.end()) / values.size();
 
@@ -108,7 +108,7 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
   // Normalize & save
   std::filesystem::create_directories(dest);
   for (std::size_t i = 0; i < bset.size(); i++) {
-    plots[i].yrange(0., max_y_val);
+    plots[i].yrange(0., double(max_y_val));
     save_plot(plots[i], dest / bset[i].name, config);
   }
 }

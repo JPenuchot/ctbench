@@ -100,12 +100,14 @@ read_descriptors(grapher::json_t::array_t const &list) {
   return res;
 }
 
-std::vector<double> get_values(benchmark_instance_t const &instance,
-                               std::vector<predicate_t> const &predicates,
-                               grapher::json_t::json_pointer value_jptr) {
-  std::vector<double> res(instance.repetitions.size());
+std::vector<grapher::value_t>
+get_values(benchmark_instance_t const &instance,
+           std::vector<predicate_t> const &predicates,
+           grapher::json_t::json_pointer value_jptr) {
+  std::vector<grapher::value_t> res(instance.repetitions.size());
 
-  auto get_val = [&](std::filesystem::path const &repetition_path) -> double {
+  auto get_val =
+      [&](std::filesystem::path const &repetition_path) -> grapher::value_t {
     // Extract events
     grapher::json_t repetition_data;
     {
@@ -118,10 +120,12 @@ std::vector<double> get_values(benchmark_instance_t const &instance,
                                                      "traceEvents");
 
     // Accumulate
-    double val = 0.;
+    grapher::value_t val = 0;
     for (grapher::json_t const &event : events) {
       if (std::all_of(predicates.begin(), predicates.end(),
-                      [&](predicate_t const &p) -> bool { return p(event); })) {
+                      [&](predicate_t const &predicate) -> bool {
+                        return predicate(event);
+                      })) {
         val += get_as_ref<json_t::number_unsigned_t const &>(event, value_jptr);
       }
     }

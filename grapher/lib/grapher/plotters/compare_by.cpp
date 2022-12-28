@@ -26,26 +26,62 @@ namespace grapher::plotters {
 
 // Plot-friendly data structures
 
-/// Point aggregate (multiple Y coordinates)
-using point_data_t = std::vector<double>;
-
-/// Curve: X -> vec<Y>
-using benchmark_curve_t = map_t<std::size_t, point_data_t>;
-
-/// Benchmark name -> Curve
-using curve_aggregate_t = map_t<std::string, benchmark_curve_t>;
-
 /// Value key type. Contains multiple values to group by a tuple of parameters
 using key_t = boost::container::small_vector<std::string, 4>;
 
-/// Feature -> Benchmark aggregate
-using curve_aggregate_map_t = map_t<key_t, curve_aggregate_t>;
+/// Point aggregate (multiple Y coordinates)
+using point_data_t = std::vector<grapher::value_t>;
 
-/// Wrangles data into a structure that's easier to work with for plotting.
+/// Curve: X -> vec<Y>
+using benchmark_curve_t = grapher::map_t<std::size_t, point_data_t>;
+
+/// Benchmark name -> Curve
+using curve_aggregate_t = grapher::map_t<std::string, benchmark_curve_t>;
+
+/// Feature -> Benchmark aggregate
+using curve_aggregate_map_t = grapher::map_t<key_t, curve_aggregate_t>;
+
+struct process_event_parameters_t {
+  std::vector<json_t::json_pointer> const &key_pointers;
+  json_t::json_pointer const &value_pointer;
+  benchmark_case_t const &bench_case;
+  benchmark_instance_t const &instance;
+};
+
+/// Generate a curve for a given time-trace event and stores it in output_map.
+inline void process_event(curve_aggregate_map_t &output_map,
+                          grapher::json_t const &event,
+                          process_event_parameters_t const &parameters) {
+  // Building key from JSON pointers
+  key_t key;
+  for (json_t::json_pointer const &key_ptr : parameters.key_pointers) {
+    if (event.contains(key_ptr) && event[key_ptr].is_string()) {
+      key.push_back(event[key_ptr]);
+    }
+  }
+
+  // Key/value presence and type checks
+  if (check(event.contains(parameters.value_pointer),
+            fmt::format("No value at {}: {}",
+                        parameters.value_pointer.to_string(), event.dump()),
+            info_v) &&
+      check(event[parameters.value_pointer].is_number(),
+            fmt::format("Value at {} is not an integer: {}",
+                        parameters.value_pointer.to_string(), event.dump()),
+            info_v)) {
+    // Adding value
+    output_map[key][parameters.bench_case.name][parameters.instance.size]
+        .push_back(event[parameters.value_pointer]);
+  }
+}
+
+/// Scans event data at value_pointer and generates curves for each key
+/// generated from key_pointers. The curves are stored in a nested map
+/// structure.
 curve_aggregate_map_t
 get_bench_curves(benchmark_set_t const &bset,
-                 std::vector<json_t::json_pointer> const &key_ptrs,
-                 json_t::json_pointer const &val_ptr) {
+                 std::vector<json_t::json_pointer> const &key_pointers,
+                 json_t::json_pointer const &value_pointer) {
   ZoneScoped;
   namespace fs = std::filesystem;
 
@@ -62,27 +98,11 @@ get_bench_curves(benchmark_set_t const &bset,
 
         for (grapher::json_t const &event : get_as_ref<json_t::array_t const &>(
                  repetition_json, "traceEvents")) {
-
-          // Building key from JSON pointers
-          key_t key;
-          for (json_t::json_pointer const &key_ptr : key_ptrs) {
-            if (event.contains(key_ptr) && event[key_ptr].is_string()) {
-              key.push_back(event[key_ptr]);
-            }
-          }
-
-          // Key/value presence and type checks
-          if (check(event.contains(val_ptr),
-                    fmt::format("No value at {}: {}", val_ptr.to_string(),
-                                event.dump()),
-                    info_v) &&
-              check(event[val_ptr].is_number(),
-                    fmt::format("Value at {} is not an integer: {}",
-                                val_ptr.to_string(), event.dump()),
-                    info_v)) {
-            // Adding value
-            res[key][bench_case.name][instance.size].push_back(event[val_ptr]);
-          }
+          process_event(res, event,
+                        {.key_pointers = key_pointers,
+                         .value_pointer = value_pointer,
+                         .bench_case = bench_case,
+                         .instance = instance});
         }
       }
     }
@@ -128,7 +148,7 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
 
 /// Parameter list for the generate_plot function
 /// extracted into a struct for readability
-struct generate_plot_params_t {
+struct generate_plot_parameters_t {
   std::filesystem::path const &plot_output_folder;
   grapher::json_t const &plotter_config;
   bool draw_average;
@@ -140,8 +160,9 @@ struct generate_plot_params_t {
 /// NB: This function must remain free of config reading logic.
 inline void generate_plot(
     curve_aggregate_map_t::const_iterator::value_type aggregate_key_value,
-    generate_plot_params_t const &parameters) {
-  ZoneScoped;
+    generate_plot_parameters_t const &parameters) {
+  ZoneScoped; // Used for profiling with Tracy
+
   auto const &[key, curve_aggregate] = aggregate_key_value;
 
   // Plot init
@@ -149,19 +170,20 @@ inline void generate_plot(
 
   for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
     // Average curve coord vectors
-    std::vector<double> x_curve;
-    std::vector<double> y_curve;
+    std::vector<grapher::value_t> x_curve;
+    std::vector<grapher::value_t> y_curve;
 
     // Point coord vectors
-    std::vector<double> x_points;
-    std::vector<double> y_points;
+    std::vector<grapher::value_t> x_points;
+    std::vector<grapher::value_t> y_points;
 
     // Build point & curve vectors
     for (auto const &[x_value, y_values] : benchmark_curve) {
       // Building average curve vector
       if (parameters.draw_average && !y_values.empty()) {
-        double const sum = std::reduce(y_values.begin(), y_values.end());
-        double const average_point_y = sum / y_values.size();
+        grapher::value_t const sum =
+            std::reduce(y_values.begin(), y_values.end());
+        grapher::value_t const average_point_y = sum / y_values.size();
 
         x_curve.push_back(x_value);
         y_curve.push_back(average_point_y);
@@ -169,7 +191,7 @@ inline void generate_plot(
 
       // Building point vector
       if (parameters.draw_points) {
-        for (double y_value : y_values) {
+        for (grapher::value_t y_value : y_values) {
           x_points.push_back(x_value);
           y_points.push_back(y_value);
         }

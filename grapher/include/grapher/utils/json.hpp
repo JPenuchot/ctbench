@@ -19,9 +19,10 @@ namespace grapher {
 
 /// For each instance in entry, returns the sum of the values pointed by
 /// value_jptr in the events matching the descriptor's predicates.
-std::vector<double> get_values(benchmark_instance_t const &instance,
-                               std::vector<predicate_t> const &predicates,
-                               grapher::json_t::json_pointer value_jptr);
+std::vector<grapher::value_t>
+get_values(benchmark_instance_t const &instance,
+           std::vector<predicate_t> const &predicates,
+           grapher::json_t::json_pointer value_jptr);
 
 /// Generic conversion of a JSON field location to a std::string
 template <typename T>
