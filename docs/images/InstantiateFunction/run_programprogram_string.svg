@@ -77,12 +77,12 @@
 </g>
 	<g id="gnuplot_plot_1" ><title>bfbench-consecutiveloops-et-clang-tt average</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
-	<path stroke='rgb( 27, 158, 119)'  d='M102.20,309.33 L127.46,265.22 L152.72,199.80 L177.98,125.15 L203.24,19.13  '/></g>
+	<path stroke='rgb( 27, 158, 119)'  d='M102.20,308.76 L127.46,265.58 L152.72,199.29 L177.98,125.22 L203.24,19.23  '/></g>
 	</g>
 	<g id="gnuplot_plot_2" ><title>bfbench-consecutiveloops-flat-clang-tt average</title>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
-	<path stroke='rgb(217,  95,   2)'  d='M102.20,171.02 L127.46,158.96 L152.72,147.47 L177.98,132.56 L203.24,118.95 L228.50,106.09 L253.76,95.53 L279.02,79.60
-		L304.28,66.19 L329.54,54.73  '/></g>
+	<path stroke='rgb(217,  95,   2)'  d='M102.20,262.44 L127.46,248.58 L152.72,236.53 L177.98,221.64 L203.24,208.15 L228.50,196.03 L253.76,184.18 L279.02,168.93
+		L304.28,155.33 L329.54,143.93  '/></g>
 	</g>
 	<g stroke='none' shape-rendering='crispEdges'>
 		<polygon fill = 'white' points = '346.32,90.01 791.60,90.01 791.60,18.01 346.32,18.01 '/>
@@ -112,57 +112,57 @@
 	</g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,337.90 L97.70,337.90  '/>	<g transform="translate(89.31,341.80)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 100000</tspan></text>
+		<text><tspan font-family="Arial" > 0</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,321.91 L99.95,321.91 M102.20,305.91 L97.70,305.91  '/>	<g transform="translate(89.31,309.81)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 120000</tspan></text>
+		<text><tspan font-family="Arial" > 20000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,289.92 L99.95,289.92 M102.20,273.92 L97.70,273.92  '/>	<g transform="translate(89.31,277.82)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 140000</tspan></text>
+		<text><tspan font-family="Arial" > 40000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,257.93 L99.95,257.93 M102.20,241.93 L97.70,241.93  '/>	<g transform="translate(89.31,245.83)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 160000</tspan></text>
+		<text><tspan font-family="Arial" > 60000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,225.94 L99.95,225.94 M102.20,209.94 L97.70,209.94  '/>	<g transform="translate(89.31,213.84)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 180000</tspan></text>
+		<text><tspan font-family="Arial" > 80000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,193.95 L99.95,193.95 M102.20,177.95 L97.70,177.95  '/>	<g transform="translate(89.31,181.85)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 200000</tspan></text>
+		<text><tspan font-family="Arial" > 100000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,161.96 L99.95,161.96 M102.20,145.97 L97.70,145.97  '/>	<g transform="translate(89.31,149.87)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 220000</tspan></text>
+		<text><tspan font-family="Arial" > 120000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,129.97 L99.95,129.97 M102.20,113.98 L97.70,113.98  '/>	<g transform="translate(89.31,117.88)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 240000</tspan></text>
+		<text><tspan font-family="Arial" > 140000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,97.98 L99.95,97.98 M102.20,81.99 L97.70,81.99  '/>	<g transform="translate(89.31,85.89)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 260000</tspan></text>
+		<text><tspan font-family="Arial" > 160000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,65.99 L99.95,65.99 M102.20,50.00 L97.70,50.00  '/>	<g transform="translate(89.31,53.90)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 280000</tspan></text>
+		<text><tspan font-family="Arial" > 180000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
 	<path stroke='rgb( 64,  64,  64)'  d='M102.20,34.00 L99.95,34.00 M102.20,18.01 L97.70,18.01  '/>	<g transform="translate(89.31,21.91)" stroke="none" fill="rgb(64,64,64)" font-family="Arial" font-size="12.00"  text-anchor="end">
-		<text><tspan font-family="Arial" > 300000</tspan></text>
+		<text><tspan font-family="Arial" > 200000</tspan></text>
 	</g>
 </g>
 <g fill="none" color="black" stroke="currentColor" stroke-width="2.00" stroke-linecap="round" stroke-linejoin="round">
