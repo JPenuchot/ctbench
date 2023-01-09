@@ -108,22 +108,22 @@ whereas the other one serializes the AST into an array to use it as an NTTP.
 Here is a first graph comparing the total compilation time between two code
 generation backends:
 
-![ExecuteCompiler time curve](docs/images/ExecuteCompiler.svg){width=100%}
+![ExecuteCompiler time curves](docs/images/ExecuteCompiler.svg){width=100%}
 
 We can also compare total time spent in frontend sections:
 
-![Total Frontend time curve](docs/images/Total_Frontend.svg){width=100%}
+![Total Frontend time curves](docs/images/Total_Frontend.svg){width=100%}
 
 And also look at other more specific events such as the total time spent in
 InstantiateFunction timers:
 
-![Total InstantiateFunction time curve](docs/images/Total_InstantiateFunction.svg){width=100%}
+![Total InstantiateFunction time curves](docs/images/Total_InstantiateFunction.svg){width=100%}
 
 And within this class of timers, we can segregate functions. Here, we're looking
 at the time for the InstantiateFunction event specific to the run_program
 function, which is the driver function for both benchmark cases:
 
-![run_programprogram_string time curve](docs/images/InstantiateFunction/run_programprogram_string.svg){width=100%}
+![run_programprogram_string time curves](docs/images/InstantiateFunction/run_programprogram_string.svg){width=100%}
 
 However these graphs must not be interpreted alone. It is important to look at
 the hierarchy of Clang's timer events using flame graph visualizers as events
