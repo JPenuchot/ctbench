@@ -47,6 +47,11 @@ with Chrome's flame graph visualizer, that contains a series of timed events
 with optional metadata like the (mangled) C++ symbol or the file related to an
 event.
 
+The events can then be visualized using tools such as Google's
+[Perfetto UI](https://ui.perfetto.dev/).
+
+![Perfetto UI example](docs/images/perfetto-ui.png)
+
 # Statement of need
 
 Originally inspired by Metabench[@metabench], ctbench development was
@@ -93,12 +98,37 @@ experience on code generation using constexpr allocated memory, studying and
 overcoming the roadblocks, and evaluating the compile-time impact of the
 involved techniques.
 
-![Total_InstantiateFunction](docs/images/Total_InstantiateFunction.svg)
-![Total_Frontend](docs/images/Total_Frontend.svg)
-![run_programprogram_string](docs/images/InstantiateFunction/run_programprogram_string.svg)
-![Frontend](docs/images/Frontend.svg)
+Here is a first graph comparing the execution time between two code generation
+backends in the Brainfuck metacompiler from the Poacher project:
+
 ![ExecuteCompiler](docs/images/ExecuteCompiler.svg)
-![Backend](docs/images/Backend.svg)
+
+*ExecuteCompiler*
+
+We can also compare total frontend times:
+
+![Total_Frontend](docs/images/Total_Frontend.svg)
+
+*Total_Frontend*
+
+And also look at other more specific timers such as the total time spent in
+InstantiateFunction timers:
+
+![Total_InstantiateFunction](docs/images/Total_InstantiateFunction.svg)
+
+*Total_InstantiateFunction*
+
+And within this class of timers, we can segregate functions. Here, we can look
+at the time spent in the InstantiateFunction timer related to the run_program
+function specifically:
+
+![run_programprogram_string](docs/images/InstantiateFunction/run_programprogram_string.svg)
+
+*InstantiateFunction/run_programprogram_string*
+
+However these graphs must not be interpreted alone. It is important to look at
+the hierarchy of Clang's timer events using flame graph visualizers as events
+might overlap each other.
 
 <!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
