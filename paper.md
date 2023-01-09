@@ -103,22 +103,22 @@ involved techniques.
 Here is a first graph comparing the execution time between two code generation
 backends in the Brainfuck metacompiler from the Poacher project:
 
-![ExecuteCompiler time curve](docs/images/ExecuteCompiler.svg)
+![ExecuteCompiler time curve](docs/images/ExecuteCompiler.svg){width=80%}
 
 We can also compare total frontend times:
 
-![Total Frontend time curve](docs/images/Total_Frontend.svg)
+![Total Frontend time curve](docs/images/Total_Frontend.svg){width=80%}
 
 And also look at other more specific timers such as the total time spent in
 InstantiateFunction timers:
 
-![Total InstantiateFunction time curve](docs/images/Total_InstantiateFunction.svg)
+![Total InstantiateFunction time curve](docs/images/Total_InstantiateFunction.svg){width=80%}
 
 And within this class of timers, we can segregate functions. Here, we can look
 at the time spent in the InstantiateFunction timer related to the run_program
 function specifically:
 
-![run_programprogram_string time curve](docs/images/InstantiateFunction/run_programprogram_string.svg)
+![run_programprogram_string time curve](docs/images/InstantiateFunction/run_programprogram_string.svg){width=80%}
 
 However these graphs must not be interpreted alone. It is important to look at
 the hierarchy of Clang's timer events using flame graph visualizers as events
