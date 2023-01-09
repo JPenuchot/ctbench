@@ -93,6 +93,13 @@ experience on code generation using constexpr allocated memory, studying and
 overcoming the roadblocks, and evaluating the compile-time impact of the
 involved techniques.
 
+![Total_InstantiateFunction](docs/images/Total_InstantiateFunction.svg)
+![Total_Frontend](docs/images/Total_Frontend.svg)
+![run_programprogram_string](docs/images/InstantiateFunction/run_programprogram_string.svg)
+![Frontend](docs/images/Frontend.svg)
+![ExecuteCompiler](docs/images/ExecuteCompiler.svg)
+![Backend](docs/images/Backend.svg)
+
 <!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
 flexibility or ease-of-use in the user-interface. The API for `Gala` was
