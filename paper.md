@@ -50,7 +50,9 @@ event.
 The events can then be visualized using tools such as Google's
 [Perfetto UI](https://ui.perfetto.dev/).
 
-![Perfetto UI example](docs/images/perfetto-ui.png)
+![Perfetto UI displaying a Clang time trace file for the consecutive loops
+benchmark case with the expression template backend](
+docs/images/perfetto-ui.png)
 
 # Statement of need
 
@@ -101,30 +103,22 @@ involved techniques.
 Here is a first graph comparing the execution time between two code generation
 backends in the Brainfuck metacompiler from the Poacher project:
 
-![ExecuteCompiler](docs/images/ExecuteCompiler.svg)
-
-*ExecuteCompiler*
+![ExecuteCompiler time curve](docs/images/ExecuteCompiler.svg)
 
 We can also compare total frontend times:
 
-![Total_Frontend](docs/images/Total_Frontend.svg)
-
-*Total_Frontend*
+![Total Frontend time curve](docs/images/Total_Frontend.svg)
 
 And also look at other more specific timers such as the total time spent in
 InstantiateFunction timers:
 
-![Total_InstantiateFunction](docs/images/Total_InstantiateFunction.svg)
-
-*Total_InstantiateFunction*
+![Total InstantiateFunction time curve](docs/images/Total_InstantiateFunction.svg)
 
 And within this class of timers, we can segregate functions. Here, we can look
 at the time spent in the InstantiateFunction timer related to the run_program
 function specifically:
 
-![run_programprogram_string](docs/images/InstantiateFunction/run_programprogram_string.svg)
-
-*InstantiateFunction/run_programprogram_string*
+![run_programprogram_string time curve](docs/images/InstantiateFunction/run_programprogram_string.svg)
 
 However these graphs must not be interpreted alone. It is important to look at
 the hierarchy of Clang's timer events using flame graph visualizers as events
