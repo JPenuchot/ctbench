@@ -50,7 +50,7 @@ event.
 The events can then be visualized using tools such as Google's
 [Perfetto UI](https://ui.perfetto.dev/).
 
-![Perfetto UI displaying a Clang time trace file for the consecutive loops
+![Perfetto UI displaying a Clang time trace file for Poacher's consecutive loops
 benchmark case with the expression template backend](
 docs/images/perfetto-ui.png)
 
@@ -100,29 +100,35 @@ experience on code generation using constexpr allocated memory, studying and
 overcoming the roadblocks, and evaluating the compile-time impact of the
 involved techniques.
 
-Here is a first graph comparing the execution time between two code generation
-backends in the Brainfuck metacompiler from the Poacher project:
+We're focusing on a benchmark in Poacher where we compare two backends of the
+Brainfuck metacompiler, where each one is tasked with generating code from a
+constexpr AST. One of them translates the AST into an expression template,
+whereas the other one serializes the AST into an array to use it as an NTTP.
+
+Here is a first graph comparing the total compilation time between two code
+generation backends:
 
 ![ExecuteCompiler time curve](docs/images/ExecuteCompiler.svg){width=100%}
 
-We can also compare total frontend times:
+We can also compare total time spent in frontend sections:
 
 ![Total Frontend time curve](docs/images/Total_Frontend.svg){width=100%}
 
-And also look at other more specific timers such as the total time spent in
+And also look at other more specific events such as the total time spent in
 InstantiateFunction timers:
 
 ![Total InstantiateFunction time curve](docs/images/Total_InstantiateFunction.svg){width=100%}
 
-And within this class of timers, we can segregate functions. Here, we can look
-at the time spent in the InstantiateFunction timer related to the run_program
-function specifically:
+And within this class of timers, we can segregate functions. Here, we're looking
+at the time for the InstantiateFunction event specific to the run_program
+function, which is the driver function for both benchmark cases:
 
 ![run_programprogram_string time curve](docs/images/InstantiateFunction/run_programprogram_string.svg){width=100%}
 
 However these graphs must not be interpreted alone. It is important to look at
 the hierarchy of Clang's timer events using flame graph visualizers as events
-might overlap each other.
+might overlap each other. Also note that the hierarchy of events can vary from a
+benchmark case to another within a same benchmark category.
 
 <!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
