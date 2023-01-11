@@ -112,20 +112,20 @@ ctbench provides:
 - a well documented CMake API for benchmark declaration, which can be generated
   using the C++ pre-processor,
 
-Although CMake is not a proper programming language, it is used as the main API
-for ctbench as most C++ developers are already familiar with it.
+  Although CMake is not a proper programming language, it is used as the main API
+  for ctbench as most C++ developers are already familiar with it.
 
 - a set of JSON-configurable plotters with customizable data aggretation
   features, which can be reused as a C++ library
 
-The core library provides data representations to handle benchmarks cases
-instantited at several sizes, each instance being repeated at least once. It
-also provides tools to aggregate, filter, and sort data from time-trace events,
-as well as various plotters that provide different aggregation and vizualisation
-strategies. The plotters can generate files in various format thanks to the
-Sciplot[@sciplot] library, and they are highly configurable through JSON
-configuration files that are well documented. Default configuration files can be
-generated using a dedicated CLI tool.
+  The core library provides data representations to handle benchmarks cases
+  instantited at several sizes, each instance being repeated at least once. It
+  also provides tools to aggregate, filter, and sort data from time-trace
+  events, as well as various plotters that provide different aggregation and
+  vizualisation strategies. The plotters can generate files in various format
+  thanks to the Sciplot[@sciplot] library, and they are highly configurable
+  through JSON configuration files that are well documented. Default
+  configuration files can be generated using a dedicated CLI tool.
 
 Even though ctbench was made to analyze Clang's time-trace events, it can also
 measure compiler execution time and report it in a synthetic time-trace file,
