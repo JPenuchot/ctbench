@@ -99,7 +99,7 @@ d'avoir un outil similaire a metabench qui permette facilement d'analyser les
 donnees issues de time-trace, et premettant de faire de l'analyse sur des cas de
 taille variable
 
-# Statement of need
+# Functionality
 
 Originally inspired by Metabench[@metabench], ctbench development was
 driven by the need for a similar tool that allows the observation of Clang's
