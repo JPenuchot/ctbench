@@ -25,21 +25,49 @@ CTRE[@ctre] being developed, we're seeing increasing computing needs at compile
 time. These compile-time computing needs might grow even further as C++ embeds
 more features over time to support and extend this kind of practices, like
 compile-time containers[@more-constexpr-containers] or static
-reflection[@static-reflection]. <!--A bit blunt, embellish that-->
+reflection[@static-reflection].
+
+However there is no clear cut methodology to compare metaprogramming strategies
 
 This paper introduces ctbench, which is a set of tools for compile-time
 benchmarking and analysis in C++. It aims to provide developer-friendly tools to
 declare and run benchmarks, then aggregate, filter out, and plot the data to
 analyze it.
 
+As such, ctbench is meant to become the first layer for proper scientific
+methodology for analyzing compile-time program behavior.
+
 <!-- Plan -->
 
 We'll first have a look at current tools for compile-time profiling and
 benchmarking and establish the limits of what these tools can do.
 
-# State of art
+# Statement of need
 
-That increase in compute needs raises the question on how to measure the impact
+template mp c'est le staple de C++ pour avoir du haut niveau et des perfs
+
+tradeoff: temps de compil, car ce qu'on fait pas au runtime, on le fait en
+partie la compil
+
+comme la mp est plus simple depuis C++11 et C++17, la mp devient plus courante
+et les devs se retrouvent avec des temps de compil plus longs sans savoir
+expliquer pourquoi
+
+la mesure des temps de compil devient importante, et il devient important d'en connaitre les raisons
+
+une premiere generation d'outils existe qui permet de faire du benchmarking en mesurant le temps de compil:
+
+- metabench permet ceci machin
+- buildbench permet de faire du microbenchmarking sur des cas triviaux...
+
+
+un outil existe et permet d'obtenir des donnees internes au compilo:
+
+- templight permet de faire du profiling single-case, avec des outils de debugging
+
+l'idee de templight a plus ou moins ete reprise dans clang avec time-trace, qui sort des fichiers dans un format visualisable via chrome etc...
+
+The increase in compile-time compute needs raises the question on how to measure the impact
 of metaprogramming techniques on compile times. There are a lot of tools to run
 benchmarks for "runtime" programs, but as of today, only Metabench[@metabench]
 is capable of running compile-time benchmarks instantiated at several sizes to
@@ -66,17 +94,25 @@ The events can then be visualized using tools such as Google's
 benchmark case with the expression template backend](
 docs/images/perfetto-ui.png)
 
+time-trace fournit des mesures tres fines et tres exhaustives. l'ideal serait
+d'avoir un outil similaire a metabench qui permette facilement d'analyser les
+donnees issues de time-trace, et premettant de faire de l'analyse sur des cas de
+taille variable
+
 # Statement of need
 
 Originally inspired by Metabench[@metabench], ctbench development was
 driven by the need for a similar tool that allows the observation of Clang's
 time-trace files to help get a more comprehensive view on the impact of
-metaprogramming techniques on compile times.
+metaprogramming techniques on compile times. A strong emphasis was put on
+developer friendliness, project integration, and component reusability.
 
-A strong emphasis was put on developer friendliness, project integration, and
-component reusability. ctbench provides a well documented CMake API for
-benchmark declaration, allows benchmark generation using the C++ pre-processor,
-and its C++ core can be used as a shared C++ library as well.
+ctbench provides:
+
+- a well documented CMake API for benchmark declaration, which can be generated
+  using the C++ pre-processor,
+- a set of JSON-configurable plotters with customizable data aggretation
+  features, which can be reused as a C++ library
 
 The core library provides data representations to handle benchmarks cases
 instantited at several sizes, each instance being repeated at least once. It
