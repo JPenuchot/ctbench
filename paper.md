@@ -25,7 +25,19 @@ CTRE[@ctre] being developed, we're seeing increasing computing needs at compile
 time. These compile-time computing needs might grow even further as C++ embeds
 more features over time to support and extend this kind of practices, like
 compile-time containers[@more-constexpr-containers] or static
-reflection[@static-reflection].
+reflection[@static-reflection]. <!--A bit blunt, embellish that-->
+
+This paper introduces ctbench, which is a set of tools for compile-time
+benchmarking and analysis in C++. It aims to provide developer-friendly tools to
+declare and run benchmarks, then aggregate, filter out, and plot the data to
+analyze it.
+
+<!-- Plan -->
+
+We'll first have a look at current tools for compile-time profiling and
+benchmarking and establish the limits of what these tools can do.
+
+# State of art
 
 That increase in compute needs raises the question on how to measure the impact
 of metaprogramming techniques on compile times. There are a lot of tools to run
@@ -43,7 +55,7 @@ various compilation steps, which can be enabled by passing the `-ftime-trace`
 flag. Its output contains data that can be directly linked to symbols in the
 source code, making it easier to study the impact of specific symbols on various
 stages of compilation. The output format is a JSON file meant to be compatible
-with Chrome's flame graph visualizer, that contains a series of timed events
+with Chrome's flame graph visualizer, that contains a series of time events
 with optional metadata like the (mangled) C++ symbol or the file related to an
 event.
 
@@ -84,13 +96,6 @@ benchmarking, making comprehensive benchmark quick and easy, and the only
 compile-time benchmarking tool that can gater Clang profiling data for scaling
 analysis.
 
-# Statement of interest
-
-ctbench was first presented at the CPPP 2021 conference[@ctbench-cppp21] which
-is the main C++ technical conference in France. It is being used to benchmark
-examples from the poacher[@poacher] project, which was briefly presented at the
-Meeting C++ 2022[@meetingcpp22] technical conference.
-
 # Practical examples
 
 Poacher is a series of experimental projects meant to help us understanding what
@@ -129,6 +134,13 @@ However these graphs must not be interpreted alone. It is important to look at
 the hierarchy of Clang's timer events using flame graph visualizers as events
 might overlap each other. Also note that the hierarchy of events can vary from a
 benchmark case to another within a same benchmark category.
+
+# Statement of interest
+
+ctbench was first presented at the CPPP 2021 conference[@ctbench-cppp21] which
+is the main C++ technical conference in France. It is being used to benchmark
+examples from the poacher[@poacher] project, which was briefly presented at the
+Meeting C++ 2022[@meetingcpp22] technical conference.
 
 <!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
 enables wrapping low-level languages (e.g., C) for speed without losing
