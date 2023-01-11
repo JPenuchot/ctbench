@@ -111,6 +111,10 @@ ctbench provides:
 
 - a well documented CMake API for benchmark declaration, which can be generated
   using the C++ pre-processor,
+
+Although CMake is not a proper programming language, it is used as the main API
+for ctbench as most C++ developers are already familiar with it.
+
 - a set of JSON-configurable plotters with customizable data aggretation
   features, which can be reused as a C++ library
 
