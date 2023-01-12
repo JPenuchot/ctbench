@@ -79,10 +79,10 @@ The events can then be visualized using tools such as Google's
 benchmark case with the expression template backend](
 docs/images/perfetto-ui.png)
 
-time-trace fournit des mesures tres fines et tres exhaustives. l'ideal serait
-d'avoir un outil similaire a metabench qui permette facilement d'analyser les
-donnees issues de time-trace, et premettant de faire de l'analyse sur des cas de
-taille variable
+<!--time-trace fournit des mesures tres fines et tres exhaustives. l'ideal
+serait d'avoir un outil similaire a metabench qui permette facilement d'analyser
+les donnees issues de time-trace, et premettant de faire de l'analyse sur des
+cas de taille variable-->
 
 # Functionality
 
@@ -97,8 +97,8 @@ developer friendliness, project integration, and component reusability.
 - a well documented CMake API for benchmark declaration, which can be generated
   using the C++ pre-processor,
 
-  Although CMake is not a proper programming language, it is used as the main API
-  for **ctbench** as most C++ developers are already familiar with it.
+  Although CMake is not a proper programming language, it is used as the main
+  API for **ctbench** as most C++ developers are already familiar with it.
 
 - a set of JSON-configurable plotters with customizable data aggretation
   features, which can be reused as a C++ library
