@@ -11,8 +11,12 @@ authors:
     orcid: 0000-0002-6377-6880
     equal-contrib: true
     affiliation: 1
+  - name: Joel Falcou
+    orcid: 0000-0001-5380-7375
+    equal-contrib: true
+    affiliation: 1
 affiliations:
-  - name: Jules Penuchot, LISN, Paris-Saclay University, France
+  - name: Université Paris-Saclay, CNRS, Laboratoire Interdisciplinaire des Sciences du Numérique, 91400, Orsay, France
     index: 1
 date: 07 December 2023
 bibliography: paper.bib
@@ -63,9 +67,9 @@ methodologies:
 - Templight[@templight] adds Clang template instantiation inspection
   capabilities with debugging and profiling tools.
 
-Additionally, Clang has a built-in profiler that provides in-depth time
-measurements of various compilation steps, which can be enabled by passing the
-`-ftime-trace` flag. Its output contains data that can be directly linked to
+Additionally, Clang has a built-in profiler[@time-trace] that provides in-depth
+time measurements of various compilation steps, which can be enabled by passing
+the `-ftime-trace` flag. Its output contains data that can be directly linked to
 symbols in the source code, making it easier to study the impact of specific
 symbols on various stages of compilation. The output format is a JSON file meant
 to be compatible with Chrome's flame graph visualizer, that contains a series of
@@ -112,16 +116,17 @@ developer friendliness, project integration, and component reusability.
   through JSON configuration files that are well documented. Default
   configuration files can be generated using a dedicated CLI tool.
 
-Even though **ctbench** was made to analyze Clang's time-trace events, it can
-also measure compiler execution time and report it in a synthetic time-trace
+Despite the fact that **ctbench** was made to handle Clang's time-trace events,
+it can also measure compiler execution time and report it in a synthetic time-trace
 file, making it partially compatible with GCC as well.
 
-Meme si la premiere fonctionnalite de ctbench c'est de faire du time-trace, on
-fournit aussi des outils permettant de faire de la comparaison entre differents
-compilateurs (ou diffrentes versions d'un compilo). GCC ne supportant pas
-time-trace, ctbench permet egalement de mesurer le temps d'execution du
-compilateur et genere un fichier au format time-trace pour assurer
-l'interoperabilite avec les outils d'aggregation de donnees etc...
+In addition to **ctbench**'s time-trace handling, it has a compatibility mode
+for compilers that do not support it like GCC. This mode works by measuring
+compiler execution time just like Metabench and generating a time-trace file
+that contains compiler execution time. Moreover, the tooling makes defining
+compilers per-target possible within a CMake project, allowing black-box
+compiler performance comparisons between GCC and Clang for example or
+comparisons between different versions of a compiler.
 
 All these features make **ctbench** a very complete toolkit for compile-time
 benchmarking, making comprehensive benchmark quick and easy, and the only
