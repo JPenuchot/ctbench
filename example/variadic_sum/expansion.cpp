@@ -4,13 +4,17 @@
 template <unsigned N> struct ct_uint_t { static constexpr unsigned value = N; };
 
 /// Expansion compile-time sum implementation
-template <typename... Ts> auto sum(Ts const &...) { return (Ts::value + ...); }
+template <typename... Ts> constexpr unsigned sum(Ts const &...) {
+  return (Ts::value + ...);
+}
 
 // Driver code
 
 #define GEN_MACRO(Z, N, TEXT)                                                  \
   TEXT<N> {}
 
-unsigned foo() {
+constexpr unsigned foo() {
   return sum(BOOST_PP_ENUM(BENCHMARK_SIZE, GEN_MACRO, ct_uint_t));
 }
+
+[[maybe_unused]] constexpr unsigned result = foo();
