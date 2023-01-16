@@ -32,9 +32,9 @@ if(ENABLE_TIME_TRACE)
 endif()
 
 set(BENCHMARK_START 1 CACHE STRING "Benchmark size minimum")
-set(BENCHMARK_STOP 16 CACHE STRING "Benchmark size maximum")
+set(BENCHMARK_STOP 64 CACHE STRING "Benchmark size maximum")
 set(BENCHMARK_STEP 1 CACHE STRING "Benchmark size step")
-set(BENCHMARK_ITERATIONS 1 CACHE STRING "Number of samples per size")
+set(BENCHMARK_ITERATIONS 10 CACHE STRING "Number of samples per size")
 
 ctbench_add_benchmark(
   variadic_sum.expansion variadic_sum/expansion.cpp ${BENCHMARK_START}
