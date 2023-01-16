@@ -135,7 +135,108 @@ analysis.
 
 # Practical examples
 
-rajouter un exemple simple avec variadiques recursifs vs parameter pack (avec le
+This section will cover a short yet practical example of ctbench usage. We want
+to calculate the sum of a series of integers known at compile-time, using a type
+template to store unsigned integer values at compile-time. We need to include
+`boost/preprocessor/repetition/enum.hpp` to scale the benchmark case as well:
+
+```cpp
+#include <boost/preprocessor/repetition/enum.hpp>
+
+/// Compile-time unsigned int
+template <unsigned N> struct ct_uint_t { static constexpr unsigned value = N; };
+```
+
+The first version of the metaprogram is an implementation based on a recursive
+template function:
+
+```cpp
+/// Recursive compile-time sum implementation
+template <typename T> constexpr auto sum(T const &) { return T::value; }
+template <typename T, typename... Ts>
+constexpr auto sum(T const &, Ts const &...tl) {
+  return T::value + sum(tl...);
+}
+```
+
+And the other version relies on C++11 parameter pack expansion:
+
+```cpp
+/// Expansion compile-time sum implementation
+template <typename... Ts> constexpr unsigned sum(Ts const &...) {
+  return (Ts::value + ...);
+}
+```
+
+Both versions share the same interface, and thus the same driver code as well.
+The driver code takes care of scaling the benchmark according to
+`BENCHMARK_SIZE`, which is defined by **ctbench** through the CMake API:
+
+```cpp
+// Driver code
+
+#define GEN_MACRO(Z, N, TEXT)                                                  \
+  TEXT<N> {}
+
+constexpr unsigned foo() {
+  return sum(BOOST_PP_ENUM(BENCHMARK_SIZE, GEN_MACRO, ct_uint_t));
+}
+
+[[maybe_unused]] constexpr unsigned result = foo();
+```
+
+The CMake code needed to run the benchmarks is the following:
+
+```cmake
+ctbench_add_benchmark(
+  variadic_sum.expansion variadic_sum/expansion.cpp ${BENCHMARK_START}
+  ${BENCHMARK_STOP} ${BENCHMARK_STEP} ${BENCHMARK_ITERATIONS})
+
+ctbench_add_benchmark(
+  variadic_sum.recursive variadic_sum/recursive.cpp ${BENCHMARK_START}
+  ${BENCHMARK_STOP} ${BENCHMARK_STEP} ${BENCHMARK_ITERATIONS})
+```
+
+Then a graph can be declared:
+
+```cmake
+ctbench_add_graph(variadic_sum-compare-graph compare-all.json
+                  variadic_sum.expansion variadic_sum.recursive)
+```
+
+with `compare-all.json` containing the following:
+
+```json
+{
+  "plotter": "compare_by",
+  "legend_title": "Timings",
+  "x_label": "Benchmark size factor",
+  "y_label": "Time (µs)",
+  "draw_average": true,
+  "demangle": false,
+  "draw_points": false,
+  "width": 800,
+  "height": 400,
+  "key_ptrs": ["/name", "/args/detail"],
+  "_key_ptrs":  ["/name"],
+  "value_ptr": "/dur",
+  "plot_file_extensions": [".svg"]
+}
+```
+
+This configuration file uses the `compare_by` plotter to generate one plot for
+each pair of elements designated by the JSON pointers in `key_ptrs`, namely
+`/name` and `/args/detail`. The first pointer designates an LLVM timer for a
+particular section of code, and the second *may* refer to a C++ symbol, or a
+C++ source filename.
+
+The result is a series of graphs, each one designating a particular timer event,
+specific to a source or a symbol whenever it is possible (ie. whenever
+additional data is present in the `/args/detail` value of a timer event). Each
+graph compares the evolution of these timer events in function of the
+instanciation size of the benchmark cases.
+
+<!--rajouter un exemple simple avec variadiques recursifs vs parameter pack (avec le
 code C++) et montrer l'analyse rapide, ensuite enoncer simplement poacher et
 rule of cheese
 
@@ -174,7 +275,7 @@ function, which is the driver function for both benchmark cases:
 However these graphs must not be interpreted alone. It is important to look at
 the hierarchy of Clang's timer events using flame graph visualizers as events
 might overlap each other. Also note that the hierarchy of events can vary from a
-benchmark case to another within a same benchmark category.
+benchmark case to another within a same benchmark category.-->
 
 # Statement of interest
 
