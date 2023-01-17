@@ -252,11 +252,15 @@ additional data is present in the `/args/detail` value of a timer event). Each
 graph compares the evolution of these timer events in function of the
 instanciation size of the benchmark cases.
 
-![docs/images/ExecuteCompiler.svg](ExecuteCompiler){width=100%}
-![docs/images/Total_Frontend.svg](Total Frontend){width=100%}
-![docs/images/Total_Backend.svg](Total Backend){width=100%}
-![docs/images/Total_InstantiateFunction.svg](Total InstantiateFunction){width=100%}
-![docs/images/InstantiateFunction/foovoid.svg](InstantiateFunction foovoid){width=100%}
+![ExecuteCompiler](docs/images/ExecuteCompiler.svg){width=100%}
+
+![Total Frontend](docs/images/Total_Frontend.svg){width=100%}
+
+![Total Backend](docs/images/Total_Backend.svg){width=100%}
+
+![Total InstantiateFunction](docs/images/Total_InstantiateFunction.svg){width=100%}
+
+![InstantiateFunction foovoid](docs/images/InstantiateFunction/foovoid.svg){width=100%}
 
 <!--rajouter un exemple simple avec variadiques recursifs vs parameter pack (avec le
 code C++) et montrer l'analyse rapide, ensuite enoncer simplement poacher et
