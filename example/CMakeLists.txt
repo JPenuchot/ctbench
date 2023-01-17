@@ -31,7 +31,7 @@ if(ENABLE_TIME_TRACE)
                       -fconstexpr-steps=2147483647 -fbracket-depth=2147483647)
 endif()
 
-set(BENCHMARK_START 1 CACHE STRING "Benchmark size minimum")
+set(BENCHMARK_START 0 CACHE STRING "Benchmark size minimum")
 set(BENCHMARK_STOP 64 CACHE STRING "Benchmark size maximum")
 set(BENCHMARK_STEP 1 CACHE STRING "Benchmark size step")
 set(BENCHMARK_ITERATIONS 10 CACHE STRING "Number of samples per size")
