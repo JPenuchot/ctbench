@@ -9,7 +9,6 @@
   "width": 800,
   "height": 400,
   "key_ptrs": ["/name", "/args/detail"],
-  "_key_ptrs":  ["/name"],
   "value_ptr": "/dur",
   "plot_file_extensions": [".svg"]
 }
