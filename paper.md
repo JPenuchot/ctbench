@@ -137,34 +137,50 @@ analysis.
 
 This section will cover a short yet practical example of ctbench usage. We want
 to calculate the sum of a series of integers known at compile-time, using a type
-template to store unsigned integer values at compile-time. We need to include
-`boost/preprocessor/repetition/enum.hpp` to scale the benchmark case as well:
+template to store unsigned integer values at compile-time.
+
+We will be comparing the compile-time performance of two implementations:
+- one based on a recursive function template,
+- and one based on C++11 parameter pack expansion.
+
+First we need to include `utility` to instantiate our benchmark according to the
+size parameter with `std::make_index_sequence`, and define the compile-time
+container type for an unsigned integer:
 
 ```cpp
-#include <boost/preprocessor/repetition/enum.hpp>
+#include <utility>
 
-/// Compile-time unsigned int
-template <unsigned N> struct ct_uint_t { static constexpr unsigned value = N; };
+/// Compile-time std::size_t
+template <std::size_t N> struct ct_uint_t {
+  static constexpr std::size_t value = N;
+};
 ```
 
-The first version of the metaprogram is an implementation based on a recursive
-template function:
+The first version of the metaprogram based on a recursive template function:
 
 ```cpp
 /// Recursive compile-time sum implementation
-template <typename T> constexpr auto sum(T const &) { return T::value; }
+template<typename ... Ts> constexpr auto sum();
+
+template <> constexpr auto sum() { return ct_uint_t<0>{}; }
+template <typename T> constexpr auto sum(T const &) { return T{}; }
+
 template <typename T, typename... Ts>
 constexpr auto sum(T const &, Ts const &...tl) {
-  return T::value + sum(tl...);
+  return ct_uint_t<T::value + decltype(sum(tl...))::value>{};
 }
 ```
 
-And the other version relies on C++11 parameter pack expansion:
+And the other version relying on C++11 parameter pack expansion:
 
 ```cpp
 /// Expansion compile-time sum implementation
-template <typename... Ts> constexpr unsigned sum(Ts const &...) {
-  return (Ts::value + ...);
+template<typename ... Ts> constexpr auto sum();
+
+template <> constexpr auto sum() { return ct_uint_t<0>{}; }
+
+template <typename... Ts> constexpr auto sum(Ts const &...) {
+  return ct_uint_t<(Ts::value + ... + 0)>{};
 }
 ```
 
@@ -175,14 +191,15 @@ The driver code takes care of scaling the benchmark according to
 ```cpp
 // Driver code
 
-#define GEN_MACRO(Z, N, TEXT)                                                  \
-  TEXT<N> {}
-
-constexpr unsigned foo() {
-  return sum(BOOST_PP_ENUM(BENCHMARK_SIZE, GEN_MACRO, ct_uint_t));
+template <typename = void> constexpr auto foo() {
+  return []<std::size_t... Is>(std::index_sequence<Is...>) {
+    return sum(ct_uint_t<Is>{}...);
+  }
+  (std::make_index_sequence<BENCHMARK_SIZE>{});
 }
 
-[[maybe_unused]] constexpr unsigned result = foo();
+[[maybe_unused]] constexpr std::size_t result =
+    decltype(foo())::value;
 ```
 
 The CMake code needed to run the benchmarks is the following:
@@ -218,7 +235,6 @@ with `compare-all.json` containing the following:
   "width": 800,
   "height": 400,
   "key_ptrs": ["/name", "/args/detail"],
-  "_key_ptrs":  ["/name"],
   "value_ptr": "/dur",
   "plot_file_extensions": [".svg"]
 }
@@ -235,6 +251,12 @@ specific to a source or a symbol whenever it is possible (ie. whenever
 additional data is present in the `/args/detail` value of a timer event). Each
 graph compares the evolution of these timer events in function of the
 instanciation size of the benchmark cases.
+
+![docs/images/ExecuteCompiler.svg](ExecuteCompiler){width=100%}
+![docs/images/Total_Frontend.svg](Total Frontend){width=100%}
+![docs/images/Total_Backend.svg](Total Backend){width=100%}
+![docs/images/Total_InstantiateFunction.svg](Total InstantiateFunction){width=100%}
+![docs/images/InstantiateFunction/foovoid.svg](InstantiateFunction foovoid){width=100%}
 
 <!--rajouter un exemple simple avec variadiques recursifs vs parameter pack (avec le
 code C++) et montrer l'analyse rapide, ensuite enoncer simplement poacher et
