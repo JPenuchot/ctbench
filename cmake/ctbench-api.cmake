@@ -84,7 +84,7 @@ function(
   # Setting names
   add_custom_target(${name})
 
-  foreach(iteration RANGE ${samples})
+  foreach(iteration RANGE 1 ${samples})
     foreach(size RANGE ${begin} ${end} ${step})
       # Subtargets aren't meant to be compiled by end-users
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
