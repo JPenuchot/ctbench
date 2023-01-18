@@ -13,10 +13,12 @@ authors:
     affiliation: 1
   - name: Joel Falcou
     orcid: 0000-0001-5380-7375
-    equal-contrib: true
+    equal-contrib: false
     affiliation: 1
 affiliations:
-  - name: Université Paris-Saclay, CNRS, Laboratoire Interdisciplinaire des Sciences du Numérique, 91400, Orsay, France
+  - name: Université Paris-Saclay, CNRS,
+          Laboratoire Interdisciplinaire des Sciences du Numérique,
+          91400, Orsay, France
     index: 1
 date: 07 December 2023
 bibliography: paper.bib
@@ -74,19 +76,22 @@ symbols in the source code, making it easier to study the impact of specific
 symbols on various stages of compilation. The output format is a JSON file meant
 to be compatible with Chrome's flame graph visualizer, that contains a series of
 time events with optional metadata like the (mangled) C++ symbol or the file
-related to an event.
-
-The events can then be visualized using tools such as Google's
-[Perfetto UI](https://ui.perfetto.dev/).
+related to an event. The profiling data can then be visualized using tools such
+as Google's [Perfetto UI](https://ui.perfetto.dev/).
 
 ![Perfetto UI displaying a Clang time trace file for Poacher's consecutive loops
 benchmark case with the expression template backend](
 docs/images/perfetto-ui.png)
 
-<!--time-trace fournit des mesures tres fines et tres exhaustives. l'ideal
-serait d'avoir un outil similaire a metabench qui permette facilement d'analyser
-les donnees issues de time-trace, et premettant de faire de l'analyse sur des
-cas de taille variable-->
+Clang's profiler data is very exhaustive and insightful, however there is no
+tooling to make sense of it in the context of variable size compile-time
+benchmarks. **ctbench** tries to bridge the gap by providing a tool to analyze
+this valuable data. It also improves upon existing tools by providing a solution
+that's easy to integrate into existing CMake projects, and generates graphs in
+various formats that are trivialy embeddable in documents like research papers,
+web pages, or documentations. Additionally, relying on persistent configuration,
+benchmark declaration and description files provides strong guarantees for
+benchmark reproductibility, as opposed to web tools or interactive profilers.
 
 # Functionality
 
@@ -117,8 +122,8 @@ developer friendliness, project integration, and component reusability.
   configuration files can be generated using a dedicated CLI tool.
 
 Despite the fact that **ctbench** was made to handle Clang's time-trace events,
-it can also measure compiler execution time and report it in a synthetic time-trace
-file, making it partially compatible with GCC as well.
+it can also measure compiler execution time and report it in a synthetic
+time-trace file, making it partially compatible with GCC as well.
 
 In addition to **ctbench**'s time-trace handling, it has a compatibility mode
 for compilers that do not support it like GCC. This mode works by measuring
@@ -254,54 +259,28 @@ instanciation size of the benchmark cases.
 
 ![ExecuteCompiler](docs/images/ExecuteCompiler.svg){width=100%}
 
+The first timer we want to look at is ExecuteCompiler, which is the total
+compilation time. This is by far the more important metric as it is the most
+comprehensive one, and can be interpreted
+
 ![Total Frontend](docs/images/Total_Frontend.svg){width=100%}
 
 ![Total Backend](docs/images/Total_Backend.svg){width=100%}
 
+The backend is not being impacted here, supposedly because increasing the size
+of the benchmark does not generate more code for LLVM to optimize.
+
 ![Total InstantiateFunction](docs/images/Total_InstantiateFunction.svg){width=100%}
+
+<!-- The Total InstantiateFunction timer is an interesting one -->
 
 ![InstantiateFunction foovoid](docs/images/InstantiateFunction/foovoid.svg){width=100%}
 
-<!--rajouter un exemple simple avec variadiques recursifs vs parameter pack (avec le
-code C++) et montrer l'analyse rapide, ensuite enoncer simplement poacher et
-rule of cheese
+And finally **ctbench** allows us to focus on symbol-specific events, such as
+InstantiateFunction for the foovoid symbol (ie. the benchmark driver function).
 
-Poacher is a series of experimental projects meant to help us understanding what
-metaprogramming could be thanks to new C++ features such as non-transient
-constexpr memory allocation[@constexpr-memory]. It helped us getting hands-on
-experience on code generation using constexpr allocated memory, studying and
-overcoming the roadblocks, and evaluating the compile-time impact of the
-involved techniques.
-
-We're focusing on a benchmark in Poacher where we compare two backends of the
-Brainfuck metacompiler, where each one is tasked with generating code from a
-constexpr AST. One of them translates the AST into an expression template,
-whereas the other one serializes the AST into an array to use it as an NTTP.
-
-Here is a first graph comparing the total compilation time between two code
-generation backends:
-
-![ExecuteCompiler time curves](docs/images/ExecuteCompiler.svg){width=100%}
-
-We can also compare total time spent in frontend sections:
-
-![Total Frontend time curves](docs/images/Total_Frontend.svg){width=100%}
-
-And also look at other more specific events such as the total time spent in
-InstantiateFunction timers:
-
-![Total InstantiateFunction time curves](docs/images/Total_InstantiateFunction.svg){width=100%}
-
-And within this class of timers, we can segregate functions. Here, we're looking
-at the time for the InstantiateFunction event specific to the run_program
-function, which is the driver function for both benchmark cases:
-
-![run_programprogram_string time curves](docs/images/InstantiateFunction/run_programprogram_string.svg){width=100%}
-
-However these graphs must not be interpreted alone. It is important to look at
-the hierarchy of Clang's timer events using flame graph visualizers as events
-might overlap each other. Also note that the hierarchy of events can vary from a
-benchmark case to another within a same benchmark category.-->
+- Poacher: https://github.com/jpenuchot/poacher
+- Rule of Cheese: https://github.com/jpenuchot/rule-of-cheese
 
 # Statement of interest
 
@@ -309,26 +288,6 @@ benchmark case to another within a same benchmark category.-->
 is the main C++ technical conference in France. It is being used to benchmark
 examples from the poacher[@poacher] project, which was briefly presented at the
 Meeting C++ 2022[@meetingcpp22] technical conference.
-
-<!--`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).-->
-
-<!--`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.-->
 
 <!--
 # Reference
