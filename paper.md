@@ -300,10 +300,10 @@ compile-time performance of metaprograms.
 
 # Statement of interest
 
-**ctbench** was first presented at the CPPP 2021 conference[@ctbench-cppp21] which
-is the main C++ technical conference in France. It is being used to benchmark
-examples from the poacher[@poacher] project, which was briefly presented at the
-Meeting C++ 2022[@meetingcpp22] technical conference.
+**ctbench** was first presented at the CPPP 2021 conference[@ctbench-cppp21]
+which is the main C++ technical conference in France. It is being used to
+benchmark examples from the poacher[@poacher] project, which was briefly
+presented at the Meeting C++ 2022[@meetingcpp22] technical conference.
 
 # Related projects
 
@@ -317,6 +317,7 @@ Meeting C++ 2022[@meetingcpp22] technical conference.
 
 # Acknowledgements
 
-We acknowledge contributions from Philippe Virouleau
+We acknowledge contributions from Philippe Virouleau and Paul Keir for their
+insightful suggestions.
 
 # References
