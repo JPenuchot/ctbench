@@ -9,7 +9,7 @@ tags:
 authors:
   - name: Jules Penuchot
     orcid: 0000-0002-6377-6880
-    equal-contrib: true
+    equal-contrib: false
     affiliation: 1
   - name: Joel Falcou
     orcid: 0000-0001-5380-7375
@@ -149,7 +149,7 @@ We will be comparing the compile-time performance of two implementations:
 - and one based on C++11 parameter pack expansion.
 
 First we need to include `utility` to instantiate our benchmark according to the
-size parameter with `std::make_index_sequence`, and define the compile-time
+size parameter using `std::make_index_sequence`, and define the compile-time
 container type for an unsigned integer:
 
 ```cpp
@@ -161,7 +161,7 @@ template <std::size_t N> struct ct_uint_t {
 };
 ```
 
-The first version of the metaprogram based on a recursive template function:
+The first version of the metaprogram is based on a recursive template function:
 
 ```cpp
 /// Recursive compile-time sum implementation
@@ -176,7 +176,7 @@ constexpr auto sum(T const &, Ts const &...tl) {
 }
 ```
 
-And the other version relying on C++11 parameter pack expansion:
+And the other version relies on C++11 parameter pack expansion:
 
 ```cpp
 /// Expansion compile-time sum implementation
@@ -219,7 +219,7 @@ ctbench_add_benchmark(
   ${BENCHMARK_STOP} ${BENCHMARK_STEP} ${BENCHMARK_ITERATIONS})
 ```
 
-Then a graph can be declared:
+Then a graph target can be declared:
 
 ```cmake
 ctbench_add_graph(variadic_sum-compare-graph compare-all.json
@@ -247,40 +247,56 @@ with `compare-all.json` containing the following:
 
 This configuration file uses the `compare_by` plotter to generate one plot for
 each pair of elements designated by the JSON pointers in `key_ptrs`, namely
-`/name` and `/args/detail`. The first pointer designates an LLVM timer for a
-particular section of code, and the second *may* refer to a C++ symbol, or a
-C++ source filename.
+`/name` and `/args/detail`. The first pointer designates the LLVM timer name,
+and the second *may* refer to metadata such a C++ symbol, or a C++ source
+filename. The `demangle` option may be used to demangle C++ symbols using LLVM.
 
 The result is a series of graphs, each one designating a particular timer event,
-specific to a source or a symbol whenever it is possible (ie. whenever
-additional data is present in the `/args/detail` value of a timer event). Each
-graph compares the evolution of these timer events in function of the
-instanciation size of the benchmark cases.
+specific to a source or a symbol whenever it is possible (ie. whenever metadata
+is present in the `/args/detail` value of a timer event). Each graph compares
+the evolution of these timer events in function of the benchmark size.
+
+The graphs following were generated from the
+[**ctbench** example](https://github.com/JPenuchot/ctbench/tree/joss/example)
+on a Lenovo T470 with an Intel i5 6300U and 8GB of RAM. The compiler is Clang
+14.0.6, and [Pyperf](https://pyperf.readthedocs.io/en/latest/system.html) was
+used to turn off CPU frequency scaling.
 
 ![ExecuteCompiler](docs/images/ExecuteCompiler.svg){width=100%}
 
 The first timer we want to look at is ExecuteCompiler, which is the total
-compilation time. This is by far the more important metric as it is the most
-comprehensive one, and can be interpreted
+compilation time. Starting from there we can go down in the timer event
+hierarchy to take a look at frontend and backend execution times.
 
 ![Total Frontend](docs/images/Total_Frontend.svg){width=100%}
 
 ![Total Backend](docs/images/Total_Backend.svg){width=100%}
 
-The backend is not being impacted here, supposedly because increasing the size
-of the benchmark does not generate more code for LLVM to optimize.
+The backend is not being impacted here, supposedly because this is purely a
+compile-time program, and the output program is empty. However this might not be
+the case for all metaprograms, and metaprograms might have different impacts on
+the backend as they may generate programs in different ways (ie. generate more
+symbols, larger symbols, more data structures, etc.).
 
 ![Total InstantiateFunction](docs/images/Total_InstantiateFunction.svg){width=100%}
 
-<!-- The Total InstantiateFunction timer is an interesting one -->
+The Total Instantiate function timer is an interesting one as it explicitely
+targets function instanciation time. Note that timers that are prefixed with
+"Total" measure the total time spent in a timer section, regardless of the
+specific symbol or source associated to its individual timer events.
 
 ![InstantiateFunction foovoid](docs/images/InstantiateFunction/foovoid.svg){width=100%}
 
-And finally **ctbench** allows us to focus on symbol-specific events, such as
-InstantiateFunction for the foovoid symbol (ie. the benchmark driver function).
+Finally, we can take a look at `InstantiateFunction/foovoid.svg` which measures
+the InstantiateFunction event time specifically for `foo<void>()`, which is our
+driver template function. Using Perfetto UI to look at the timer event
+hierarchy, we can validate that the timer event for this specific symbol
+includes the InstantiateFunction time for all the symbols that may be
+instantiated within this function.
 
-- Poacher: https://github.com/jpenuchot/poacher
-- Rule of Cheese: https://github.com/jpenuchot/rule-of-cheese
+This level of detail and granularity in the analysis of compile-time benchmarks
+was never reached before, and may help us set good practices to improve the
+compile-time performance of metaprograms.
 
 # Statement of interest
 
@@ -289,22 +305,15 @@ is the main C++ technical conference in France. It is being used to benchmark
 examples from the poacher[@poacher] project, which was briefly presented at the
 Meeting C++ 2022[@meetingcpp22] technical conference.
 
-<!--
-# Reference
+# Related projects
 
-## Citations
+- [Poacher](https://github.com/jpenuchot/poacher): Experimental constexpr
+  parsing and code generation for the integration of arbitrary syntax DSL in
+  C++20
 
-https://pandoc.org/MANUAL.html#extension-citations
-
-## Figures
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
--->
+- [Rule of Cheese](https://github.com/jpenuchot/rule-of-cheese): A collection of
+  compile-time microbenchmarks to help set better C++ metaprogramming guidelines
+  to improve compile-time performance
 
 # Acknowledgements
 
