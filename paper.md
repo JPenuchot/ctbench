@@ -2,7 +2,7 @@
 title: 'ctbench - compile-time benchmarking and analysis'
 tags:
   - C++
-  - meta-programming
+  - metaprogramming
   - compilation
   - benchmarking
   - library
@@ -26,15 +26,15 @@ bibliography: paper.bib
 
 # Summary
 
-With libraries like Eigen[@eigen], Blaze[@blazelib], or CTRE[@ctre] being developed with
-a large tempalte meta-programmed implementation, we're seeing increasing computing needs at compile
-time. These needs might grow even larger as C++ embeds more features over time
-to support and extend this kind of practices, like compile-time
-containers[@more-constexpr-containers] or static reflection[@static-reflection].
-However, there is still no clear cut methodology to compare the performance
-impact of different meta-programming strategies. But, as new C++ features
-allows for new techniques with claimed better compile-time performance,
-no proper methodologies is provided to back up those claims.
+With libraries like Eigen[@eigen], Blaze[@blazelib], or CTRE[@ctre] being
+developed with a large tempalte metaprogrammed implementation, we're seeing
+increasing computing needs at compile time. These needs might grow even larger
+as C++ embeds more features over time to support and extend this kind of
+practices, like compile-time containers[@more-constexpr-containers] or static
+reflection[@static-reflection]. However, there is still no clear cut methodology
+to compare the performance impact of different metaprogramming strategies. But,
+as new C++ features allows for new techniques with claimed better compile-time
+performance, no proper methodologies is provided to back up those claims.
 
 This paper introduces **ctbench**, which is a set of tools for compile-time
 benchmarking and analysis in C++. It aims to provide developer-friendly tools to
@@ -49,15 +49,15 @@ benchmarking and establish the limits of what these tools can do.
 
 # Statement of need
 
-C++ template meta-programming raised interest for allowing computing libraries to
+C++ template metaprogramming raised interest for allowing computing libraries to
 offer great performance with a very high level of abstraction. As a tradeoff for
 interpreting representations of calculations at runtime, they are represented at
 compile-time, and transformed directly into their own programs.
 
-As meta-programming became easier with C++11 and C++17, it became more mainstream
+As metaprogramming became easier with C++11 and C++17, it became more mainstream
 and consequently, developers have to bear with longer compilation times without
-being able to explain them. Therefore, being able to measure compilation times is
-increasingly important, and being able to explain them as well. A first
+being able to explain them. Therefore, being able to measure compilation times
+is increasingly important, and being able to explain them as well. A first
 generation of tools aims to tackle this issue with their own specific
 methodologies:
 
@@ -65,7 +65,7 @@ methodologies:
   A-B compile-time comparisons in a web browser,
 - Metabench[@metabench] instantiates variably sized benchmarks using embedded
   Ruby (ERB) templating and plots compiler execution time, allowing scaling
-  analyses of meta-programs,
+  analyses of metaprograms,
 - Templight[@templight] adds Clang template instantiation inspection
   capabilities with debugging and profiling tools.
 
@@ -96,7 +96,7 @@ benchmark reproductibility, as opposed to web tools or interactive profilers.
 Originally inspired by Metabench[@metabench], **ctbench** development was
 driven by the need for a similar tool that allows the observation of Clang's
 time-trace files to help get a more comprehensive view on the impact of
-meta-programming techniques on compile times. A strong emphasis was put on
+metaprogramming techniques on compile times. A strong emphasis was put on
 developer friendliness, project integration, and component reusability.
 
 **ctbench** provides:
@@ -125,10 +125,10 @@ time-trace file, making it partially compatible with GCC as well.
 
 In addition to **ctbench**'s time-trace handling, it has a compatibility mode
 for compilers that do not support it like GCC. This mode works by measuring
-compiler execution time just like Metabench[@metabench] and generating a time-trace file
-that contains compiler execution time. Moreover, the tooling makes defining
-compilers per-target possible within a CMake project, allowing black-box
-compiler performance comparisons between GCC and Clang for example or
+compiler execution time just like Metabench[@metabench] and generating a
+time-trace file that contains compiler execution time. Moreover, the tooling
+makes defining compilers per-target possible within a CMake project, allowing
+black-box compiler performance comparisons between GCC and Clang for example or
 comparisons between different versions of a compiler.
 
 All these features make **ctbench** a very complete toolkit for compile-time
@@ -272,7 +272,7 @@ hierarchy to take a look at frontend and backend execution times.
 
 The backend is not being impacted here, supposedly because this is purely a
 compile-time program, and the output program is empty. However this might not be
-the case for all meta-programs, and meta-programs might have different impacts on
+the case for all metaprograms, and metaprograms might have different impacts on
 the backend as they may generate programs in different ways (ie. generate more
 symbols, larger symbols, more data structures, etc.).
 
@@ -294,7 +294,7 @@ instantiated within this function.
 
 This level of detail and granularity in the analysis of compile-time benchmarks
 was never reached before, and may help us set good practices to improve the
-compile-time performance of meta-programs.
+compile-time performance of metaprograms.
 
 # Statement of interest
 
@@ -310,7 +310,7 @@ presented at the Meeting C++ 2022[@meetingcpp22] technical conference.
   C++20
 
 - [Rule of Cheese](https://github.com/jpenuchot/rule-of-cheese): A collection of
-  compile-time microbenchmarks to help set better C++ meta-programming guidelines
+  compile-time microbenchmarks to help set better C++ metaprogramming guidelines
   to improve compile-time performance
 
 # Acknowledgements
