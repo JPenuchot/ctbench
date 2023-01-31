@@ -57,6 +57,9 @@ cmake --build --preset release
 sudo cmake --build --preset release --target install
 ```
 
+An [AUR package](https://aur.archlinux.org/packages/ctbench-git) is available
+too for easier install and update.
+
 ### Integrating ctbench in your project
 
 Use `find_package(ctbench REQUIRED)` after installing it.
