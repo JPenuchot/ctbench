@@ -1,20 +1,19 @@
-Set of tools for comprehensive compile-time benchmarks.
+Compiler-assisted benchmarking for C++ metaprograms.
 
 - Github project: https://github.com/jpenuchot/ctbench
 - Online documentation: https://jpenuchot.github.io/ctbench-docs/
 
 ctbench allows you to declare and generate compile-time benchmark batches for
-given ranges, run them, aggregate time-trace reports, and plot them.
+given ranges, run them, aggregate and wrangle Clang profiling data,
+and plot them.
 
 The project was made to fit the needs of **scientific data collection and
 analysis**, thus it is not a one-shot profiler, but a set of tools that enable
 **reproductible data gathering** from user-defined, variably sized compile-time
-benchmarks.
-
-Inspired by [Metabench](https://github.com/ldionne/metabench), it was originally
-made to gather data from Clang's time-trace feature in order to gather more
-comprehensive data from the compiler itself, but it is able to measure compiler
-execution time as well, mostly for GCC compatibility.
+benchmarks using Clang's time-trace feature to understand the impact of
+metaprogramming techniques on compile time. On top of that, ctbench is also able
+to measure compiler execution time to support compilers that do not have
+built-in profilers like GCC.
 
 It has two main components: a C++ plotting toolset that can be used as a CLI
 program and as a library, and a CMake boilerplate library to generate benchmark
@@ -58,18 +57,20 @@ sudo cmake --build --preset release --target install
 ```
 
 An [AUR package](https://aur.archlinux.org/packages/ctbench-git) is available
-too for easier install and update.
+for easier install and update.
 
 ### Integrating ctbench in your project
 
-Use `find_package(ctbench REQUIRED)` after installing it.
+ctbench can be integrated to a CMake project using `find_package`:
 
-The [Rule of Cheese](https://github.com/JPenuchot/rule-of-cheese) project can be
-used as an example of how to use ctbench. It is the project that gave birth to
-this tool and is maintained as ctbench evolves.
+```cmake
+find_package(ctbench REQUIRED)
+```
 
-You may refer to the [CMake API reference](generated-docs/ctbench-api.md) for
-more details.
+The example project is provided as a reference project for ctbench integration
+and usage. For more details, an exhaustive [CMake API reference](
+https://jpenuchot.github.io/ctbench-docs/md_generated_docs_ctbench_api.html)
+is available.
 
 ### Declaring a benchmark case target
 
@@ -108,7 +109,7 @@ int sum() {
 ```
 
 By default, only compiler execution time is measured.
-If you want to generate plots using Clang's builtin profiler, add the following:
+If you want to generate plots using Clang's profiler data, add the following:
 
 ```cmake
 add_compile_options(-ftime-trace -ftime-trace-granularity=1)
@@ -163,7 +164,7 @@ of available plotters can be retrieved by running
 
 This configuration uses the `compare_by` plotter. It compares features targeted
 by the JSON pointers in `key_ptrs` across all benchmark cases. This is the
-easiest way to extract and compare as many time-trace features at once.
+easiest way to extract and compare as many relevant time-trace features at once.
 
 Back to CMake, you can now declare a graph target using this config to compare
 the time spent in the compiler execution, the frontend, and the backend between
@@ -183,6 +184,11 @@ For each group descriptor, a graph will be generated with one curve
 per benchmark case. In this case, you would then get 3 graphs
 (`ExecuteCompiler`, `Frontend`, and `Backend`) each with 5 curves (`enable_if`,
 `enable_if_t`, `if_constexpr`, `control`, and `requires`).
+
+## Related work
+
+- [poacher](https://github.com/jpenuchot/poacher)
+- [Rule of Cheese](https://github.com/jpenuchot/rule-of-cheese)
 
 ## References
 
