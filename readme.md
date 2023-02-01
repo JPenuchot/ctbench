@@ -1,4 +1,4 @@
-Compiler-assisted benchmarking for C++ metaprograms.
+Compiler-assisted benchmarking for the study of C++ metaprogram compile times.
 
 - Github project: https://github.com/jpenuchot/ctbench
 - Online documentation: https://jpenuchot.github.io/ctbench-docs/
