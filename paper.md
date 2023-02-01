@@ -42,10 +42,11 @@ declare and run benchmarks, then aggregate, filter out, and plot the data to
 analyze it. As such, **ctbench** is meant to become the first layer for a proper
 scientific methodology for analyzing compile-time program behavior.
 
-<!-- Plan -->
-
 We'll first have a look at current tools for compile-time profiling and
-benchmarking and establish the limits of what these tools can do.
+benchmarking and establish the limits of current tooling. Then we'll explain
+what **ctbench** brings to overcome these limits, and show how **ctbench** can
+help us gather and analyze relevant data from Clang's builtin profiler on a
+simple use case.
 
 # Statement of need
 
