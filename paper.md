@@ -103,37 +103,22 @@ developer friendliness, project integration, and component reusability.
 - a well documented CMake API for benchmark declaration, which can be generated
   using the C++ pre-processor,
 
-  Although CMake is not a proper programming language, it is used as the main
-  API for **ctbench** as most C++ developers are already familiar with it.
-
 - a set of JSON-configurable plotters with customizable data aggregation
-  features, which can be reused as a C++ library
-
-  The core library provides data representations to handle benchmarks cases
-  instantiated at several sizes, each instance being repeated at least once. It
-  also provides tools to aggregate, filter, and sort data from time-trace
-  events, as well as various plotters that provide different aggregation and
-  visualisation strategies. The plotters can generate files in various format
-  thanks to the Sciplot[@sciplot] library, and they are highly configurable
-  through JSON configuration files that are well documented. Default
-  configuration files can be generated using a dedicated CLI tool.
-
-Despite the fact that **ctbench** was made to handle Clang's time-trace events,
-it can also measure compiler execution time and report it in a synthetic
-time-trace file, making it partially compatible with GCC as well.
+  features and boilerplate code for data handling, which can be reused as a C++
+  library.
 
 In addition to **ctbench**'s time-trace handling, it has a compatibility mode
 for compilers that do not support it like GCC. This mode works by measuring
 compiler execution time just like Metabench[@metabench] and generating a
 time-trace file that contains compiler execution time. Moreover, the tooling
-makes defining compilers per-target possible within a CMake project, allowing
-black-box compiler performance comparisons between GCC and Clang for example or
-comparisons between different versions of a compiler.
+allows setting different compilers per target within a same CMake build,
+allowing black-box compiler performance comparisons between GCC and Clang for
+example or comparisons between different versions of a compiler.
 
 All these features make **ctbench** a very complete toolkit for compile-time
 benchmarking, making comprehensive benchmark quick and easy, and the only
-compile-time benchmarking tool that can gater Clang profiling data for scaling
-analysis.
+compile-time benchmarking tool that can use Clang profiling data for metaprogram
+scaling analysis.
 
 # Statement of interest
 
