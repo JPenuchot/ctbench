@@ -16,7 +16,9 @@
         "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
         "CMAKE_BUILD_TYPE": "Debug",
         "CMAKE_CXX_COMPILER": "clang++",
-        "CMAKE_C_COMPILER": "clang"
+        "CMAKE_C_COMPILER": "clang",
+        "CMAKE_CXX_LINKER_LAUNCHER": "clang++",
+        "CMAKE_C_LINKER_LAUNCHER": "clang"
       }
     },
     {
