@@ -13,7 +13,6 @@ RUN apt install -y \
   cmake \
   git \
   libboost-all-dev \
-  libbtbb-dev \
   libclang-dev \
   libfmt-dev \
   libllvm15 \
