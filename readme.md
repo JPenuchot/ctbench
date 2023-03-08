@@ -55,8 +55,8 @@ https://cmake.org/cmake/help/latest/release/3.25.html#properties)), which is not
 available on older versions of Ubuntu.
 
 Here is the list of Ubuntu packages needed to build ctbench: `catch2 clang cmake
-git libboost-all-dev libbtbb-dev libclang-dev libfmt-dev libllvm15 libtbb-dev
-libtbb12 llvm llvm-dev ninja-build nlohmann-json3-dev`
+git libboost-all-dev libclang-dev libfmt-dev libllvm15 libtbb-dev libtbb12 llvm
+llvm-dev ninja-build nlohmann-json3-dev`
 
 And here is the list of ArchLinux packages: `git cmake ninja clang llvm
 llvm-libs nlohmann-json fmt boost boost-libs tbb catch2`
