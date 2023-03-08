@@ -8,20 +8,21 @@ RUN apt update -y
 RUN apt upgrade -y
 
 RUN apt install -y \
-  git \
-  cmake \
-  ninja-build \
+  catch2 \
   clang \
-  libclang-dev \
-  llvm \
-  llvm-dev \
-  libllvm15 \
-  nlohmann-json3-dev \
-  libfmt-dev \
+  cmake \
+  git \
   libboost-all-dev \
   libbtbb-dev \
+  libclang-dev \
+  libfmt-dev \
+  libllvm15 \
+  libtbb-dev \
   libtbb12 \
-  catch2
+  llvm \
+  llvm-dev \
+  ninja-build \
+  nlohmann-json3-dev
 
 WORKDIR /tmp
 
