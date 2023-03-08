@@ -1,0 +1,7 @@
+name: 'Run tests'
+author: 'Jules Pénuchot'
+description: 'Runs ctbench tests'
+
+runs:
+  using: 'Docker'
+  image: 'Dockerfile'

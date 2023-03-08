@@ -1,11 +1,18 @@
-name: ctbench tests
+name: ctbench testing
 on: [push]
 
 jobs:
-  clang:
+  archlinux-testing:
     runs-on: ubuntu-latest
     steps:
       - name: Fetch current branch
         uses: actions/checkout@v3
-      - name: Compiling and running ctbench tests
-        uses: ./.github/actions/run-tests
+      - name: Compiling and running ctbench tests on Archlinux
+        uses: ./.github/actions/run-tests-archlinux
+  ubuntu-testing:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch current branch
+        uses: actions/checkout@v3
+      - name: Compiling and running ctbench tests on Ubuntu
+        uses: ./.github/actions/run-tests-ubuntu
