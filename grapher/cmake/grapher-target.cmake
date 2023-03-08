@@ -4,7 +4,7 @@ add_library(grapher STATIC ${GRAPHER_SOURCES})
 
 target_include_directories(grapher PUBLIC include)
 
-llvm_map_components_to_libnames(llvm_libs support)
+llvm_map_components_to_libnames(llvm_libs core support)
 
 target_link_libraries(
   grapher PUBLIC ctbench-compile-opts nlohmann_json::nlohmann_json
