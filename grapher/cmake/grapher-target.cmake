@@ -11,3 +11,4 @@ target_link_libraries(
   sciplot::sciplot fmt::fmt stdc++fs tbb ${llvm_libs})
 
 target_compile_options(grapher PUBLIC -DJSON_NOEXCEPTION -march=native -flto)
+target_link_options(grapher PUBLIC -flto)
