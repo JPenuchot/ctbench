@@ -10,15 +10,17 @@ RUN apt upgrade -y
 RUN apt install -y \
   git \
   cmake \
-  ninja \
+  ninja-build \
   clang \
+  libclang-dev \
   llvm \
-  llvm-libs \
-  nlohmann-json \
-  fmt \
-  boost \
-  boost-libs \
-  tbb \
+  llvm-dev \
+  libllvm15 \
+  nlohmann-json3-dev \
+  libfmt-dev \
+  libboost-all-dev \
+  libbtbb-dev \
+  libtbb12 \
   catch2
 
 WORKDIR /tmp
