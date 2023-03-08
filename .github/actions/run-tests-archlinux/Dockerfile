@@ -4,18 +4,18 @@ FROM archlinux/archlinux:base-devel
 
 RUN pacman -Syu --noconfirm
 RUN pacman -S --noconfirm \
-  git \
-  cmake \
-  ninja \
-  clang \
-  llvm \
-  llvm-libs \
-  nlohmann-json \
-  fmt \
   boost \
   boost-libs \
-  tbb \
-  catch2
+  catch2 \
+  clang \
+  cmake \
+  fmt \
+  git \
+  llvm \
+  llvm-libs \
+  ninja \
+  nlohmann-json \
+  tbb
 
 WORKDIR /tmp
 
