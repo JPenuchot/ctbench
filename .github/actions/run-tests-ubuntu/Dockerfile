@@ -11,6 +11,7 @@ RUN apt install -y \
   catch2 \
   clang \
   cmake \
+  curl \
   git \
   libboost-all-dev \
   libclang-dev \
@@ -21,7 +22,10 @@ RUN apt install -y \
   llvm \
   llvm-dev \
   ninja-build \
-  nlohmann-json3-dev
+  nlohmann-json3-dev \
+  tar \
+  unzip \
+  zip
 
 WORKDIR /tmp
 
