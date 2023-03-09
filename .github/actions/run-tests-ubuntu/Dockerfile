@@ -23,6 +23,7 @@ RUN apt install -y \
   llvm-dev \
   ninja-build \
   nlohmann-json3-dev \
+  pkg-config \
   tar \
   unzip \
   zip
