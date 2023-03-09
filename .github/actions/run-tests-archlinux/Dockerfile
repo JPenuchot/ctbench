@@ -9,13 +9,17 @@ RUN pacman -S --noconfirm \
   catch2 \
   clang \
   cmake \
+  curl \
   fmt \
   git \
   llvm \
   llvm-libs \
   ninja \
   nlohmann-json \
-  tbb
+  tar \
+  tbb \
+  unzip \
+  zip
 
 WORKDIR /tmp
 
