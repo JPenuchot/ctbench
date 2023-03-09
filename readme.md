@@ -68,7 +68,19 @@ The Sciplot library is required too. It can be installed on ArchLinux using the
 On Ubuntu, [you can install it system-wide using CMake](
 https://sciplot.github.io/installation/#installation-using-cmake). You may
 also use [vcpkg](https://vcpkg.io/en/getting-started.html) to install it
-locally. This method has not been tested yet, but instructions are on the way.
+locally:
+
+```sh
+git clone https://github.com/Microsoft/vcpkg.git
+./vcpkg/bootstrap-vcpkg.sh
+./vcpkg/vcpkg install sciplot fmt
+
+cmake --preset release \
+  -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+```
+
+Note: The `fmt` vcpkg dependency is needed as vcpkg may break its CMake
+integration from the system package manager for whatever reason.
 
 ### Installing ctbench
 
