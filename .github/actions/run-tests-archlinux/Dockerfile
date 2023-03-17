@@ -16,8 +16,8 @@ RUN pacman -S --noconfirm \
   llvm-libs \
   ninja \
   nlohmann-json \
+  onetbb \
   tar \
-  tbb \
   unzip \
   zip
 
