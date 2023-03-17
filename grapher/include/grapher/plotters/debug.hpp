@@ -15,8 +15,9 @@ namespace grapher::plotters {
 /// \endcode
 
 struct plotter_debug_t : public plotter_base_t {
-  void plot(benchmark_set_t const &bset, std::filesystem::path const &dest,
-            grapher::json_t const &config) const override;
+  void plot(const benchmark_set_t &input_benchmark_set,
+            const std::filesystem::path &destination_file,
+            const grapher::json_t &config) const override;
 
   grapher::json_t get_default_config() const override;
 };
