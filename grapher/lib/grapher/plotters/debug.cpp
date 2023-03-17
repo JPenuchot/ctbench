@@ -39,7 +39,7 @@ void plotter_debug_t::plot(const benchmark_set_t &input_benchmark_set,
 
       grapher::json_t &current_instance_json =
           json_result["benchmarks"][current_bench.name]["instances"]
-                     [current_instance.size];
+          [std::to_string(current_instance.size)];
 
       current_instance_json["repetitions"] =
           current_instance.repetitions.size();
