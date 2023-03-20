@@ -68,12 +68,13 @@ void plotter_stack_t::plot(benchmark_set_t const &bset,
       // Storing previous value as we iterate
       std::string curve_name = descriptor.name;
 
-      std::vector<predicate_t> predicates = get_predicates(descriptor);
+      std::vector<predicate_t> extracted_predicates =
+          get_predicates(descriptor);
 
       for (std::size_t i = 0; i < bench.instances.size(); i++) {
         benchmark_instance_t const &instance = bench.instances[i];
-        std::vector<grapher::value_t> const values =
-            get_values(instance, predicates, feature_value_jptr);
+        std::vector<grapher::value_t> const values = filtered_values_sums(
+            instance, extracted_predicates, feature_value_jptr);
 
         check(values.empty(),
               fmt::format("No event matching descriptor {} in benchmark {} "
