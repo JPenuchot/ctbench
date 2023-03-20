@@ -13,14 +13,24 @@ namespace grapher::plotters {
 /// - `draw_average` (`bool`): enable average curve drawing
 /// - `draw_points` (`bool`): enable value point drawing
 /// - `demangle` (`bool`): demangle C++ symbol names
+/// - `filters` (`array`, optional): array of predicates to filter observed
+///   events. Useful for large datasets.
 ///
 /// \copydoc base_default_config
 ///
 /// Example config:
 /// \code{.json}
 /// {
+///   "demangle": true,
 ///   "draw_average": true,
 ///   "draw_points": true,
+///   "filters": [
+///     {
+///       "pointer": "/name",
+///       "regex": "*",
+///       "type": "regex"
+///     }
+///   ],
 ///   "height": 500,
 ///   "key_ptrs": [
 ///     "/name",
