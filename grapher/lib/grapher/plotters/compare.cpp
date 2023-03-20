@@ -72,7 +72,7 @@ void plotter_compare_t::plot(benchmark_set_t const &bset,
               error_level_t::warning_v);
 
         std::vector<grapher::value_t> const values =
-            get_values(instance, predicates, value_json_pointer);
+            filtered_values_sums(instance, predicates, value_json_pointer);
 
         check(!values.empty(),
               fmt::format("No event in benchmark {} at size {} matched by "
