@@ -1,4 +1,6 @@
+#include "grapher/predicates.hpp"
 #include <algorithm>
+#include <bits/ranges_algo.h>
 #include <execution>
 #include <filesystem>
 #include <fstream>
@@ -69,7 +71,7 @@ inline void process_event(curve_aggregate_map_t &output_map,
             fmt::format("Value at {} is not an integer: {}",
                         parameters.value_pointer.to_string(), event.dump()),
             info_v)) {
-    // Adding value
+    // Storing value
     output_map[key][parameters.bench_case.name][parameters.instance.size]
         .push_back(event[parameters.value_pointer]);
   }
@@ -77,32 +79,47 @@ inline void process_event(curve_aggregate_map_t &output_map,
 
 /// Scans event data at value_pointer and generates curves for each key
 /// generated from key_pointers. The curves are stored in a nested map
-/// structure.
+/// structure which is far from optimal but we're limited by gnuplot's
+/// performance anyway.
 curve_aggregate_map_t
-get_bench_curves(benchmark_set_t const &bset,
+get_bench_curves(benchmark_set_t const &input,
                  std::vector<json_t::json_pointer> const &key_pointers,
-                 json_t::json_pointer const &value_pointer) {
+                 json_t::json_pointer const &value_pointer,
+                 std::vector<predicate_t> filters = {}) {
   ZoneScoped;
   namespace fs = std::filesystem;
 
   curve_aggregate_map_t res;
 
-  for (benchmark_case_t const &bench_case : bset) {
+  // Unfolding the benchmark set data structure
+  for (benchmark_case_t const &bench_case : input) {
     for (benchmark_instance_t const &instance : bench_case.instances) {
       for (fs::path const &repetition : instance.repetitions) {
+        // JSON file extraction
         grapher::json_t repetition_json;
         {
           std::ifstream repetition_ifstream(repetition);
           repetition_ifstream >> repetition_json;
         }
 
-        for (grapher::json_t const &event : get_as_ref<json_t::array_t const &>(
-                 repetition_json, "traceEvents")) {
-          process_event(res, event,
-                        {.key_pointers = key_pointers,
-                         .value_pointer = value_pointer,
-                         .bench_case = bench_case,
-                         .instance = instance});
+        // Time-trace event reading
+        for (grapher::json_t const &current_event :
+             get_as_ref<json_t::array_t const &>(repetition_json,
+                                                 "traceEvents")) {
+          // Applying filter
+          if (std::ranges::all_of(
+                  filters,
+                  [&current_event](predicate_t const &predicate) -> bool {
+                    return predicate(current_event);
+                  })) {
+            // Event processing, ie. building the key and storing the value in
+            // the imbricated map data structure
+            process_event(res, current_event,
+                          {.key_pointers = key_pointers,
+                           .value_pointer = value_pointer,
+                           .bench_case = bench_case,
+                           .instance = instance});
+          }
         }
       }
     }
@@ -142,6 +159,13 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
   res["draw_average"] = true;
   res["draw_points"] = true;
   res["demangle"] = true;
+
+  // Simple default filter as an example
+  res["filters"] = json_t::array({grapher::json_t{
+      {"type", "regex"},
+      {"pointer", "/name"},
+      {"regex", "*"},
+  }});
 
   return res;
 }
@@ -239,9 +263,20 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
                    return json_t::json_pointer{pointer};
                  });
 
-  // Wrangling
+  // Optional: filter extraction
+  std::vector<predicate_t> filters;
+  if (config.contains("filters") && config["filters"].is_array()) {
+    grapher::json_t::array_t const &filter_json_array =
+        grapher::get_as_ref<grapher::json_t::array_t const &>(config,
+                                                              "filters");
+    filters.reserve(filter_json_array.size());
+    std::ranges::transform(filter_json_array, std::back_inserter(filters),
+                           &get_predicate);
+  }
+
+  // Wrangling happens there
   curve_aggregate_map_t curve_aggregate_map =
-      get_bench_curves(bset, key_ptrs, value_ptr);
+      get_bench_curves(bset, key_ptrs, value_ptr, filters);
 
   // Ensure the destination folder exists
   fs::create_directories(dest);
