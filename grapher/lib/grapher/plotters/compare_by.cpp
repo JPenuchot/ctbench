@@ -19,6 +19,7 @@
 #include <grapher/plotters/compare_by.hpp>
 #include <grapher/utils/error.hpp>
 #include <grapher/utils/json.hpp>
+#include <grapher/utils/math.hpp>
 #include <grapher/utils/tracy.hpp>
 
 namespace grapher::plotters {
@@ -182,16 +183,6 @@ struct generate_plot_parameters_t {
   bool demangle;
 };
 
-/// Conputes median of a series of value_t values.
-inline value_t compute_median(std::vector<value_t> values) {
-  check(!values.empty(), "Cannot compute median of an empty vector.");
-  std::ranges::sort(values);
-  bool y_values_even = (values.size() / 2) * 2 == values.size();
-  return y_values_even
-             ? ((values[values.size() / 2] + values[values.size() / 2 + 1]) / 2)
-             : (values[values.size() / 2 + 1]);
-}
-
 /// Function to generate one plot.
 /// NB: This function must remain free of config reading logic.
 inline void generate_plot(
@@ -221,18 +212,14 @@ inline void generate_plot(
     for (auto const &[x_value, y_values] : benchmark_curve) {
       // Building average curve vector
       if (parameters.draw_average && !y_values.empty()) {
-        grapher::value_t const sum =
-            std::reduce(y_values.begin(), y_values.end());
-        grapher::value_t const average_point_y = sum / y_values.size();
-
         x_average_curve.push_back(x_value);
-        y_average_curve.push_back(average_point_y);
+        y_average_curve.push_back(math::average(y_values));
       }
 
       // Building median curve vector
       if (parameters.draw_median && !y_values.empty()) {
         x_average_curve.push_back(x_value);
-        y_average_curve.push_back(compute_median(y_values));
+        y_average_curve.push_back(math::median(y_values));
       }
 
       // Building point vector
@@ -250,6 +237,12 @@ inline void generate_plot(
       // Draw average curve
       plot.drawCurve(x_average_curve, y_average_curve)
           .label(bench_name + " average");
+    }
+
+    if (parameters.draw_median && !x_median_curve.empty()) {
+      // Draw median curve
+      plot.drawCurve(x_median_curve, y_median_curve)
+          .label(bench_name + " median");
     }
 
     if (parameters.draw_points && !x_points.empty()) {
