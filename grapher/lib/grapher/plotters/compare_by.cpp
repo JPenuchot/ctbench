@@ -158,6 +158,7 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
   res["value_ptr"] = "/dur";
   res["draw_average"] = true;
   res["draw_points"] = true;
+  res["draw_median"] = true;
   res["demangle"] = true;
 
   // Simple default filter as an example
@@ -177,8 +178,19 @@ struct generate_plot_parameters_t {
   grapher::json_t const &plotter_config;
   bool draw_average;
   bool draw_points;
+  bool draw_median;
   bool demangle;
 };
+
+/// Conputes median of a series of value_t values.
+inline value_t compute_median(std::vector<value_t> values) {
+  check(!values.empty(), "Cannot compute median of an empty vector.");
+  std::ranges::sort(values);
+  bool y_values_even = (values.size() / 2) * 2 == values.size();
+  return y_values_even
+             ? ((values[values.size() / 2] + values[values.size() / 2 + 1]) / 2)
+             : (values[values.size() / 2 + 1]);
+}
 
 /// Function to generate one plot.
 /// NB: This function must remain free of config reading logic.
@@ -194,8 +206,12 @@ inline void generate_plot(
 
   for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
     // Average curve coord vectors
-    std::vector<grapher::value_t> x_curve;
-    std::vector<grapher::value_t> y_curve;
+    std::vector<grapher::value_t> x_average_curve;
+    std::vector<grapher::value_t> y_average_curve;
+
+    // Median curve coord vectors
+    std::vector<grapher::value_t> x_median_curve;
+    std::vector<grapher::value_t> y_median_curve;
 
     // Point coord vectors
     std::vector<grapher::value_t> x_points;
@@ -209,8 +225,14 @@ inline void generate_plot(
             std::reduce(y_values.begin(), y_values.end());
         grapher::value_t const average_point_y = sum / y_values.size();
 
-        x_curve.push_back(x_value);
-        y_curve.push_back(average_point_y);
+        x_average_curve.push_back(x_value);
+        y_average_curve.push_back(average_point_y);
+      }
+
+      // Building median curve vector
+      if (parameters.draw_median && !y_values.empty()) {
+        x_average_curve.push_back(x_value);
+        y_average_curve.push_back(compute_median(y_values));
       }
 
       // Building point vector
@@ -224,9 +246,10 @@ inline void generate_plot(
 
     // Plot drawing
 
-    if (parameters.draw_average && !x_curve.empty()) {
+    if (parameters.draw_average && !x_average_curve.empty()) {
       // Draw average curve
-      plot.drawCurve(x_curve, y_curve).label(bench_name + " average");
+      plot.drawCurve(x_average_curve, y_average_curve)
+          .label(bench_name + " average");
     }
 
     if (parameters.draw_points && !x_points.empty()) {
@@ -255,6 +278,7 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
 
   bool draw_average = config.value("draw_average", true);
   bool draw_points = config.value("draw_points", true);
+  bool draw_median = config.value("draw_median", true);
   bool demangle = config.value("demangle", true);
 
   std::vector<json_t::json_pointer> key_ptrs;
@@ -289,6 +313,7 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
                                             .plotter_config = config,
                                             .draw_average = draw_average,
                                             .draw_points = draw_points,
+                                            .draw_median = draw_median,
                                             .demangle = demangle});
       });
 }
