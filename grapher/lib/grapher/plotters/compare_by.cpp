@@ -196,13 +196,12 @@ inline void generate_plot(
   sciplot::Plot2D plot;
 
   for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
-    // Average curve coord vectors
-    std::vector<grapher::value_t> x_average_curve;
-    std::vector<grapher::value_t> y_average_curve;
+    std::vector<grapher::value_t> x_curve;
 
-    // Median curve coord vectors
-    std::vector<grapher::value_t> x_median_curve;
-    std::vector<grapher::value_t> y_median_curve;
+    // Average curve coord vectors
+    std::vector<double> y_average_curve;
+    std::vector<double> y_delta_curve;
+    std::vector<double> y_median_curve;
 
     // Point coord vectors
     std::vector<grapher::value_t> x_points;
@@ -212,13 +211,14 @@ inline void generate_plot(
     for (auto const &[x_value, y_values] : benchmark_curve) {
       // Building average curve vector
       if (parameters.draw_average && !y_values.empty()) {
-        x_average_curve.push_back(x_value);
+        x_curve.push_back(x_value);
         y_average_curve.push_back(math::average(y_values));
+        y_delta_curve.push_back(math::stddev(y_values));
       }
 
       // Building median curve vector
       if (parameters.draw_median && !y_values.empty()) {
-        x_median_curve.push_back(x_value);
+        x_curve.push_back(x_value);
         y_median_curve.push_back(math::median(y_values));
       }
 
@@ -235,14 +235,13 @@ inline void generate_plot(
 
     if (parameters.draw_average) {
       // Draw average curve
-      plot.drawCurve(x_average_curve, y_average_curve)
-          .label(bench_name + " average");
+      plot.drawCurveWithErrorBarsY(x_curve, y_average_curve, y_delta_curve)
+          .label(bench_name + " average with stddev");
     }
 
     if (parameters.draw_median) {
       // Draw median curve
-      plot.drawCurve(x_median_curve, y_median_curve)
-          .label(bench_name + " median");
+      plot.drawCurve(x_curve, y_median_curve).label(bench_name + " median");
     }
 
     if (parameters.draw_points) {
