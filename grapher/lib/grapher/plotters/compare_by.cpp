@@ -218,8 +218,8 @@ inline void generate_plot(
 
       // Building median curve vector
       if (parameters.draw_median && !y_values.empty()) {
-        x_average_curve.push_back(x_value);
-        y_average_curve.push_back(math::median(y_values));
+        x_median_curve.push_back(x_value);
+        y_median_curve.push_back(math::median(y_values));
       }
 
       // Building point vector
@@ -233,19 +233,19 @@ inline void generate_plot(
 
     // Plot drawing
 
-    if (parameters.draw_average && !x_average_curve.empty()) {
+    if (parameters.draw_average) {
       // Draw average curve
       plot.drawCurve(x_average_curve, y_average_curve)
           .label(bench_name + " average");
     }
 
-    if (parameters.draw_median && !x_median_curve.empty()) {
+    if (parameters.draw_median) {
       // Draw median curve
       plot.drawCurve(x_median_curve, y_median_curve)
           .label(bench_name + " median");
     }
 
-    if (parameters.draw_points && !x_points.empty()) {
+    if (parameters.draw_points) {
       // Draw points
       plot.drawPoints(x_points, y_points).label(bench_name + " points");
     }
