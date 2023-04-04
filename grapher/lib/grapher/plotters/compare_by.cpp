@@ -256,6 +256,8 @@ inline void generate_plot(
     }
   }
 
+  plot.legend().atBottom();
+
   save_plot(std::move(plot),
             parameters.plot_output_folder / to_string(key, parameters.demangle),
             parameters.plotter_config);
