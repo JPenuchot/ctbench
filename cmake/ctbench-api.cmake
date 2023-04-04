@@ -34,7 +34,8 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
 
   # Compiler overriding
   if(_CTBENCH_OVERRIDE_COMPILER)
-    target_compile_options(${target_name} PRIVATE --override-compiler=${_CTBENCH_OVERRIDE_COMPILER})
+    target_compile_options(${target_name} PRIVATE
+      --override-compiler=${_CTBENCH_OVERRIDE_COMPILER})
   endif()
 endfunction(_ctbench_internal_add_compile_benchmark)
 
@@ -52,6 +53,55 @@ endfunction(_ctbench_internal_add_compile_benchmark)
 #! at once.
 
 add_custom_target(ctbench-graph-all)
+
+#!
+#! --
+
+## =============================================================================
+#!
+#! ### ctbench_add_benchmark_for_range(name source range samples)
+#!
+#! Add a benchmark for a given source, with a given size range. Please note that
+#! ctbench_add_benchmark_for_range does *not* add -ftime-trace flags. If not present,
+#! the compiler execution time will be measured by the compiler execution
+#! wrapper, and only this data will be reported.
+#!
+#! If you need Clang's time-trace data, please specify it manually,
+#! and do not forget to set -ftime-trace-granularity if needed.
+#!
+#! - `name`: Name of benchmark
+#! - `source`: Source file
+#! - `range`: List containing the iteration range parameters,
+#!   ie. the beginning, end, and step sizes,
+#!   eg. `"0;10;2"` for sizes going from 0 to 10 by increments of 2.
+#! - `samples`: Number of samples per iteration
+
+function(
+  ctbench_add_benchmark_for_range
+  name
+  source
+  range
+  samples)
+  add_custom_target(${name})
+  # Reading range parameters
+  list(GET range 0 begin)
+  list(GET range 1 end)
+  list(GET range 2 step)
+
+  foreach(size RANGE ${begin} ${end} ${step})
+    foreach(iteration RANGE 1 ${samples})
+      # Subtargets aren't meant to be compiled by end-users
+      set(subtarget_name "_${name}-size_${size}-it_${iteration}")
+
+      _ctbench_internal_add_compile_benchmark(
+        ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
+        "-DBENCHMARK_SIZE=${size}")
+
+      add_dependencies(${name} ${subtarget_name})
+    endforeach()
+  endforeach()
+
+endfunction(ctbench_add_benchmark_for_range)
 
 #!
 #! --
@@ -82,10 +132,44 @@ function(
   step
   samples)
   # Setting names
+  ctbench_add_benchmark_for_range(
+    ${name}
+    ${source}
+    "${begin};${end};${step}"
+    ${samples})
+endfunction(ctbench_add_benchmark)
+
+#!
+#! --
+
+## =============================================================================
+#!
+#! ### ctbench_add_benchmark_for_size_list(name source begin end step samples)
+#!
+#! Add a benchmark for a given source, for a list of bench sizes. Please note
+#! that ctbench_add_benchmark_for_size_list does *not* add -ftime-trace flags. If not
+#! present, the compiler execution time will be measured by the compiler
+#! execution wrapper, and only this data will be reported.
+#!
+#! If you need Clang's time-trace data, please specify it manually,
+#! and do not forget to set -ftime-trace-granularity if needed.
+#!
+#! - `name`: Name of benchmark
+#! - `source`: Source file
+#! - `size_list`: Iteration size list (eg. `"0;1;2;3;4;5;10;20"`)
+#! - `samples`: Number of samples per iteration
+
+function(
+  ctbench_add_benchmark_for_size_list
+  name
+  source
+  size_list
+  samples)
+  # Setting names
   add_custom_target(${name})
 
   foreach(iteration RANGE 1 ${samples})
-    foreach(size RANGE ${begin} ${end} ${step})
+    foreach(size ${size_list})
       # Subtargets aren't meant to be compiled by end-users
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
 
@@ -96,8 +180,7 @@ function(
       add_dependencies(${name} ${subtarget_name})
     endforeach()
   endforeach()
-
-endfunction(ctbench_add_benchmark)
+endfunction(ctbench_add_benchmark_for_size_list)
 
 #!
 #! --
@@ -127,7 +210,6 @@ function(
   generator)
   # Setting names
   add_custom_target(${name})
-
   foreach(iteration RANGE 1 ${samples})
     foreach(size RANGE ${begin} ${end} ${step})
       # Subtargets aren't meant to be compiled by end-users
@@ -142,7 +224,6 @@ function(
       add_dependencies(${name} ${subtarget_name})
     endforeach()
   endforeach()
-
 endfunction(ctbench_add_custom_benchmark)
 
 #!
