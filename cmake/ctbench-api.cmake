@@ -114,9 +114,8 @@ endfunction(ctbench_add_benchmark)
 #!
 #! - `name`: Name of benchmark
 #! - `source`: Source file
-#! - `range_var`: List containing the iteration range parameters,
-#!   ie. the beginning, end, and step sizes,
-#!   eg. `"0;10;2"` for sizes going from 0 to 10 by increments of 2.
+#! - `range_var`: Variable name of a list containing begin, end, and step
+#!   size parameters.
 #! - `samples`: Number of samples per iteration
 
 function(
@@ -149,20 +148,20 @@ endfunction(ctbench_add_benchmark_for_range)
 #!
 #! - `name`: Name of benchmark
 #! - `source`: Source file
-#! - `size_list`: Iteration size list (eg. `"0;1;2;3;4;5;10;20"`)
+#! - `size_list_var`: Iteration size list variable name
 #! - `samples`: Number of samples per iteration
 
 function(
   ctbench_add_benchmark_for_size_list
   name
   source
-  size_list
+  size_list_var
   samples)
   # Setting names
   add_custom_target(${name})
 
   foreach(iteration RANGE 1 ${samples})
-    foreach(size ${size_list})
+    foreach(size ${size_list_var})
       # Subtargets aren't meant to be compiled by end-users
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
 
