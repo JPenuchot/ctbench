@@ -59,7 +59,7 @@ add_custom_target(ctbench-graph-all)
 
 ## =============================================================================
 #!
-#! ### ctbench_add_benchmark_for_range(name source range samples)
+#! ### ctbench_add_benchmark_for_range(name source range_params samples)
 #!
 #! Add a benchmark for a given source, with a given size range. Please note that
 #! ctbench_add_benchmark_for_range does *not* add -ftime-trace flags. If not present,
@@ -71,7 +71,7 @@ add_custom_target(ctbench-graph-all)
 #!
 #! - `name`: Name of benchmark
 #! - `source`: Source file
-#! - `range`: List containing the iteration range parameters,
+#! - `range_params`: List containing the iteration range parameters,
 #!   ie. the beginning, end, and step sizes,
 #!   eg. `"0;10;2"` for sizes going from 0 to 10 by increments of 2.
 #! - `samples`: Number of samples per iteration
@@ -80,13 +80,13 @@ function(
   ctbench_add_benchmark_for_range
   name
   source
-  range
+  range_params
   samples)
   add_custom_target(${name})
   # Reading range parameters
-  list(GET range 0 begin)
-  list(GET range 1 end)
-  list(GET range 2 step)
+  list(GET ${range_params} 0 begin)
+  list(GET ${range_params} 1 end)
+  list(GET ${range_params} 2 step)
 
   foreach(size RANGE ${begin} ${end} ${step})
     foreach(iteration RANGE 1 ${samples})
