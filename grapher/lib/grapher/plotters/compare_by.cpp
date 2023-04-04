@@ -158,6 +158,7 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
   res["key_ptrs"] = json_t::array({"/name", "/args/detail"});
   res["value_ptr"] = "/dur";
   res["draw_average"] = true;
+  res["average_error_bars"] = false;
   res["draw_points"] = true;
   res["draw_median"] = true;
   res["demangle"] = true;
@@ -178,6 +179,7 @@ struct generate_plot_parameters_t {
   std::filesystem::path const &plot_output_folder;
   grapher::json_t const &plotter_config;
   bool draw_average;
+  bool average_error_bars;
   bool draw_points;
   bool draw_median;
   bool demangle;
@@ -209,16 +211,16 @@ inline void generate_plot(
 
     // Build point & curve vectors
     for (auto const &[x_value, y_values] : benchmark_curve) {
+      x_curve.push_back(x_value);
+
       // Building average curve vector
       if (parameters.draw_average && !y_values.empty()) {
-        x_curve.push_back(x_value);
         y_average_curve.push_back(math::average(y_values));
         y_delta_curve.push_back(math::stddev(y_values));
       }
 
       // Building median curve vector
       if (parameters.draw_median && !y_values.empty()) {
-        x_curve.push_back(x_value);
         y_median_curve.push_back(math::median(y_values));
       }
 
@@ -233,19 +235,23 @@ inline void generate_plot(
 
     // Plot drawing
 
+    // Draw average curve
     if (parameters.draw_average) {
-      // Draw average curve
-      plot.drawCurveWithErrorBarsY(x_curve, y_average_curve, y_delta_curve)
-          .label(bench_name + " average with stddev");
+      if (parameters.average_error_bars) {
+        plot.drawCurveWithErrorBarsY(x_curve, y_average_curve, y_delta_curve)
+            .label(bench_name + " average with stddev");
+      } else {
+        plot.drawCurve(x_curve, y_average_curve).label(bench_name + " average");
+      }
     }
 
+    // Draw median curve
     if (parameters.draw_median) {
-      // Draw median curve
       plot.drawCurve(x_curve, y_median_curve).label(bench_name + " median");
     }
 
+    // Draw points
     if (parameters.draw_points) {
-      // Draw points
       plot.drawPoints(x_points, y_points).label(bench_name + " points");
     }
   }
@@ -269,6 +275,7 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   json_t::json_pointer value_ptr(config.value("value_ptr", "/dur"));
 
   bool draw_average = config.value("draw_average", true);
+  bool average_error_bars = config.value("average_error_bars", false);
   bool draw_points = config.value("draw_points", true);
   bool draw_median = config.value("draw_median", true);
   bool demangle = config.value("demangle", true);
@@ -298,16 +305,18 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   fs::create_directories(dest);
 
   // Drawing, ie. unwrapping the nested maps and drawing curves + saving plots
-  std::for_each(
-      std::execution::par_unseq, curve_aggregate_map.begin(),
-      curve_aggregate_map.end(), [&](auto const &aggregate_key_value) {
-        generate_plot(aggregate_key_value, {.plot_output_folder = dest,
-                                            .plotter_config = config,
-                                            .draw_average = draw_average,
-                                            .draw_points = draw_points,
-                                            .draw_median = draw_median,
-                                            .demangle = demangle});
-      });
+  std::for_each(std::execution::par_unseq, curve_aggregate_map.begin(),
+                curve_aggregate_map.end(),
+                [&](auto const &aggregate_key_value) {
+                  generate_plot(aggregate_key_value,
+                                {.plot_output_folder = dest,
+                                 .plotter_config = config,
+                                 .draw_average = draw_average,
+                                 .average_error_bars = average_error_bars,
+                                 .draw_points = draw_points,
+                                 .draw_median = draw_median,
+                                 .demangle = demangle});
+                });
 }
 
 } // namespace grapher::plotters
