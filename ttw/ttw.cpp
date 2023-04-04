@@ -15,6 +15,7 @@
 
 #include <chrono>
 #include <cstdlib>
+#include <ctime>
 #include <filesystem>
 #include <fstream>
 #include <sstream>
@@ -38,14 +39,15 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
   rusage children_rusage_end;
 
   getrusage(RUSAGE_CHILDREN, &children_rusage_begin);
-  // TODO: Bypass shell call and get return value
+  // TODO: Bypass shell call?
   int const ret = std::system(compile_command.c_str());
   getrusage(RUSAGE_CHILDREN, &children_rusage_end);
 
-  if (WEXITSTATUS(ret) != 0) {
-    fmt::print("Following compile command exited with non-zero status: `{}`.\n",
-               compile_command);
-    exit(-1);
+  // Check child exit status
+  if (int const exit_status = WEXITSTATUS(ret); exit_status != 0) {
+    fmt::print("Following compile command exited with status {}: `{}`.\n",
+               exit_status, compile_command);
+    exit(exit_status);
   };
 
   // Create destination directory
