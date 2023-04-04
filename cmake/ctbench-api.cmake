@@ -59,55 +59,6 @@ add_custom_target(ctbench-graph-all)
 
 ## =============================================================================
 #!
-#! ### ctbench_add_benchmark_for_range(name source range_params samples)
-#!
-#! Add a benchmark for a given source, with a given size range. Please note that
-#! ctbench_add_benchmark_for_range does *not* add -ftime-trace flags. If not present,
-#! the compiler execution time will be measured by the compiler execution
-#! wrapper, and only this data will be reported.
-#!
-#! If you need Clang's time-trace data, please specify it manually,
-#! and do not forget to set -ftime-trace-granularity if needed.
-#!
-#! - `name`: Name of benchmark
-#! - `source`: Source file
-#! - `range_params`: List containing the iteration range parameters,
-#!   ie. the beginning, end, and step sizes,
-#!   eg. `"0;10;2"` for sizes going from 0 to 10 by increments of 2.
-#! - `samples`: Number of samples per iteration
-
-function(
-  ctbench_add_benchmark_for_range
-  name
-  source
-  range_params
-  samples)
-  add_custom_target(${name})
-  # Reading range parameters
-  list(GET ${range_params} 0 begin)
-  list(GET ${range_params} 1 end)
-  list(GET ${range_params} 2 step)
-
-  foreach(size RANGE ${begin} ${end} ${step})
-    foreach(iteration RANGE 1 ${samples})
-      # Subtargets aren't meant to be compiled by end-users
-      set(subtarget_name "_${name}-size_${size}-it_${iteration}")
-
-      _ctbench_internal_add_compile_benchmark(
-        ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
-        "-DBENCHMARK_SIZE=${size}")
-
-      add_dependencies(${name} ${subtarget_name})
-    endforeach()
-  endforeach()
-
-endfunction(ctbench_add_benchmark_for_range)
-
-#!
-#! --
-
-## =============================================================================
-#!
 #! ### ctbench_add_benchmark(name source begin end step samples)
 #!
 #! Add a benchmark for a given source, with a given size range. Please note that
@@ -132,12 +83,54 @@ function(
   step
   samples)
   # Setting names
-  ctbench_add_benchmark_for_range(
-    ${name}
-    ${source}
-    "${begin};${end};${step}"
-    ${samples})
+  foreach(size RANGE ${begin} ${end} ${step})
+    foreach(iteration RANGE 1 ${samples})
+      # Subtargets aren't meant to be compiled by end-users
+      set(subtarget_name "_${name}-size_${size}-it_${iteration}")
+
+      _ctbench_internal_add_compile_benchmark(
+        ${subtarget_name} "${name}/${size}/${iteration}.json" "${source}"
+        "-DBENCHMARK_SIZE=${size}")
+
+      add_dependencies(${name} ${subtarget_name})
+    endforeach()
+  endforeach()
 endfunction(ctbench_add_benchmark)
+
+#!
+#! --
+
+## =============================================================================
+#!
+#! ### ctbench_add_benchmark_for_range(name source range_params samples)
+#!
+#! Add a benchmark for a given source, with a given size range. Please note that
+#! ctbench_add_benchmark_for_range does *not* add -ftime-trace flags. If not present,
+#! the compiler execution time will be measured by the compiler execution
+#! wrapper, and only this data will be reported.
+#!
+#! If you need Clang's time-trace data, please specify it manually,
+#! and do not forget to set -ftime-trace-granularity if needed.
+#!
+#! - `name`: Name of benchmark
+#! - `source`: Source file
+#! - `range_var`: List containing the iteration range parameters,
+#!   ie. the beginning, end, and step sizes,
+#!   eg. `"0;10;2"` for sizes going from 0 to 10 by increments of 2.
+#! - `samples`: Number of samples per iteration
+
+function(
+  ctbench_add_benchmark_for_range
+  name
+  source
+  range_var
+  samples)
+  add_custom_target(${name})
+  list(GET ${range_var} 0 begin)
+  list(GET ${range_var} 1 end)
+  list(GET ${range_var} 2 step)
+  ctbench_add_benchmark(${name} ${source} ${begin} ${end} ${step} ${samples})
+endfunction(ctbench_add_benchmark_for_range)
 
 #!
 #! --
