@@ -17,13 +17,15 @@
 #include <cstdlib>
 #include <filesystem>
 #include <fstream>
-#include <iostream>
 #include <sstream>
 #include <string_view>
 
 #include <sys/resource.h>
+#include <sys/wait.h>
 
 #include <nlohmann/json.hpp>
+
+#include <fmt/core.h>
 
 inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
                               std::string compile_command,
@@ -39,6 +41,12 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
   // TODO: Bypass shell call and get return value
   int const ret = std::system(compile_command.c_str());
   getrusage(RUSAGE_CHILDREN, &children_rusage_end);
+
+  if (WEXITSTATUS(ret) != 0) {
+    fmt::print("Following compile command exited with non-zero status: `{}`.\n",
+               compile_command);
+    exit(-1);
+  };
 
   // Create destination directory
   if (std::filesystem::path const out_parent =
@@ -89,12 +97,11 @@ int main(int argc, char const *argv[]) {
   constexpr std::string_view override_flag_prefix = "--override-compiler=";
 
   if (argc < 3) {
-    std::cout << "Usage: " << argv[exec_id]
-              << "time_trace_export_path.json COMPILER [ARGS]...\n\n"
-              << override_flag_prefix
-              << "<COMPILER> - Override previously set compiler\n\n"
-              << "If CTBENCH_TTW_VERBOSE is set, the program will display the "
-                 "compile command.\n";
+    fmt::print("Usage: {} time_trace_export_path.json COMPILER [ARGS]...\n\n"
+               "{} <COMPILER> - Override previously set compiler\n\n"
+               "If CTBENCH_TTW_VERBOSE is set, "
+               "the program will display the compile command.\n",
+               argv[exec_id], override_flag_prefix);
     return 1;
   }
 
@@ -139,7 +146,7 @@ int main(int argc, char const *argv[]) {
       std::move(compiler_executable) + args_builder.str();
 
   if (std::getenv("CTBENCH_TTW_VERBOSE") != nullptr) {
-    std::cout << "[CTBENCH_TTW] Compile command: " << compile_command << '\n';
+    fmt::print("[CTBENCH_TTW] Compile command: {}\n", compile_command);
   }
 
   return get_timetrace_file(argv[path_id], std::move(compile_command),
