@@ -239,7 +239,7 @@ inline void generate_plot(
     if (parameters.draw_average) {
       if (parameters.average_error_bars) {
         plot.drawCurveWithErrorBarsY(x_curve, y_average_curve, y_delta_curve)
-            .label(bench_name + " average with stddev");
+            .label(bench_name + " avg + stddev");
       } else {
         plot.drawCurve(x_curve, y_average_curve).label(bench_name + " average");
       }
