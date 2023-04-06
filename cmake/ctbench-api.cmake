@@ -82,6 +82,7 @@ function(
   end
   step
   samples)
+  add_custom_target(${name})
   # Setting names
   foreach(size RANGE ${begin} ${end} ${step})
     foreach(iteration RANGE 1 ${samples})
@@ -124,7 +125,6 @@ function(
   source
   range_var
   samples)
-  add_custom_target(${name})
   list(GET ${range_var} 0 begin)
   list(GET ${range_var} 1 end)
   list(GET ${range_var} 2 step)
