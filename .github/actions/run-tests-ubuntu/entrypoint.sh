@@ -13,3 +13,7 @@ cmake --preset release -G Ninja \
   -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
 
 cmake --build --preset release --target test-all
+
+cd example || exit
+cmake --preset release
+cmake --build --preset release
