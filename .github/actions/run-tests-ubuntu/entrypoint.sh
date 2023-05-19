@@ -14,6 +14,8 @@ cmake --preset release -G Ninja \
 
 cmake --build --preset release --target test-all
 
+cmake --build --preset release --target install
+
 cd example || exit
 cmake --preset release
 cmake --build --preset release
