@@ -5,6 +5,7 @@ jobs:
   archlinux-testing:
     runs-on: self-hosted
     container:
+      image: archlinux/archlinux
       options: -u root
     steps:
       - name: Fetch current branch
@@ -14,6 +15,7 @@ jobs:
   ubuntu-testing:
     runs-on: self-hosted
     container:
+      image: ubuntu:23.04
       options: -u root
     steps:
       - name: Fetch current branch
