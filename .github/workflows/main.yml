@@ -4,6 +4,8 @@ on: [push]
 jobs:
   archlinux-testing:
     runs-on: self-hosted
+    container:
+      options: -u root
     steps:
       - name: Fetch current branch
         uses: actions/checkout@v3
@@ -11,6 +13,8 @@ jobs:
         uses: ./.github/actions/run-tests-archlinux
   ubuntu-testing:
     runs-on: self-hosted
+    container:
+      options: -u root
     steps:
       - name: Fetch current branch
         uses: actions/checkout@v3
