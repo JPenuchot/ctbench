@@ -10,8 +10,9 @@ target_compile_options(
             -Wold-style-cast
             -Wdouble-promotion
             -Wshadow
-            -fno-rtti
             -march=native
-            -flto)
+            -fno-rtti
+            -flto
+            -fPIC)
 
 target_compile_features(ctbench-compile-opts INTERFACE cxx_std_20)
