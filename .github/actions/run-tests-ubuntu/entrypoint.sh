@@ -1,4 +1,4 @@
-#!/bin/sh -l
+#!/bin/sh -le
 
 export VCPKG_DISABLE_METRICS=1
 
