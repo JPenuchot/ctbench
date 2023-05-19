@@ -3,14 +3,14 @@ on: [push]
 
 jobs:
   archlinux-testing:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Fetch current branch
         uses: actions/checkout@v3
       - name: Compiling and running ctbench tests on Archlinux
         uses: ./.github/actions/run-tests-archlinux
   ubuntu-testing:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       - name: Fetch current branch
         uses: actions/checkout@v3
