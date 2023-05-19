@@ -10,5 +10,4 @@ target_link_libraries(
   grapher PUBLIC ctbench-compile-opts nlohmann_json::nlohmann_json
   sciplot::sciplot fmt::fmt stdc++fs tbb ${llvm_libs})
 
-target_compile_options(grapher PUBLIC -DJSON_NOEXCEPTION -march=native -flto)
-target_link_options(grapher PUBLIC -flto)
+target_compile_options(grapher PUBLIC -DJSON_NOEXCEPTION)
