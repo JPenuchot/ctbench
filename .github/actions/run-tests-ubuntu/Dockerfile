@@ -2,6 +2,8 @@ FROM ubuntu:23.04
 
 ENV DEBIAN_FRONTEND noninteractive
 
+USER root
+
 # Base Arch package installation
 
 RUN apt update -y

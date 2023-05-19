@@ -1,5 +1,7 @@
 FROM archlinux/archlinux:base-devel
 
+USER root
+
 # Base Arch package installation
 
 RUN pacman -Syu --noconfirm
