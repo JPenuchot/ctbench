@@ -2,16 +2,16 @@
 /// This program is supposed to be used as a launcher for clang.
 /// It accepts a time-trace export path followed by a compile command.
 ///
-/// If `-ftime-trace` is passed to the compiler, ttw will run the command
-/// and copy the time-trace file to the export path.
+/// If `-ftime-trace` is passed to the compiler, compiler-launcher will run the
+/// command and copy the time-trace file to the export path.
 ///
 /// Otherwise, it will run the command, measure its execution time with
 /// `getrusage`, and generate a time-trace file with only the compiler execution
 /// time. This allows comparing compiler execution times between GCC and Clang.
 ///
-/// Additionally, ttw accepts an `--override-compiler=<COMPILER>` flag to
-/// override the current compiler, allowing CMake targets to be compiled with
-/// different compilers within a single CMake build.
+/// Additionally, compiler-launcher accepts an `--override-compiler=<COMPILER>`
+/// flag to override the current compiler, allowing CMake targets to be compiled
+/// with different compilers within a single CMake build.
 
 #include <chrono>
 #include <cstdlib>
@@ -23,6 +23,8 @@
 
 #include <sys/resource.h>
 #include <sys/wait.h>
+
+#include <boost/process.hpp>
 
 #include <nlohmann/json.hpp>
 

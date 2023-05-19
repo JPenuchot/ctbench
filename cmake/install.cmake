@@ -2,7 +2,7 @@ include(CMakePackageConfigHelpers)
 
 set(ConfigPackageLocation lib/cmake/${PROJECT_NAME})
 
-install(TARGETS ctbench-grapher-plot ctbench-grapher-utils ctbench-ttw
+install(TARGETS ctbench-grapher-plot ctbench-grapher-utils ctbench-compiler-launcher
         EXPORT ctbench-targets)
 
 export(EXPORT ctbench-targets FILE ctbench-targets.cmake)

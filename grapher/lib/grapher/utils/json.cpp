@@ -143,6 +143,7 @@ void save_plot(sciplot::Plot2D plot, std::string const &dest,
   ZoneScoped;
   namespace fs = std::filesystem;
 
+  plot.legend().enhanced(false);
   apply_config(plot, config);
 
   std::vector<std::string> plot_file_extensions = config.value(
@@ -150,9 +151,6 @@ void save_plot(sciplot::Plot2D plot, std::string const &dest,
 
   sciplot::Figure figure{{plot}};
   sciplot::Canvas canvas{{figure}};
-
-  // canvas.autoclean(false);
-  // canvas.saveplotdata();
 
   // Saving file for all extensions
   for (std::string const &extension : plot_file_extensions) {

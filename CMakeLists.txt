@@ -17,7 +17,7 @@ if(${CTBENCH_ENABLE_TESTS})
   add_custom_target(test-all)
 endif()
 
-add_subdirectory(ttw)
+add_subdirectory(compiler-launcher)
 add_subdirectory(grapher)
 
 include(cmake/ctbench-api.cmake)

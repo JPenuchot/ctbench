@@ -23,11 +23,11 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
   target_include_directories(${target_name} PUBLIC "../include")
 
-  # Setting ctbench-ttw as a compiler launcher to handle
+  # Setting ctbench-compiler-launcher as a compiler launcher to handle
   # time-trace file retrivial and compiler overriding
   set_target_properties(
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
-                              "$<TARGET_FILE:ctbench::ctbench-ttw>;${output}")
+                              "$<TARGET_FILE:ctbench::ctbench-compiler-launcher>;${output}")
 
   # Pass benchmark size
   target_compile_options(${target_name} PRIVATE ${options})
