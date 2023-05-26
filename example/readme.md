@@ -1,5 +1,23 @@
 # ctbench example
 
+## Benchmark execution
+
+ctbench must be installed prior to running this example.
+Please refer to the main readme file for installation instructions.
+
+To compile the example, build the `variadic_sum-compare-graph`
+with the following commands:
+
+```sh
+cmake --preset release
+cmake --build --preset release
+```
+
+The output graphs should be located under
+`build/release/variadic_sum-compare-graph`.
+
+## Presentation
+
 This example covers a short yet practical example of ctbench usage. We want to
 calculate the sum of a series of integers known at compile-time, using a type
 template to store unsigned integer values at compile-time.
