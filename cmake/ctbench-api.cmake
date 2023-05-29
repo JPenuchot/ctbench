@@ -21,6 +21,7 @@
 function(_ctbench_internal_add_compile_benchmark target_name output source
          options)
   add_library(${target_name} OBJECT EXCLUDE_FROM_ALL ${source})
+  add_dependencies(${target_name} ctbench::ctbench-compiler-launcher)
   target_include_directories(${target_name} PUBLIC "../include")
 
   # Setting ctbench-compiler-launcher as a compiler launcher to handle
