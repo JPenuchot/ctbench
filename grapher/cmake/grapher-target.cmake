@@ -1,6 +1,6 @@
 # Declaring the grapher library
 file(GLOB_RECURSE GRAPHER_SOURCES lib/*.cpp)
-add_library(grapher SHARED ${GRAPHER_SOURCES})
+add_library(grapher STATIC ${GRAPHER_SOURCES})
 
 target_include_directories(grapher
   PUBLIC
