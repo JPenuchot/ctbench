@@ -2,8 +2,18 @@ include(CMakePackageConfigHelpers)
 
 set(ConfigPackageLocation lib/cmake/${PROJECT_NAME})
 
-install(TARGETS ctbench-grapher-plot ctbench-grapher-utils ctbench-compiler-launcher
-        EXPORT ctbench-targets)
+install(
+  DIRECTORY grapher/include/grapher
+  TYPE INCLUDE)
+
+install(
+  TARGETS
+    grapher
+    ctbench-compile-opts
+    ctbench-grapher-plot
+    ctbench-grapher-utils
+    ctbench-compiler-launcher
+  EXPORT ctbench-targets)
 
 export(EXPORT ctbench-targets FILE ctbench-targets.cmake)
 
@@ -16,14 +26,18 @@ install(FILES cmake/ctbench-api.cmake DESTINATION ${ConfigPackageLocation})
 
 # CMake package config files
 
-configure_package_config_file(cmake/ctbench-config.cmake.in ctbench-config.cmake
-                              INSTALL_DESTINATION ${ConfigPackageLocation})
+configure_package_config_file(
+  cmake/ctbench-config.cmake.in
+  ctbench-config.cmake
+  INSTALL_DESTINATION ${ConfigPackageLocation})
 
 write_basic_package_version_file(
   ctbench-config-version.cmake
   VERSION ${PROJECT_VERSION}
   COMPATIBILITY SameMajorVersion)
 
-install(FILES ${CMAKE_BINARY_DIR}/ctbench-config.cmake
-              ${CMAKE_BINARY_DIR}/ctbench-config-version.cmake
-        DESTINATION ${ConfigPackageLocation})
+install(
+  FILES
+    ${CMAKE_BINARY_DIR}/ctbench-config.cmake
+    ${CMAKE_BINARY_DIR}/ctbench-config-version.cmake
+  DESTINATION ${ConfigPackageLocation})
