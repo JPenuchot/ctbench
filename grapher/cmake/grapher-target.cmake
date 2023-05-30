@@ -12,12 +12,12 @@ llvm_map_components_to_libnames(llvm_libs support)
 
 target_link_libraries(grapher
   PUBLIC
+    ${llvm_libs}
     ctbench-compile-opts
+    fmt::fmt
     nlohmann_json::nlohmann_json
     sciplot::sciplot
-    fmt::fmt
     stdc++fs
-    tbb
-    ${llvm_libs})
+)
 
 target_compile_options(grapher PUBLIC -DJSON_NOEXCEPTION)
