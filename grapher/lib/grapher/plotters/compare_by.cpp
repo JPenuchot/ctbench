@@ -1,6 +1,4 @@
-#include "grapher/predicates.hpp"
 #include <algorithm>
-#include <bits/ranges_algo.h>
 #include <execution>
 #include <filesystem>
 #include <fstream>
@@ -17,6 +15,7 @@
 
 #include <grapher/core.hpp>
 #include <grapher/plotters/compare_by.hpp>
+#include <grapher/predicates.hpp>
 #include <grapher/utils/error.hpp>
 #include <grapher/utils/json.hpp>
 #include <grapher/utils/math.hpp>
