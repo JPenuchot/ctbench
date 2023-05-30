@@ -10,8 +10,6 @@ target_include_directories(grapher
 
 llvm_map_components_to_libnames(llvm_libs support)
 
-target_link_libraries(grapher PRIVATE TBB::tbb)
-
 target_link_libraries(grapher
   PUBLIC
     ${llvm_libs}

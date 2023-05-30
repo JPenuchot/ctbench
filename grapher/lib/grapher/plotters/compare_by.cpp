@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <execution>
 #include <filesystem>
 #include <fstream>
 #include <string>
@@ -306,8 +305,7 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   fs::create_directories(dest);
 
   // Drawing, ie. unwrapping the nested maps and drawing curves + saving plots
-  std::for_each(std::execution::par_unseq, curve_aggregate_map.begin(),
-                curve_aggregate_map.end(),
+  std::for_each(curve_aggregate_map.begin(), curve_aggregate_map.end(),
                 [&](auto const &aggregate_key_value) {
                   generate_plot(aggregate_key_value,
                                 {.plot_output_folder = dest,

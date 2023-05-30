@@ -1,5 +1,4 @@
 #include <algorithm>
-#include <execution>
 #include <fstream>
 
 #include <nlohmann/json.hpp>
@@ -132,8 +131,8 @@ filtered_values_sums(benchmark_instance_t const &instance,
     return val;
   };
 
-  std::transform(std::execution::par_unseq, instance.repetitions.begin(),
-                 instance.repetitions.end(), res.begin(), get_val);
+  std::transform(instance.repetitions.begin(), instance.repetitions.end(),
+                 res.begin(), get_val);
 
   return res;
 }

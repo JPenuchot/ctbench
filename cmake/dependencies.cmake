@@ -8,7 +8,6 @@ find_package(Boost REQUIRED)
 find_package(sciplot REQUIRED)
 find_package(LLVM REQUIRED CONFIG)
 find_package(fmt REQUIRED)
-find_package(TBB REQUIRED)
 
 if(${CTBENCH_ENABLE_TESTS})
   find_package(Catch2 REQUIRED)
