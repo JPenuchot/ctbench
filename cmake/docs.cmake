@@ -1,7 +1,7 @@
 # Documentation options
 set(DOXYGEN_EXTRACT_ALL YES)
 set(DOXYGEN_GENERATE_TREEVIEW YES)
-set(DOXYGEN_EXCLUDE_PATTERNS */build/* */tests/* */build-docs/* paper.md)
+set(DOXYGEN_EXCLUDE_PATTERNS */build/* */tests/* */build-docs/* */example/* paper.md)
 set(DOXYGEN_USE_MDFILE_AS_MAINPAGE ${CMAKE_SOURCE_DIR}/readme.md)
 set(DOXYGEN_EXAMPLE_PATH ${CMAKE_SOURCE_DIR})
 set(DOXYGEN_DOT_TRANSPARENT YES)

@@ -14,6 +14,7 @@ RUN pacman -S --noconfirm \
   curl \
   fmt \
   git \
+  gnuplot \
   llvm \
   llvm-libs \
   ninja \

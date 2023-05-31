@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <cstdlib>
-#include <experimental/source_location>
 #include <source_location>
 #include <string_view>
 
@@ -31,8 +30,7 @@ inline std::string to_string(error_level_t error_level) {
 /// Prints a warning
 inline void warn(std::string_view explain,
                  error_level_t error_level = warning_v,
-                 std::experimental::source_location loc =
-                     std::experimental::source_location::current()) {
+                 std::source_location loc = std::source_location::current()) {
   llvm::errs() << fmt::format(
       "[{}] {}:{}:{} ({}) - {}\n", to_string(error_level), loc.file_name(),
       loc.line(), loc.column(), loc.function_name(), explain);
@@ -43,8 +41,7 @@ inline void warn(std::string_view explain,
 /// Condition value is then returned (useful for warnings).
 inline bool check(bool condition, std::string_view explain,
                   error_level_t error_level = error_v, int err_code = -1,
-                  std::experimental::source_location loc =
-                      std::experimental::source_location::current()) {
+                  std::source_location loc = std::source_location::current()) {
   if (!condition) {
     warn(explain, error_level, loc);
     if (error_level == error_v) {
