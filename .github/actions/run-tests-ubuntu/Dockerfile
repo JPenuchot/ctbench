@@ -15,6 +15,7 @@ RUN apt install -y \
   cmake \
   curl \
   git \
+  gnuplot-nox \
   libboost-all-dev \
   libclang-dev \
   libfmt-dev \
