@@ -147,4 +147,7 @@ and make sure your plotter appears in all following definitions:
 
 Feel free to open draft pull requests at any time to trigger the CI
 and test your code on the supported platforms.
-You may remove the draft status if you feel like your
+You may remove the draft status if you feel like your PR is ready
+or needs to be reviewed or discussed.
+
+Thanks in advance for your time, and thank you for reading these guidelines!
