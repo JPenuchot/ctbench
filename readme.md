@@ -2,6 +2,7 @@ Compiler-assisted benchmarking for the study of C++ metaprogram compile times.
 
 - Github project: https://github.com/jpenuchot/ctbench
 - Online documentation: https://jpenuchot.github.io/ctbench-docs/
+- Discord server: https://discord.gg/NvJFFrdS7p
 
 ctbench allows you to declare and generate compile-time benchmark batches for
 given ranges, run them, aggregate and wrangle Clang profiling data,
