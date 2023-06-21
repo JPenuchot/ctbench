@@ -14,10 +14,12 @@ namespace grapher {
 
 // Basic container types
 
+/// Map type for use in grapher, based on boost::container::flat_map.
 template <typename KeyType, typename ValueType,
           typename CompareType = std::less<KeyType>>
 using map_t = boost::container::flat_map<KeyType, ValueType, CompareType>;
 
+/// Multimap type for use in grapher, based on boost::container::flat_multimap.
 template <typename KeyType, typename ValueType,
           typename CompareType = std::less<KeyType>>
 using multimap_t =

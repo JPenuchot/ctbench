@@ -11,8 +11,10 @@
 
 namespace grapher {
 
+/// Error level for the warn function.
 enum error_level_t : std::uint8_t { error_v, warning_v, info_v, log_v };
 
+/// Converts am error_level_t value into a string.
 inline std::string to_string(error_level_t error_level) {
   switch (error_level) {
   case error_v:
