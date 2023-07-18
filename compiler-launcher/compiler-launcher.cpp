@@ -16,10 +16,11 @@
 #include <algorithm>
 #include <chrono>
 #include <cstdlib>
-#include <ctime>
 #include <filesystem>
 #include <fstream>
+#include <numeric>
 #include <sstream>
+#include <string>
 #include <string_view>
 
 #include <boost/process.hpp>
@@ -28,8 +29,19 @@
 
 #include <fmt/core.h>
 
+/// Concatenates an argument list into a command string
+/// in which the arguments are separated by whitespaces.
+inline std::string
+to_command_string(std::vector<std::string> const &command_args) {
+  return std::accumulate(
+      command_args.begin(), command_args.end(), std::string{},
+      [](std::string accumulator, std::string_view argument) {
+        return std::move(accumulator) + ' ' + argument.data();
+      });
+}
+
 inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
-                              std::string compile_command,
+                              std::vector<std::string> command_args,
                               std::filesystem::path compile_obj_path,
                               bool time_trace_flag) {
   namespace fs = std::filesystem;
@@ -38,15 +50,14 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
 
   using exec_clock_t = std::chrono::high_resolution_clock;
 
-  // TODO: Bypass shell call?
   exec_clock_t::time_point const exec_t0 = exec_clock_t::now();
-  int const ret = std::system(compile_command.c_str());
+  int const ret = boost::process::system(command_args);
   exec_clock_t::time_point const exec_t1 = exec_clock_t::now();
 
   // Check child exit status
   if (int const exit_status = WEXITSTATUS(ret); exit_status != 0) {
     fmt::print("Following compile command exited with status {}: `{}`.\n",
-               exit_status, compile_command);
+               exit_status, to_command_string(command_args));
     exit(exit_status);
   };
 
@@ -117,8 +128,8 @@ int main(int argc, char const *argv[]) {
   // Compiler exec comes after the wrapper exec and the destination for the
   // time-trace file, as these two are set as compiler launcher by the CMake
   // boilerplate.
-  std::string compiler_executable = argv[compiler_id];
-  std::ostringstream args_builder;
+  // std::string compiler_executable = argv[compiler_id];
+  std::vector<std::string> command_args({argv[compiler_id]});
   fs::path obj_path;
   bool has_time_trace_flag = false;
 
@@ -140,22 +151,20 @@ int main(int argc, char const *argv[]) {
     // Handling --override-compiler flag
     else if (current_argument.starts_with(override_flag_prefix)) {
       current_argument.remove_prefix(override_flag_prefix.size());
-      compiler_executable = current_argument;
+      command_args[0] = current_argument;
 
       // Do not pass argument to the compiler
       continue;
     }
 
-    args_builder << ' ' << *beg;
+    command_args.push_back(*beg);
   }
-
-  std::string compile_command =
-      std::move(compiler_executable) + args_builder.str();
 
   if (std::getenv("CTBENCH_TTW_VERBOSE") != nullptr) {
-    fmt::print("[CTBENCH_TTW] Compile command: {}\n", compile_command);
+    fmt::print("[CTBENCH_TTW] Compile command: {}\n",
+               to_command_string(command_args));
   }
 
-  return get_timetrace_file(argv[path_id], std::move(compile_command),
+  return get_timetrace_file(argv[path_id], std::move(command_args),
                             std::move(obj_path), has_time_trace_flag);
 }
