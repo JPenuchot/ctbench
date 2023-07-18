@@ -38,25 +38,33 @@ to_command_string(std::vector<std::string> const &command_args) {
       });
 }
 
+/// Invokes the compiler, measures the execution time, and either
+/// copies the time-trace file or generates one to the desired location.
+/// The return value is the exit code of the compiler.
+/// If the exit code is not zero, then no time-trace file is copied or
+/// generated.
 inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
                               std::vector<std::string> command_args,
                               std::filesystem::path compile_obj_path,
                               bool time_trace_flag) {
   namespace fs = std::filesystem;
+  namespace ch = std::chrono;
 
   // Run program and measure CPU time
 
-  using exec_clock_t = std::chrono::high_resolution_clock;
+  using exec_clock_t = ch::high_resolution_clock;
 
   exec_clock_t::time_point const exec_t0 = exec_clock_t::now();
-  int const ret = boost::process::system(command_args);
+  int const exit_code = boost::process::system(command_args);
   exec_clock_t::time_point const exec_t1 = exec_clock_t::now();
 
-  // Check child exit status
-  if (int const exit_status = WEXITSTATUS(ret); exit_status != 0) {
+  // Check child exit code
+  if (exit_code != 0) {
     fmt::print("Following compile command exited with status {}: `{}`.\n",
-               exit_status, to_command_string(command_args));
-    exit(exit_status);
+               exit_code, to_command_string(command_args));
+
+    // Forward exit code
+    return exit_code;
   };
 
   // Create destination directory
@@ -76,8 +84,7 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
     namespace nl = nlohmann;
 
     std::size_t const time_micros =
-        std::chrono::duration_cast<std::chrono::microseconds>(exec_t1 - exec_t0)
-            .count();
+        ch::duration_cast<ch::microseconds>(exec_t1 - exec_t0).count();
 
     nl::json time_trace_json;
     time_trace_json["traceEvents"] = nlohmann::json::array();
@@ -88,8 +95,8 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
     std::ofstream(time_trace_file_dest) << time_trace_json;
   }
 
-  // Forward return value
-  return ret;
+  // Forward exit code
+  return exit_code;
 }
 
 /// Wrapper for a compiler command.
@@ -133,23 +140,22 @@ int main(int argc, char const *argv[]) {
 
   for (auto beg = &argv[args_start_id], end = &argv[argc]; beg < end; beg++) {
     // Current argument as a string_view
-    std::string_view current_argument{*beg};
+    std::string_view current_arg{*beg};
 
     // Handling -o flag
-    if (current_argument == std::string_view("-o") && beg + 1 != end) {
+    if (current_arg == "-o" && beg + 1 != end) {
       obj_path = *(beg + 1);
     }
 
     // Handling Clang -ftime-trace flag
-    else if (current_argument == "-ftime-trace" ||
-             current_argument == "--ftime-trace") {
+    else if (current_arg == "-ftime-trace" || current_arg == "--ftime-trace") {
       has_time_trace_flag = true;
     }
 
     // Handling --override-compiler flag
-    else if (current_argument.starts_with(override_flag_prefix)) {
-      current_argument.remove_prefix(override_flag_prefix.size());
-      command_args[0] = current_argument;
+    else if (current_arg.starts_with(override_flag_prefix)) {
+      current_arg.remove_prefix(override_flag_prefix.size());
+      command_args[0] = current_arg;
 
       // Do not pass argument to the compiler
       continue;
