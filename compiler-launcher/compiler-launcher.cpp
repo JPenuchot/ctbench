@@ -13,6 +13,7 @@
 /// flag to override the current compiler, allowing CMake targets to be compiled
 /// with different compilers within a single CMake build.
 
+#include <algorithm>
 #include <chrono>
 #include <cstdlib>
 #include <ctime>
@@ -32,7 +33,6 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
                               std::filesystem::path compile_obj_path,
                               bool time_trace_flag) {
   namespace fs = std::filesystem;
-
 
   // Run program and measure CPU time
 
@@ -99,7 +99,11 @@ int main(int argc, char const *argv[]) {
   // Override flag prefix
   constexpr std::string_view override_flag_prefix = "--override-compiler=";
 
-  if (argc < 3) {
+  // Help display
+  if (argc < 3 ||
+      std::any_of(argv, argv + argc, [](std::string_view arg) -> bool {
+        return arg == "--help" || arg == "-h" || arg == "-help";
+      })) {
     fmt::print("Usage: {} time_trace_export_path.json COMPILER [ARGS]...\n\n"
                "{} <COMPILER> - Override previously set compiler\n\n"
                "If CTBENCH_TTW_VERBOSE is set, "
