@@ -21,9 +21,6 @@
 #include <sstream>
 #include <string_view>
 
-#include <sys/resource.h>
-#include <sys/wait.h>
-
 #include <boost/process.hpp>
 
 #include <nlohmann/json.hpp>
@@ -36,14 +33,15 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
                               bool time_trace_flag) {
   namespace fs = std::filesystem;
 
-  // Run program and measure CPU time
-  rusage children_rusage_begin;
-  rusage children_rusage_end;
 
-  getrusage(RUSAGE_CHILDREN, &children_rusage_begin);
+  // Run program and measure CPU time
+
+  using exec_clock_t = std::chrono::high_resolution_clock;
+
   // TODO: Bypass shell call?
+  exec_clock_t::time_point const exec_t0 = exec_clock_t::now();
   int const ret = std::system(compile_command.c_str());
-  getrusage(RUSAGE_CHILDREN, &children_rusage_end);
+  exec_clock_t::time_point const exec_t1 = exec_clock_t::now();
 
   // Check child exit status
   if (int const exit_status = WEXITSTATUS(ret); exit_status != 0) {
@@ -68,8 +66,9 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
     // Generate time-trace file if not already generated
     namespace nl = nlohmann;
 
-    std::size_t const time_micros = children_rusage_end.ru_utime.tv_usec -
-                                    children_rusage_begin.ru_utime.tv_usec;
+    std::size_t const time_micros =
+        std::chrono::duration_cast<std::chrono::microseconds>(exec_t1 - exec_t0)
+            .count();
 
     nl::json time_trace_json;
     time_trace_json["traceEvents"] = nlohmann::json::array();
