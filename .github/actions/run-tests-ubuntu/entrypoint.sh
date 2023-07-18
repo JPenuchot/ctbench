@@ -25,4 +25,3 @@ cmake --preset release-clang-tt
 cmake --build --preset release
 cmake --build --preset release-clang
 cmake --build --preset release-clang-tt
-
