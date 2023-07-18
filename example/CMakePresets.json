@@ -27,21 +27,59 @@
       "generator" : "Ninja",
       "binaryDir" : "${sourceDir}/build/release",
       "cacheVariables" : {
-        "ENABLE_TIME_TRACE" : "ON",
-        "CMAKE_CXX_COMPILER" : "clang++",
-        "CMAKE_C_COMPILER" : "clang",
-        "CMAKE_EXPORT_COMPILE_COMMANDS" : "ON",
         "CMAKE_BUILD_TYPE" : "RelWithDebInfo"
+      }
+    },
+    {
+      "name" : "release-clang",
+      "inherits" : "release",
+      "displayName" : "Release - Clang",
+      "description" : "Same as release preset, but using Clang",
+      "binaryDir" : "${sourceDir}/build/release-clang",
+      "cacheVariables" : {
+        "CMAKE_CXX_COMPILER" : "clang++",
+        "CMAKE_C_COMPILER" : "clang"
+      }
+    },
+    {
+      "name" : "release-clang-tt",
+      "inherits" : "release-clang",
+      "displayName" : "Release - Clang with time-trace",
+      "description" : "Same as release preset, but using Clang with time-trace",
+      "binaryDir" : "${sourceDir}/build/release-clang-tt",
+      "cacheVariables" : {
+        "ENABLE_TIME_TRACE" : "ON"
       }
     },
     {
       "name" : "debug",
       "inherits" : "release",
       "displayName" : "Debug",
-      "description" : "Debug",
+      "description" : "Compile with debug symbols",
       "binaryDir" : "${sourceDir}/build/debug",
       "cacheVariables" : {
         "CMAKE_BUILD_TYPE" : "Debug"
+      }
+    },
+    {
+      "name" : "debug-clang",
+      "inherits" : "debug",
+      "displayName" : "Debug - Clang",
+      "description" : "Same as debug preset, but using Clang",
+      "binaryDir" : "${sourceDir}/build/debug-clang",
+      "cacheVariables" : {
+        "CMAKE_CXX_COMPILER" : "clang++",
+        "CMAKE_C_COMPILER" : "clang"
+      }
+    },
+    {
+      "name" : "debug-clang-tt",
+      "inherits" : "debug-clang",
+      "displayName" : "Debug - Clang with time-trace",
+      "description" : "Same as debug preset, but using Clang with time-trace",
+      "binaryDir" : "${sourceDir}/build/debug-clang",
+      "cacheVariables" : {
+        "ENABLE_TIME_TRACE" : "ON"
       }
     }
   ],
@@ -57,9 +95,29 @@
       ]
     },
     {
+      "name" : "release-clang",
+      "inherits" : "release",
+      "configurePreset" : "release-clang"
+    },
+    {
+      "name" : "release-clang-tt",
+      "inherits" : "release-clang",
+      "configurePreset" : "release-clang-tt"
+    },
+    {
       "name" : "debug",
       "inherits" : "release",
       "configurePreset" : "debug"
+    },
+    {
+      "name" : "debug-clang",
+      "inherits" : "debug",
+      "configurePreset" : "debug-clang"
+    },
+    {
+      "name" : "debug-clang-tt",
+      "inherits" : "debug-clang",
+      "configurePreset" : "debug-clang-tt"
     }
   ]
 }

@@ -12,6 +12,11 @@ jobs:
         uses: actions/checkout@v3
       - name: Compiling and running ctbench tests on Archlinux
         uses: ./.github/actions/run-tests-archlinux
+      - uses: actions/upload-artifact@v3
+        with:
+          name: archlinux-build-result
+          path: example/build/
+
   ubuntu-testing:
     runs-on: self-hosted
     container:
@@ -22,3 +27,7 @@ jobs:
         uses: actions/checkout@v3
       - name: Compiling and running ctbench tests on Ubuntu
         uses: ./.github/actions/run-tests-ubuntu
+      - uses: actions/upload-artifact@v3
+        with:
+          name: ubuntu-build-result
+          path: example/build/
