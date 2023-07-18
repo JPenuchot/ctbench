@@ -14,7 +14,7 @@ jobs:
         uses: ./.github/actions/run-tests-archlinux
       - uses: actions/upload-artifact@v3
         with:
-          name: build_result
+          name: archlinux-build-result
           path: example/build/
 
   ubuntu-testing:
@@ -29,5 +29,5 @@ jobs:
         uses: ./.github/actions/run-tests-ubuntu
       - uses: actions/upload-artifact@v3
         with:
-          name: build_result
+          name: ubuntu-build-result
           path: example/build/
