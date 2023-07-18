@@ -18,4 +18,4 @@ cmake --build --preset release --target install
 
 cd example || exit
 cmake --preset release
-cmake --build --preset release
+cmake --build --preset release --target ctbench-graph-all

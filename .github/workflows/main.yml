@@ -15,7 +15,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: build_result
-          path: build/
+          path: example/build/
 
   ubuntu-testing:
     runs-on: self-hosted
@@ -30,4 +30,4 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: build_result
-          path: build/
+          path: example/build/
