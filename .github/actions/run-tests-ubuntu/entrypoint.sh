@@ -16,7 +16,13 @@ cmake --build --preset release --target test-all
 
 cmake --build --preset release --target install
 
-cd example || exit
+cd example
+
 cmake --preset release
-cmake --build --preset release --target ctbench-graph-all
+cmake --preset release-clang
+cmake --preset release-clang-tt
+
+cmake --build --preset release
+cmake --build --preset release-clang
+cmake --build --preset release-clang-tt
 
