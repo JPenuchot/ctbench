@@ -278,6 +278,25 @@ inline void generate_plot(
             parameters.plotter_config);
 }
 
+/// Reads plot generation parameters from the config
+generate_plot_parameters_t
+get_plotgen_parameters(grapher::json_t const &config,
+                       std::filesystem::path const &dest) {
+  bool draw_average = config.value("draw_average", true);
+  bool average_error_bars = config.value("average_error_bars", false);
+  bool draw_points = config.value("draw_points", true);
+  bool draw_median = config.value("draw_median", true);
+  bool demangle = config.value("demangle", true);
+
+  return {.plot_output_folder = dest,
+          .plotter_config = config,
+          .draw_average = draw_average,
+          .average_error_bars = average_error_bars,
+          .draw_points = draw_points,
+          .draw_median = draw_median,
+          .demangle = demangle};
+}
+
 void plotter_compare_by_t::plot(benchmark_set_t const &bset,
                                 std::filesystem::path const &dest,
                                 grapher::json_t const &config) const {
@@ -285,26 +304,33 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   namespace fs = std::filesystem;
 
   // Config reading
+  generate_plot_parameters_t plotgen_parameters =
+      get_plotgen_parameters(config, dest);
 
-  std::vector<json_t::string_t> key_strs =
-      config.value("key_ptrs", json_t::array({"/name", "/args/detail"}));
-
+  // JSON pointer to the measured value
   json_t::json_pointer value_ptr(config.value("value_ptr", "/dur"));
 
-  bool draw_average = config.value("draw_average", true);
-  bool average_error_bars = config.value("average_error_bars", false);
-  bool draw_points = config.value("draw_points", true);
-  bool draw_median = config.value("draw_median", true);
-  bool demangle = config.value("demangle", true);
+  // Key JSON pointers extraction
+  std::vector<json_t::json_pointer> key_json_pointers;
 
-  std::vector<json_t::json_pointer> key_ptrs;
-  std::transform(key_strs.begin(), key_strs.end(), std::back_inserter(key_ptrs),
-                 [](std::string const &pointer) -> json_t::json_pointer {
-                   return json_t::json_pointer{pointer};
-                 });
+  {
+    // The default value is a pair of pointers to the name
+    // and the details field of a timer event.
+    std::vector<json_t::string_t> key_json_pointer_strings =
+        config.value("key_ptrs", json_t::array({"/name", "/args/detail"}));
 
-  // Optional: filter extraction
+    // Converting the strings to JSON pointer objects
+    std::transform(key_json_pointer_strings.begin(),
+                   key_json_pointer_strings.end(),
+                   std::back_inserter(key_json_pointers),
+                   [](std::string &pointer) -> json_t::json_pointer {
+                     return json_t::json_pointer{std::move(pointer)};
+                   });
+  }
+
+  // Predicate extraction
   std::vector<predicate_t> filters;
+
   if (config.contains("filters") && config["filters"].is_array()) {
     grapher::json_t::array_t const &filter_json_array =
         grapher::get_as_ref<grapher::json_t::array_t const &>(config,
@@ -316,7 +342,7 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
 
   // Wrangling happens there
   curve_aggregate_map_t curve_aggregate_map =
-      get_bench_curves(bset, key_ptrs, value_ptr, filters);
+      get_bench_curves(bset, key_json_pointers, value_ptr, filters);
 
   // Ensure the destination folder exists
   fs::create_directories(dest);
@@ -324,14 +350,7 @@ void plotter_compare_by_t::plot(benchmark_set_t const &bset,
   // Drawing, ie. unwrapping the nested maps and drawing curves + saving plots
   std::for_each(curve_aggregate_map.begin(), curve_aggregate_map.end(),
                 [&](auto const &aggregate_key_value) {
-                  generate_plot(aggregate_key_value,
-                                {.plot_output_folder = dest,
-                                 .plotter_config = config,
-                                 .draw_average = draw_average,
-                                 .average_error_bars = average_error_bars,
-                                 .draw_points = draw_points,
-                                 .draw_median = draw_median,
-                                 .demangle = demangle});
+                  generate_plot(aggregate_key_value, plotgen_parameters);
                 });
 }
 
