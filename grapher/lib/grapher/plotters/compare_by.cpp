@@ -183,6 +183,52 @@ struct generate_plot_parameters_t {
   bool demangle;
 };
 
+/// Set of X and Y coordinate vectors for all curves and points of a graph.
+struct coordinate_vectors_t {
+  // X axis coordinates for all curves
+  std::vector<grapher::value_t> x_curve;
+
+  // Average curve Y coordinate vectors
+  std::vector<double> y_average_curve;
+  std::vector<double> y_delta_curve;
+  std::vector<double> y_median_curve;
+
+  // Point X and Y coordinate vectors
+  std::vector<grapher::value_t> x_points;
+  std::vector<grapher::value_t> y_points;
+};
+
+/// Draws the curves and points for a given benchmark.
+inline void draw_bench_curves(sciplot::Plot2D &plot,
+                              coordinate_vectors_t const &coord_vectors,
+                              std::string const &bench_name,
+                              generate_plot_parameters_t const &parameters) {
+  // Draw average curve
+  if (parameters.draw_average) {
+    if (parameters.average_error_bars) {
+      plot.drawCurveWithErrorBarsY(coord_vectors.x_curve,
+                                   coord_vectors.y_average_curve,
+                                   coord_vectors.y_delta_curve)
+          .label(bench_name + " avg + stddev");
+    } else {
+      plot.drawCurve(coord_vectors.x_curve, coord_vectors.y_average_curve)
+          .label(bench_name + " average");
+    }
+  }
+
+  // Draw median curve
+  if (parameters.draw_median) {
+    plot.drawCurve(coord_vectors.x_curve, coord_vectors.y_median_curve)
+        .label(bench_name + " median");
+  }
+
+  // Draw points
+  if (parameters.draw_points) {
+    plot.drawPoints(coord_vectors.x_points, coord_vectors.y_points)
+        .label(bench_name + " points");
+  }
+}
+
 /// Function to generate one plot.
 /// NB: This function must remain free of config reading logic.
 inline void generate_plot(
@@ -192,70 +238,41 @@ inline void generate_plot(
 
   auto const &[key, curve_aggregate] = aggregate_key_value;
 
-  // Plot init
   sciplot::Plot2D plot;
 
+  // Plot init
   for (auto const &[bench_name, benchmark_curve] : curve_aggregate) {
-    std::vector<grapher::value_t> x_curve;
+    coordinate_vectors_t curves;
 
-    // Average curve coord vectors
-    std::vector<double> y_average_curve;
-    std::vector<double> y_delta_curve;
-    std::vector<double> y_median_curve;
-
-    // Point coord vectors
-    std::vector<grapher::value_t> x_points;
-    std::vector<grapher::value_t> y_points;
-
-    // Build point & curve vectors
+    // Building points & curves coordinate vectors
     for (auto const &[x_value, y_values] : benchmark_curve) {
-      x_curve.push_back(x_value);
+      curves.x_curve.push_back(x_value);
 
-      // Building average curve vector
+      // Building average curve Y vector
       if (parameters.draw_average && !y_values.empty()) {
-        y_average_curve.push_back(math::average(y_values));
-        y_delta_curve.push_back(math::stddev(y_values));
+        curves.y_average_curve.push_back(math::average(y_values));
+        curves.y_delta_curve.push_back(math::stddev(y_values));
       }
 
-      // Building median curve vector
+      // Building median curve Y vector
       if (parameters.draw_median && !y_values.empty()) {
-        y_median_curve.push_back(math::median(y_values));
+        curves.y_median_curve.push_back(math::median(y_values));
       }
 
-      // Building point vector
+      // Building point XY vectors
       if (parameters.draw_points) {
         for (grapher::value_t y_value : y_values) {
-          x_points.push_back(x_value);
-          y_points.push_back(y_value);
+          curves.x_points.push_back(x_value);
+          curves.y_points.push_back(y_value);
         }
       }
     }
 
     // Plot drawing
-
-    // Draw average curve
-    if (parameters.draw_average) {
-      if (parameters.average_error_bars) {
-        plot.drawCurveWithErrorBarsY(x_curve, y_average_curve, y_delta_curve)
-            .label(bench_name + " avg + stddev");
-      } else {
-        plot.drawCurve(x_curve, y_average_curve).label(bench_name + " average");
-      }
-    }
-
-    // Draw median curve
-    if (parameters.draw_median) {
-      plot.drawCurve(x_curve, y_median_curve).label(bench_name + " median");
-    }
-
-    // Draw points
-    if (parameters.draw_points) {
-      plot.drawPoints(x_points, y_points).label(bench_name + " points");
-    }
+    draw_bench_curves(plot, curves, bench_name, parameters);
   }
 
   plot.legend().atBottom();
-
   save_plot(std::move(plot),
             parameters.plot_output_folder / to_string(key, parameters.demangle),
             parameters.plotter_config);
