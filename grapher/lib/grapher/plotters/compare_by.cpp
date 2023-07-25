@@ -74,6 +74,7 @@ struct generate_plot_parameters_t {
   bool draw_points;
   bool draw_median;
   bool demangle;
+  grapher::json_t const &plotter_config;
 };
 
 // =============================================================================
@@ -229,7 +230,8 @@ get_plotgen_parameters(grapher::json_t const &config,
           .average_error_bars = config.value("average_error_bars", false),
           .draw_points = config.value("draw_points", true),
           .draw_median = config.value("draw_median", true),
-          .demangle = config.value("demangle", true)};
+          .demangle = config.value("demangle", true),
+          .plotter_config = config};
 }
 
 grapher::json_t plotter_compare_by_t::get_default_config() const {
