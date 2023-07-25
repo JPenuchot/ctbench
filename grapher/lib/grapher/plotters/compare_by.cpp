@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -8,7 +9,7 @@
 
 #include <boost/container/small_vector.hpp>
 
-#include <llvm/Demangle/Demangle.h>
+#include <boost/core/demangle.hpp>
 
 #include <sciplot/sciplot.hpp>
 
@@ -49,7 +50,73 @@ struct process_event_parameters_t {
   benchmark_instance_t const &instance;
 };
 
+/// Set of X and Y coordinate vectors for all curves and points of a graph.
+struct coordinate_vectors_t {
+  // X axis coordinates for all curves
+  std::vector<grapher::value_t> x_curve;
+
+  // Average curve Y coordinate vectors
+  std::vector<double> y_average_curve;
+  std::vector<double> y_delta_curve;
+  std::vector<double> y_median_curve;
+
+  // Point X and Y coordinate vectors
+  std::vector<grapher::value_t> x_points;
+  std::vector<grapher::value_t> y_points;
+};
+
+/// Parameter list for the generate_plot function
+/// extracted into a struct for readability
+struct generate_plot_parameters_t {
+  std::filesystem::path const &plot_output_folder;
+  bool draw_average;
+  bool average_error_bars;
+  bool draw_points;
+  bool draw_median;
+  bool demangle;
+};
+
+// =============================================================================
+// Forward declarations
+
 /// Generate a curve for a given time-trace event and stores it in output_map.
+inline void process_event(curve_aggregate_map_t &output_map,
+                          grapher::json_t const &event,
+                          process_event_parameters_t const &parameters);
+
+/// Scans event data at value_pointer and generates curves for each key
+/// generated from key_pointers. The curves are stored in a nested map
+/// structure which is far from optimal but we're limited by gnuplot's
+/// performance anyway.
+curve_aggregate_map_t
+get_bench_curves(benchmark_set_t const &input,
+                 std::vector<json_t::json_pointer> const &key_pointers,
+                 json_t::json_pointer const &value_pointer,
+                 std::vector<predicate_t> filters = {});
+
+/// Transforms a key into a string that's usable as a path.
+std::string to_string(key_t const &key, bool demangle = true);
+
+/// Draws the curves and points for a given benchmark.
+inline void draw_bench_curves(sciplot::Plot2D &plot,
+                              coordinate_vectors_t const &coord_vectors,
+                              std::string const &bench_name,
+                              generate_plot_parameters_t const &parameters);
+
+/// Reads plot generation parameters from the config
+generate_plot_parameters_t
+get_plotgen_parameters(grapher::json_t const &config,
+                       std::filesystem::path const &dest);
+
+/// Function to generate one plot.
+/// NB: This function must remain free of config reading logic.
+inline void generate_plot(
+    curve_aggregate_map_t::const_iterator::value_type aggregate_key_value,
+    generate_plot_parameters_t const &parameters);
+
+// =============================================================================
+// Function definitions
+
 inline void process_event(curve_aggregate_map_t &output_map,
                           grapher::json_t const &event,
                           process_event_parameters_t const &parameters) {
@@ -76,15 +143,11 @@ inline void process_event(curve_aggregate_map_t &output_map,
   }
 }
 
-/// Scans event data at value_pointer and generates curves for each key
-/// generated from key_pointers. The curves are stored in a nested map
-/// structure which is far from optimal but we're limited by gnuplot's
-/// performance anyway.
 curve_aggregate_map_t
 get_bench_curves(benchmark_set_t const &input,
                  std::vector<json_t::json_pointer> const &key_pointers,
                  json_t::json_pointer const &value_pointer,
-                 std::vector<predicate_t> filters = {}) {
+                 std::vector<predicate_t> filters) {
   ZoneScoped;
   namespace fs = std::filesystem;
 
@@ -127,25 +190,47 @@ get_bench_curves(benchmark_set_t const &input,
   return res;
 }
 
-/// Transforms a key into a string that's usable as a path.
-std::string to_string(key_t const &key, bool demangle = true) {
+inline std::string to_string(key_t const &key, bool demangle) {
   if (key.empty()) {
     return "empty";
   }
 
-  std::string result = demangle ? llvm::demangle(key[0]) : key[0];
-  std::for_each(key.begin() + 1, key.end(), [&](std::string const &part) {
-    result += '/';
-    for (char const name_character : demangle ? llvm::demangle(part) : part) {
-      result += name_character == '/' ? '_' : name_character;
-    }
-  });
+  // Gets head
+  std::string result(
+      demangle ? boost::core::scoped_demangled_name(key[0].c_str()).get()
+               : key[0]);
+
+  // Concatenate the rest
+  std::for_each(
+      key.begin() + 1, key.end(), [&](std::string const &mangled_part) {
+        result += '/';
+
+        std::string part(
+            demangle
+                ? boost::core::scoped_demangled_name(mangled_part.c_str()).get()
+                : mangled_part);
+
+        for (char const name_character : part) {
+          result += name_character == '/' ? '_' : name_character;
+        }
+      });
 
   return result;
 }
 
 // =============================================================================
 // OVERRIDES
+
+generate_plot_parameters_t
+get_plotgen_parameters(grapher::json_t const &config,
+                       std::filesystem::path const &dest) {
+  return {.plot_output_folder = dest,
+          .draw_average = config.value("draw_average", true),
+          .average_error_bars = config.value("average_error_bars", false),
+          .draw_points = config.value("draw_points", true),
+          .draw_median = config.value("draw_median", true),
+          .demangle = config.value("demangle", true)};
+}
 
 grapher::json_t plotter_compare_by_t::get_default_config() const {
   grapher::json_t res = grapher::base_default_config();
@@ -171,34 +256,6 @@ grapher::json_t plotter_compare_by_t::get_default_config() const {
   return res;
 }
 
-/// Parameter list for the generate_plot function
-/// extracted into a struct for readability
-struct generate_plot_parameters_t {
-  std::filesystem::path const &plot_output_folder;
-  grapher::json_t const &plotter_config;
-  bool draw_average;
-  bool average_error_bars;
-  bool draw_points;
-  bool draw_median;
-  bool demangle;
-};
-
-/// Set of X and Y coordinate vectors for all curves and points of a graph.
-struct coordinate_vectors_t {
-  // X axis coordinates for all curves
-  std::vector<grapher::value_t> x_curve;
-
-  // Average curve Y coordinate vectors
-  std::vector<double> y_average_curve;
-  std::vector<double> y_delta_curve;
-  std::vector<double> y_median_curve;
-
-  // Point X and Y coordinate vectors
-  std::vector<grapher::value_t> x_points;
-  std::vector<grapher::value_t> y_points;
-};
-
-/// Draws the curves and points for a given benchmark.
 inline void draw_bench_curves(sciplot::Plot2D &plot,
                               coordinate_vectors_t const &coord_vectors,
                               std::string const &bench_name,
@@ -229,8 +286,6 @@ inline void draw_bench_curves(sciplot::Plot2D &plot,
   }
 }
 
-/// Function to generate one plot.
-/// NB: This function must remain free of config reading logic.
 inline void generate_plot(
     curve_aggregate_map_t::const_iterator::value_type aggregate_key_value,
     generate_plot_parameters_t const &parameters) {
@@ -276,25 +331,6 @@ inline void generate_plot(
   save_plot(std::move(plot),
             parameters.plot_output_folder / to_string(key, parameters.demangle),
             parameters.plotter_config);
-}
-
-/// Reads plot generation parameters from the config
-generate_plot_parameters_t
-get_plotgen_parameters(grapher::json_t const &config,
-                       std::filesystem::path const &dest) {
-  bool draw_average = config.value("draw_average", true);
-  bool average_error_bars = config.value("average_error_bars", false);
-  bool draw_points = config.value("draw_points", true);
-  bool draw_median = config.value("draw_median", true);
-  bool demangle = config.value("demangle", true);
-
-  return {.plot_output_folder = dest,
-          .plotter_config = config,
-          .draw_average = draw_average,
-          .average_error_bars = average_error_bars,
-          .draw_points = draw_points,
-          .draw_median = draw_median,
-          .demangle = demangle};
 }
 
 void plotter_compare_by_t::plot(benchmark_set_t const &bset,
