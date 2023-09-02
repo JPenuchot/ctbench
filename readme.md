@@ -4,6 +4,8 @@ Compiler-assisted benchmarking for the study of C++ metaprogram compile times.
 - Online documentation: https://jpenuchot.github.io/ctbench-docs/
 - Discord server: https://discord.gg/NvJFFrdS7p
 
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.05165/status.svg)](https://doi.org/10.21105/joss.05165)
+
 ctbench allows you to declare and generate compile-time benchmark batches for
 given ranges, run them, aggregate and wrangle Clang profiling data,
 and plot them.
@@ -233,3 +235,20 @@ per benchmark case. In this case, you would then get 3 graphs
 - [Pyperf - Tune the system for benchmarks](
   https://pyperf.readthedocs.io/en/latest/system.html)
 - [Metabench](https://github.com/ldionne/metabench)
+
+## Citing ctbench
+
+```bibtex
+@article{Penuchot2023,
+  doi = {10.21105/joss.05165},
+  url = {https://doi.org/10.21105/joss.05165},
+  year = {2023},
+  publisher = {The Open Journal},
+  volume = {8},
+  number = {88},
+  pages = {5165},
+  author = {Jules Penuchot and Joel Falcou},
+  title = {ctbench - compile-time benchmarking and analysis},
+  journal = {Journal of Open Source Software},
+}
+```
