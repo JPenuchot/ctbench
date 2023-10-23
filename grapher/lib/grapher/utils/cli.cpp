@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <fstream>
+#include <sstream>
 
 #include <llvm/Support/raw_ostream.h>
 
