@@ -4,6 +4,7 @@
   "x_label": "Benchmark size factor",
   "y_label": "Time (µs)",
   "draw_average": true,
+  "draw_median": false,
   "demangle": false,
   "draw_points": false,
   "width": 800,
