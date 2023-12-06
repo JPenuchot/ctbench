@@ -52,7 +52,7 @@ inline int get_timetrace_file(std::filesystem::path const time_trace_file_dest,
 
   // Run program and measure CPU time
 
-  using exec_clock_t = ch::high_resolution_clock;
+  using exec_clock_t = ch::steady_clock;
 
   exec_clock_t::time_point const exec_t0 = exec_clock_t::now();
   int const exit_code = boost::process::system(command_args);
