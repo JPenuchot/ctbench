@@ -24,7 +24,7 @@ function(_ctbench_internal_add_compile_benchmark target_name output source
   target_include_directories(${target_name} PUBLIC "../include")
 
   # Setting ctbench-compiler-launcher as a compiler launcher to handle
-  # time-trace file retrivial and compiler overriding
+  # time-trace file retrieval and compiler overriding
   set_target_properties(
     ${target_name} PROPERTIES CXX_COMPILER_LAUNCHER
                               "$<TARGET_FILE:ctbench::ctbench-compiler-launcher>;${output}")
@@ -61,10 +61,23 @@ add_custom_target(ctbench-graph-all)
 #!
 #! ### ctbench_add_benchmark(name source begin end step samples)
 #!
-#! Add a benchmark for a given source, with a given size range. Please note that
-#! ctbench_add_benchmark does *not* add -ftime-trace flags. If not present,
-#! the compiler execution time will be measured by the compiler execution
-#! wrapper, and only this data will be reported.
+#! Adds a benchmark for a given source, with a given size range.
+#! Please note that ctbench_add_benchmark does *not* add -ftime-trace flags.
+#! If not present, the compiler execution time will be measured by the
+#! compiler execution wrapper, and only this data will be reported.
+#!
+#! Each benchmark target declared by the function will be declared with
+#! BENCHMARK_SIZE defined to its instantiation size.
+#!
+#! For example:
+#!
+#! ```cmake
+#! ctbench_add_benchmark(some_bench some_bench.cpp 1 16 2 5)
+#! ```
+#!
+#! This code creates targets with BENCHMARK_SIZE set from 1 to 16 with
+#! a step of 2, with 5 repetitions for each benchmark instantiation size.
+#! `some_bench.cpp` will be compiled 40 times in total.
 #!
 #! If you need Clang's time-trace data, please specify it manually,
 #! and do not forget to set -ftime-trace-granularity if needed.
@@ -103,12 +116,26 @@ endfunction(ctbench_add_benchmark)
 
 ## =============================================================================
 #!
-#! ### ctbench_add_benchmark_for_range(name source range_params samples)
+#! ### ctbench_add_benchmark_for_range(name source range_var samples)
 #!
 #! Add a benchmark for a given source, with a given size range. Please note that
-#! ctbench_add_benchmark_for_range does *not* add -ftime-trace flags. If not present,
-#! the compiler execution time will be measured by the compiler execution
-#! wrapper, and only this data will be reported.
+#! ctbench_add_benchmark_for_range does *not* add -ftime-trace flags.
+#! If not present, the compiler execution time will be measured
+#! by the compiler execution wrapper, and only this data will be reported.
+#!
+#! Each benchmark target declared by the function will be declared with
+#! BENCHMARK_SIZE defined to its instantiation size.
+#!
+#! For example:
+#!
+#! ```cmake
+#! set(small_range 1 16 2)
+#! ctbench_add_benchmark_for_range(some_bench some_bench.cpp small_range 5)
+#! ```
+#!
+#! This code creates targets with BENCHMARK_SIZE set from 1 to 16 with
+#! a step of 2, with 5 repetitions for each benchmark instantiation size.
+#! `some_bench.cpp` will be compiled 40 times in total.
 #!
 #! If you need Clang's time-trace data, please specify it manually,
 #! and do not forget to set -ftime-trace-granularity if needed.
@@ -148,20 +175,20 @@ endfunction(ctbench_add_benchmark_for_range)
 #!
 #! - `name`: Name of benchmark
 #! - `source`: Source file
-#! - `size_list_var`: Iteration size list variable name
+#! - `size_list`: Iteration size list variable name
 #! - `samples`: Number of samples per iteration
 
 function(
   ctbench_add_benchmark_for_size_list
   name
   source
-  size_list_var
+  size_list
   samples)
   # Setting names
   add_custom_target(${name})
 
   foreach(iteration RANGE 1 ${samples})
-    foreach(size ${size_list_var})
+    foreach(size ${size_list})
       # Subtargets aren't meant to be compiled by end-users
       set(subtarget_name "_${name}-size_${size}-it_${iteration}")
 
