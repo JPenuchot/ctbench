@@ -20,6 +20,7 @@ RUN pacman -S --noconfirm \
   ninja \
   nlohmann-json \
   onetbb \
+  openssh \
   tar \
   unzip \
   zip
