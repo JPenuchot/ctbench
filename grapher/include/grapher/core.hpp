@@ -26,7 +26,7 @@ using multimap_t =
     boost::container::flat_multimap<KeyType, ValueType, CompareType>;
 
 /// Alias type for JSON objects.
-using json_t = nlohmann::basic_json<boost::container::flat_map>;
+using json_t = nlohmann::json;
 
 /// Default type to represent scalar values from benchmark data.
 using value_t = unsigned long;
