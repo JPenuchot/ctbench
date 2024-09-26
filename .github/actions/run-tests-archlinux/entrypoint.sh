@@ -1,19 +1,11 @@
 #!/bin/sh -le
 
-export VCPKG_DISABLE_METRICS=1
-
-git clone https://github.com/Microsoft/vcpkg.git
-./vcpkg/bootstrap-vcpkg.sh
-./vcpkg/vcpkg install sciplot fmt
-
-cmake --preset release -G Ninja \
+cmake --preset release \
   -DCTBENCH_ENABLE_TESTS=ON \
   -DCTBENCH_ENABLE_TRACY=OFF \
-  -DCTBENCH_ENABLE_DOCS=OFF \
-  -DCMAKE_TOOLCHAIN_FILE=vcpkg/scripts/buildsystems/vcpkg.cmake
+  -DCTBENCH_ENABLE_DOCS=OFF
 
 cmake --build --preset release --target test-all
-
 cmake --build --preset release --target install
 
 cd example
