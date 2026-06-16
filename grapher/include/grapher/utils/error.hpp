@@ -7,7 +7,7 @@
 
 #include <llvm/Support/raw_ostream.h>
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 namespace grapher {
 

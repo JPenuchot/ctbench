@@ -26,7 +26,7 @@
 
 #include <nlohmann/json.hpp>
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 /// Starts a process and returns its PID.
 int start_process(std::vector<std::string> const &command_args) {

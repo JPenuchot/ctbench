@@ -4,7 +4,7 @@
 
 #include <llvm/Support/raw_ostream.h>
 
-#include <fmt/core.h>
+#include <fmt/format.h>
 
 #include <sciplot/Plot2D.hpp>
 #include <sciplot/sciplot.hpp>
